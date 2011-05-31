@@ -1,6 +1,7 @@
 package com.bheap.synapse.application
 
 import scala.io.Source
+import scala.collection.mutable.{Set => MSet}
 
 import java.io.File
 
@@ -13,37 +14,65 @@ import com.bheap.synapse.view.XmlView
 
 class Application {
 
-  val pageFiles = (new File("/Users/rossputin/.synapse/pages")).listFiles.
-    filter(_.isFile).filter(_.getName.endsWith(".xml"))
+  val filterSet = MSet.empty[String]
 
-  val ls: List[(String, String, String)] = pageFiles.toList.map {
-    pageFile =>
-      val pageXml = XML fromSource (Source fromURL ("file:%s" format pageFile))
-      val url = (pageXml \ 'url \ text).head
-      println(url.getClass.getName)
-      val description = (pageXml \ 'description \ text).head
-      println(description.getClass.getName)
-      val template = (pageXml \ 'template \ text).head
-      println(template.getClass.getName)
-      (url, description, template)
+  val jetty = unfiltered.jetty.Http(8080)
+
+  def getPageFiles = {
+    (new File("/Users/rossputin/.synapse/pages")).listFiles.
+      filter(_.isFile).filter(_.getName.endsWith(".xml"))
   }
 
-  val filters = ls.map {
-    details =>
+  def getPageConfigs(reload: Boolean) = {
+    val configs = getPageFiles.toList.map {
+      pageFile =>
+        val pageXml = XML fromSource (Source fromURL ("file:%s" format pageFile))
+        val url = (pageXml \ 'url \ text).head
+        val description = (pageXml \ 'description \ text).head
+        val template = (pageXml \ 'template \ text).head
+        (url, description, template)
+    }
+    val filteredConfigs = if (reload) configs.filter(item => !filterSet.contains(item._1)) else configs
+    filteredConfigs.foreach(filterSet += _._1)
+    filteredConfigs
+  }
+
+  def getFilters(reload: Boolean) = {
+    getPageConfigs(reload).map {
+      details =>
+        unfiltered.filter.Planify {
+          case GET(Path(details._1)) =>
+            val view = new XmlView(details._3).view
+            ResponseString(view.toString)
+        }
+    }
+  }
+
+  def initialise {
+    getFilters(reload=false).foreach(item => jetty.filter(item))
+    jetty.filter(
       unfiltered.filter.Planify {
-        case GET(Path(details._1)) =>
-          val view = new XmlView(details._3).view
-          ResponseString(view.toString)
+        case GET(Path("/reload")) =>
+          reload
+          ResponseString("<html><body><h1>Synapse has reloaded</h1></body></html>")
       }
+    )
+  }
+
+  def start {
+    jetty.run
+  }
+
+  def reload {
+    getFilters(reload=true).foreach(item => jetty.filter(item))
   }
 }
 
 object Server {
   def main(args: Array[String]) {
-    println("starting synapse on localhost, port %s" format 8080)
-    val jetty = unfiltered.jetty.Http(8080)
+    println("Starting synapse on localhost, port %s" format 8080)
     val app = new Application()
-    app.filters.foreach(item => jetty.filter(item))
-    jetty.run
+    app.initialise
+    app.start
   }
 }
