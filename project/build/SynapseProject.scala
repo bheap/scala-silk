@@ -4,6 +4,8 @@ class SynapseProject(info: ProjectInfo) extends DefaultProject(info) {
 
   override def mainClass = Some("com.bheap.synapse.application.Server")
 
+  val sTSnapshots = "Scalatools Snapshots" at "http://scala-tools.org/repo-snapshots/"
+
   // Versions
   lazy val ax_version = "0.3-SNAPSHOT"
   lazy val uf_version = "0.3.3"
