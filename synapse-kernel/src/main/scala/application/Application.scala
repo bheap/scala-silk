@@ -29,8 +29,8 @@ class Application {
         val pageXml = XML fromSource (Source fromURL ("file:%s" format pageFile))
         val url = (pageXml \ 'url \ text).head
         val description = (pageXml \ 'description \ text).head
-        val template = (pageXml \ 'template \ text).head
-        (url, description, template)
+        val view = (pageXml \ 'view \ text).head
+        (url, description, view)
     }
     val filteredConfigs = if (reload) configs.filter(item => !filterSet.contains(item._1)) else configs
     filteredConfigs.foreach(filterSet += _._1)
