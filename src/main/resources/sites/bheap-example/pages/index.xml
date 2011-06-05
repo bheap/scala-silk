@@ -1,0 +1,8 @@
+<page>
+  <url>/</url>
+  <view>index.xhtml</view>
+  <template>default.xhtml</template>
+  <title>Home</title>
+  <serialise>xhtml</serialise>
+  <description>The home page</description>
+</page>

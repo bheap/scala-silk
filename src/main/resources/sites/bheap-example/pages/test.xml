@@ -1,0 +1,8 @@
+<page>
+  <url>/test</url>
+  <view>test.xhtml</view>
+  <template>default.xhtml</template>
+  <title>Test</title>
+  <serialise>xhtml</serialise>
+  <description>A test page.</description>
+</page>
