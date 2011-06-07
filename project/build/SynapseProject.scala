@@ -23,8 +23,9 @@ class SynapseProject(info: ProjectInfo) extends DefaultProject(info) {
   }
   import Dependencies._
 
-  lazy val synapse_kernel = project("synapse-kernel", "synapse-kernel", new SynapseKernelProject(_))
-  lazy val synapse_tools  = project("synapse-tools", "synapse-tools", new SynapseToolsProject(_))
+  lazy val synapse_kernel = project("synapse-kernel", "synapse-kernel", new SynapseKernelProject(_), synapse_utils)
+  lazy val synapse_tools  = project("synapse-tools",  "synapse-tools",  new SynapseToolsProject(_),  synapse_utils)
+  lazy val synapse_utils  = project("synapse-utils",  "synapse-utils",  new SynapseUtilsProject(_))
 
   class SynapseKernelProject(info: ProjectInfo) extends DefaultProject(info) {
     val antiXML   = Dependencies.antiXML
@@ -38,4 +39,6 @@ class SynapseProject(info: ProjectInfo) extends DefaultProject(info) {
     val antiXML = Dependencies.antiXML
     val scalate = Dependencies.scalate
   }
+
+  class SynapseUtilsProject(info: ProjectInfo) extends DefaultProject(info)
 }
