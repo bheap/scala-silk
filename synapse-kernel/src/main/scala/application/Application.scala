@@ -41,23 +41,6 @@ class Application {
             ResponseString(view.toString)
         }
     }
-    /*SynapseScout.getFilesInDirectoryOfType("views", "html").toList.map {
-      viewFile =>
-        val file = viewFile.toString
-        val viewXml = file.substring(file.lastIndexOf("/") + 1)
-        val path = file.substring(file.lastIndexOf("/")).split(".html")(0) match {
-          case "/index" => "/"
-          case pth => pth
-        }
-        println("path is : " + path)
-        println("viewXml is : " + viewXml)
-        unfiltered.filter.Planify {
-          case GET(Path(path)) =>
-            val view = new XmlView(viewXml).view
-            println("view xml is : " + view.toString)
-            ResponseString(view.toString)
-        }
-    }*/
   }
 
   def initialise {
