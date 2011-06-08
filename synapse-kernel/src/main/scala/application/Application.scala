@@ -19,8 +19,8 @@ class Application {
 
   val jetty = unfiltered.jetty.Http(8080)
 
-  def prepareFilterDetails(lst: List[File]) = {
-    lst.map {
+  def prepareFilterDetails = {
+    SynapseScout.getFilesInDirectoryOfType("views", "html").toList.map {
       item =>
         val file = item.toString
         val viewXml = file.substring(file.lastIndexOf("/") + 1)
@@ -33,7 +33,7 @@ class Application {
   }
 
   def getFilters(reload: Boolean) = {
-    prepareFilterDetails(SynapseScout.getFilesInDirectoryOfType("views", "html").toList).map {
+    prepareFilterDetails.map {
       details =>
         unfiltered.filter.Planify {
           case GET(Path(details._1)) =>
