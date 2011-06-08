@@ -6,7 +6,7 @@ import java.io.File
 
 import org.fusesource.scalate.scuery.Transformer
 
-class GiftWrap(template: String, viewDirectory: String, viewType: String) {
+class GiftWrap(template: String, viewType: String) {
   val templateXml = XML.loadFile("/Users/rossputin/.synapse/sites/bheap-example/templates/" + template)
 
   def getViewFiles = {
@@ -19,7 +19,8 @@ class GiftWrap(template: String, viewDirectory: String, viewType: String) {
       item =>
         val view = XML.loadFile(item)
         object transformer extends Transformer {
-          $("div#synapse-template").contents = view \\ "div"
+          val contentDiv = (view \\ "div").find(item => (item \\ "@id").text == "synapse-content")
+          $("div#synapse-template").contents = contentDiv.get
         }
         val trans = transformer(templateXml)
         XML.save(item.toString, trans(0))
