@@ -9,7 +9,7 @@ import org.scalatest.FunSuite
 import com.bheap.synapse.view.XmlView
 
 class Views extends FunSuite {
-  test("a simple xhtml view") {
+  /*test("a simple xhtml view") {
     val xmlView = new XmlView("simple-page.xhtml")
 
     println("view is : " + xmlView.view)
@@ -23,5 +23,5 @@ class Views extends FunSuite {
     println("view is : " + xmlView.view)
 
     assert(1 === 1)
-  }
+  }*/
 }
