@@ -26,7 +26,7 @@ A publishing toolkit enables you to design and develop (in any order you choose)
 
 This section will walk you through the example site, under ~/.synapse/sites/bheap-example
 
-### Template
+### Templates
 
 Most sites have at least one template, with a design including headers, footers, navigation etc.  This is where we start.  Under ~/.synapse/sites/bheap-example/templates there is a default template prepared for you called 'default.html'.  As indicated by its extension and mime-type this template is for html views.
 
@@ -34,11 +34,38 @@ Do whatever you like in here as long as it is valid xhtml *and* contains a div t
 
 The content of your individual views will be written into this div tag by our template mix in tool.
 
+Note, if you don't want templates, you don't have to use them, just build your views in a little more detail :-)
+
+### Views
+
+Without a view, or views, there is no website or webapp.  Views are the epicentre with Synapse.
+
+## Setup
+
+So, now we understand Synapse templates and views, how do we run our site ?  Simple, we merge the template into our views with a simple tool 'GiftWrap'.
+
+    >cd $SYNAPSE_HOME
+    >sbt console
+    >import com.bheap.synapse.tools.GiftWrap
+    >val gw = new GiftWrap("default.html", "html")
+    >gw.wrap
+
+Now check your views... peachy hey ?  You can do this as many times as you like... just update your template, and repeat.
+
+Now, lets run the site.
+
+    >cd $SYNAPSE_HOME
+    >sbt run
+
+## Features
+
+- views are usable outside of Synapse as complete renderable entities
+- no special markup or tags
+
 ## Roadmap
 
 - Sites will be built by directory scanning and analysis of mime type of the 'view' files, it will be possible to override settings using xml or json config files
 - The structure of a site and its path mounting will be determined by the folder structure of the views for the site, including filename
 - HTML views will incorporate parts of the HTML 5 and CSS 3 specs
 - HTML views and templates (however they are done) will be validated using xhtml validation and css3 validation
-- Designers will have a mechanism to replace the headers and footers across their sites with a tool, this will lead to fully independently viewable 'mockups' and faster runtime.
 - Views will be mounted depending on the mime type, it will be assumed xhtml is root, json and xml will be 'rest', this can be overriden
