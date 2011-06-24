@@ -10,6 +10,7 @@ import unfiltered.jetty.Http
 import unfiltered.request._
 import unfiltered.response._
 
+import com.bheap.synapse.actors._
 import com.bheap.synapse.utils.SynapseScout
 import com.bheap.synapse.view.XmlView
 
@@ -22,6 +23,8 @@ import com.bheap.synapse.view.XmlView
 class Application {
 
   val jetty = Http(8080)
+
+  val viewActor = ViewServerActor.actor
 
   /** Returns information on each view including name and path. */
   def prepareFilterDetails = {
@@ -43,8 +46,13 @@ class Application {
       details =>
         Planify {
           case GET(Path(details._1)) =>
-            val view = new XmlView(details._2).view
-            ResponseString(view.toString)
+            //val view = new XmlView(details._2).view
+            //ResponseString(view.toString)
+            val view = viewActor !? Render
+			view match {
+			  case s: String => ResponseString(s)
+			  case _ => ResponseString(<html><body><h1>Sorry, there was an error</h1></body></html>.toString)
+			}
         }
     }
   }
@@ -54,11 +62,14 @@ class Application {
 	val filters = getFilters
     println("filters are : " + filters)
     filters.foreach(item => jetty.filter(item))
-    jetty.filter(
+	jetty.filter(
       Planify {
         case GET(Path("/reload")) =>
-          reload
-          ResponseString("<html><body><h1>Synapse has reloaded</h1></body></html>")
+          class HotSwappedViewServer extends ViewServer {
+            override def render = <html><body><h1>HotSwapped view from HotSwapped Synapse view server</h1></body></html>.toString
+          }
+          viewActor ! HotSwap(new HotSwappedViewServer)
+          ResponseString(<html><body><h1>Synapse has reloaded</h1></body></html>.toString)
       }
     )
   }
