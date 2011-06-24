@@ -5,20 +5,25 @@ import scala.collection.mutable.{Set => MSet}
 
 import java.io.File
 
-import com.codecommit.antixml._
-
+import unfiltered.filter.Planify
+import unfiltered.jetty.Http
 import unfiltered.request._
 import unfiltered.response._
 
 import com.bheap.synapse.utils.SynapseScout
 import com.bheap.synapse.view.XmlView
 
+/** Builds a web application out of a site configuration.
+  *
+  * A web application is generated out of a directory structure representing a site.
+  *
+  * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
+  * @since 1.0 */
 class Application {
 
-  val filterSet = MSet.empty[String]
+  val jetty = Http(8080)
 
-  val jetty = unfiltered.jetty.Http(8080)
-
+  /** Returns information on each view including name and path. */
   def prepareFilterDetails = {
     SynapseScout.getFilesInDirectoryOfType("views", "html").toList.map {
       item =>
@@ -32,10 +37,11 @@ class Application {
     }
   }
 
-  def getFilters(reload: Boolean) = {
+  /** Returns a list of filters for a Jetty Http instance. */
+  def getFilters = {
     prepareFilterDetails.map {
       details =>
-        unfiltered.filter.Planify {
+        Planify {
           case GET(Path(details._1)) =>
             val view = new XmlView(details._2).view
             ResponseString(view.toString)
@@ -43,50 +49,13 @@ class Application {
     }
   }
 
+  /** Set up a Jetty Http instance. */
   def initialise {
-	val filters = getFilters(reload=false)
+	val filters = getFilters
     println("filters are : " + filters)
     filters.foreach(item => jetty.filter(item))
-  }
-
-  def start {
-    jetty.run
-  }
-
-  /*def getPageFiles = {
-    (new File("/Users/rossputin/.synapse/pages")).listFiles.
-      filter(_.isFile).filter(_.getName.endsWith(".xml"))
-  }
-
-  def getPageConfigs(reload: Boolean) = {
-    val configs = getPageFiles.toList.map {
-      pageFile =>
-        val pageXml = XML fromSource (Source fromURL ("file:%s" format pageFile))
-        val url = (pageXml \ 'url \ text).head
-        val description = (pageXml \ 'description \ text).head
-        val view = (pageXml \ 'view \ text).head
-        (url, description, view)
-    }
-    val filteredConfigs = if (reload) configs.filter(item => !filterSet.contains(item._1)) else configs
-    filteredConfigs.foreach(filterSet += _._1)
-    filteredConfigs
-  }
-
-  def getFilters(reload: Boolean) = {
-    getPageConfigs(reload).map {
-      details =>
-        unfiltered.filter.Planify {
-          case GET(Path(details._1)) =>
-            val view = new XmlView(details._3).view
-            ResponseString(view.toString)
-        }
-    }
-  }
-
-  def initialise {
-    getFilters(reload=false).foreach(item => jetty.filter(item))
     jetty.filter(
-      unfiltered.filter.Planify {
+      Planify {
         case GET(Path("/reload")) =>
           reload
           ResponseString("<html><body><h1>Synapse has reloaded</h1></body></html>")
@@ -94,15 +63,13 @@ class Application {
     )
   }
 
+  /** Start the Jetty Http instance. */
   def start {
     jetty.run
   }
-
-  def reload {
-    getFilters(reload=true).foreach(item => jetty.filter(item))
-  }*/
 }
 
+/** Starts up a Jetty Http instance encapsulating our Synapse web application. */
 object Server {
   def main(args: Array[String]) {
     println("Starting synapse on localhost, port %s" format 8080)
