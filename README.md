@@ -6,21 +6,21 @@ A publishing toolkit enables you to design and develop (in any order you choose)
 
 ## The laws of Synapse
 
-1. A view may never deviate from the standard markup site builders understand
+1. A view may never deviate from the standard markup site builders understand (HTML (4-5) and CSS (2.1-3))
 2. Keep it simple stupid (KISS)
-3. Always use convention over configuration
-4. The principle of least surprise must always be followed
-5. Everything must be correct
-6. DRY
+3. Always use convention over configuration (default for everything)
+4. The principle of least surprise must always be followed (always let the users know what to expect)
+5. Everything must be correct (receive liberally, give strictly)
+6. DRY (yeah, we are all lazy)
 
 ## How Synapse obeys the laws
 
-- Synapse is opinionated
-- Lowest common denominator tools are used wherever possible
+- Lowest common denominator tools are always chosen first
 - Re-use is king, the developers of Synapse are lazy
 - Thought always comes first, code later
 - Synapse will always be simple
 - Synapse will recommend tools you should be using, and will never try to do their job
+- Synapse is opinionated
 
 ## Getting started
 
