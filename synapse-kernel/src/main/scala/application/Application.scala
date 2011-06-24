@@ -15,7 +15,7 @@ import com.bheap.synapse.view.XmlView
 
 /** Builds a web application out of a site configuration.
   *
-  * A web application is generated out of a directory structure representing a site.
+  * For synapse, a site configuration is a directory structure containing views.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
