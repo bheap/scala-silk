@@ -1,7 +1,7 @@
 package com.bheap.synapse.application
 
 import scala.io.Source
-import scala.collection.mutable.{Set => MSet}
+import scala.collection.mutable.{Map => MuMap}
 
 import java.io.File
 
@@ -12,7 +12,7 @@ import unfiltered.response._
 
 import com.bheap.synapse.actors._
 import com.bheap.synapse.utils.SynapseScout
-import com.bheap.synapse.view.XmlView
+
 
 /** Builds a web application out of a site configuration.
   *
@@ -23,8 +23,7 @@ import com.bheap.synapse.view.XmlView
 class Application {
 
   val jetty = Http(8080)
-
-  val viewActor = ViewServerActor.actor
+  val viewActors = MuMap[String, ViewServerActor]()
 
   /** Returns information on each view including name and path. */
   def prepareFilterDetails = {
@@ -41,13 +40,17 @@ class Application {
   }
 
   /** Returns a list of filters for a Jetty Http instance. */
-  def getFilters = {
-    prepareFilterDetails.map {
+  def getFilters(details: List[Tuple2[String, String]]) = {
+    details.foreach {
+      details =>
+        val viewActor = getViewActor(details._2)
+        viewActors += details._1 -> viewActor
+    }
+    details.map {
       details =>
         Planify {
           case GET(Path(details._1)) =>
-            //val view = new XmlView(details._2).view
-            //ResponseString(view.toString)
+            val viewActor = viewActors(details._1)
             val view = viewActor !? Render
 			view match {
 			  case s: String => ResponseString(s)
@@ -57,18 +60,28 @@ class Application {
     }
   }
 
-  /** Set up a Jetty Http instance. */
+  /** Return a view actor with the correct view server wired in. */
+  def getViewActor(viewPath: String) = {
+    val viewActor = new ViewServerActor
+    viewActor.start
+    val vs = new GETViewServer(viewPath)
+    viewActor ! HotSwap(vs)
+    viewActor
+  }
+
+  /** Set up a Jetty Http instance.
+    *
+    * @todo work through mutable map of view serving actors and hotswap if necessary
+    */
   def initialise {
-	val filters = getFilters
-    println("filters are : " + filters)
+    val preparedFilterDetails = prepareFilterDetails
+    println("added views are : " + preparedFilterDetails)
+	val filters = getFilters(prepareFilterDetails)
     filters.foreach(item => jetty.filter(item))
 	jetty.filter(
       Planify {
         case GET(Path("/reload")) =>
-          class HotSwappedViewServer extends ViewServer {
-            override def render = <html><body><h1>HotSwapped view from HotSwapped Synapse view server</h1></body></html>.toString
-          }
-          viewActor ! HotSwap(new HotSwappedViewServer)
+          reload
           ResponseString(<html><body><h1>Synapse has reloaded</h1></body></html>.toString)
       }
     )
@@ -77,6 +90,27 @@ class Application {
   /** Start the Jetty Http instance. */
   def start {
     jetty.run
+  }
+
+  /** Rebuild the site from the site configuration. 
+    *
+    * First we add any new views that may have been added.
+    * Then we convert all views that have been removed to 404's. */
+  def reload {
+    val filterDetails = prepareFilterDetails
+    val uniqueFilterDetails = filterDetails.filter(item => !viewActors.keySet.contains(item._1))
+    println("added views are : " + uniqueFilterDetails)
+    val filters = getFilters(uniqueFilterDetails)
+    filters.foreach(item => jetty.filter(item))
+
+    val deletedViews = viewActors.keySet.diff(filterDetails.map(item => item._1).toSet)
+    println("deleted views are : " + deletedViews)
+    deletedViews.foreach {
+      item =>
+        val viewActor = viewActors(item)
+        val pnfs = new PageNotFoundGETViewServer
+        viewActor ! HotSwap(pnfs)
+    }
   }
 }
 

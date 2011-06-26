@@ -10,30 +10,23 @@ import scala.actors.Actor
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-class ViewServerActor extends Actor {  
-  def act = {  
-    println("starting server actor...")  
-    loop(new GetViewServer)  
-  }  
+class ViewServerActor extends Actor {
+  def act = {
+    println("starting server actor...")
+    loop(new DefaultGETViewServer)
+  }
 
-  def loop(server: ViewServer) {  
-    react {  
-      case Render =>   
+  def loop(server: ViewServer) {
+    react {
+      case Render =>
         reply(server.render)
-        loop(server)  
+        loop(server)
 
-      case HotSwap(newServer) =>   
-        println("hot swapping code...")  
-        loop(newServer)  
+      case HotSwap(newServer) =>
+        println("hot swapping code...")
+        loop(newServer)
 
-      case _ => loop(server)  
+      case _ => loop(server)
     }
   }
-}
-
-object ViewServerActor {  
-  val actor = {  
-    val a = new ViewServerActor  
-    a.start; a  
-  }  
 }
