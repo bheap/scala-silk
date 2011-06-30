@@ -1,4 +1,8 @@
-# Synapse - A Scala publishing toolkit from [bheap](http://www.bheap.co.uk) ltd
+# SYNAPSE
+
+## About
+
+A Scala publishing toolkit from [bheap](http://www.bheap.co.uk) ltd
 
 ## What is a publishing toolkit ?
 
