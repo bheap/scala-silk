@@ -41,16 +41,12 @@ class Application {
 
   /** Returns a list of filters for a Jetty Http instance. */
   def getFilters(details: List[Tuple2[String, String]]) = {
-    details.foreach {
+    details.map {
       details =>
         val viewActor = getViewActor(details._2)
         viewActors += details._1 -> viewActor
-    }
-    details.map {
-      details =>
         Planify {
           case GET(Path(details._1)) =>
-            val viewActor = viewActors(details._1)
             val view = viewActor !? Render
 			view match {
 			  case s: String => ResponseString(s)
