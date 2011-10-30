@@ -72,4 +72,4 @@ Now, lets run the site.
 - The structure of a site and its path mounting will be determined by the folder structure of the views for the site, including filename
 - HTML views will incorporate parts of the HTML 5 and CSS 3 specs
 - HTML views and templates (however they are done) will be validated using xhtml validation and css3 validation
-- Views will be mounted depending on the mime type, it will be assumed xhtml is root, json and xml will be 'rest', this can be overriden
+- Views will be mounted depending on the mime type, it will be assumed xhtml is root, json and xml will be 'rest', this can be overridden
