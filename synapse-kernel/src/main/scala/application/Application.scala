@@ -48,11 +48,11 @@ class Application {
         Planify {
           case GET(Path(details._1)) =>
             val view = viewActor !? Render
-			view match {
-			  case s: String => ResponseString(s)
-			  case _ => ResponseString(<html><body><h1>Sorry, there was an error</h1></body></html>.toString)
-			}
-        }
+			      view match {
+			    case s: String => ResponseString(s)
+			    case _ => ResponseString(<html><body><h1>Sorry, there was an error</h1></body></html>.toString)
+			  }
+      }
     }
   }
 
@@ -72,9 +72,9 @@ class Application {
   def initialise {
     val preparedFilterDetails = prepareFilterDetails
     println("added views are : " + preparedFilterDetails)
-	val filters = getFilters(prepareFilterDetails)
+    val filters = getFilters(prepareFilterDetails)
     filters.foreach(item => jetty.filter(item))
-	jetty.filter(
+    jetty.filter(
       Planify {
         case GET(Path("/reload")) =>
           reload
