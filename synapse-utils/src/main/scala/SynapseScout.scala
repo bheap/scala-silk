@@ -4,7 +4,7 @@ import java.io.File
 
 object SynapseScout {
   def getFilesInDirectoryOfType(directory: String, fileType: String) = {
-    (new File("/Users/rossputin/.synapse/sites/bheap-example/" + directory)).listFiles.
+    (new File("/Users/rossputin/.synapse/sites/" + System.getProperty("ss") + "/" + directory)).listFiles.
       filter(_.isFile).filter(_.getName.endsWith("." + fileType))
   }
 }
