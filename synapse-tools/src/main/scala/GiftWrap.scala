@@ -7,10 +7,10 @@ import java.io.File
 import org.fusesource.scalate.scuery.Transformer
 
 class GiftWrap(template: String, viewType: String) {
-  val templateXml = XML.loadFile(System.getProperty("user.home") + "/.synapse/sites/" + System.getProperty("ss") + "/templates/" + template)
+  val templateXml = XML.loadFile(System.getProperty("user.dir") + "/template/" + template)
 
   def getViewFiles = {
-    (new File(System.getProperty("user.home") + "/.synapse/sites/" + System.getProperty("ss") + "/views")).listFiles.
+    (new File(System.getProperty("user.dir") + "/content")).listFiles.
       filter(_.isFile).filter(_.getName.endsWith("." + viewType))
   }
 
@@ -23,7 +23,9 @@ class GiftWrap(template: String, viewType: String) {
           $("div#synapse-template").contents = contentDiv.get
         }
         val trans = transformer(templateXml)
-        XML.save(item.toString, trans(0))
+        // @todo use platform independent separator
+        val fileName = item.toString.split("/").last
+        XML.save(System.getProperty("user.dir") + "/target/" + fileName, trans(0))
     }
   }
 }

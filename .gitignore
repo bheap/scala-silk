@@ -1,5 +1,7 @@
 boot
+content
 lib_managed
 src_managed
 target
+template
 synapse.tmproj
