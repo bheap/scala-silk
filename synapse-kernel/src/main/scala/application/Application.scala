@@ -27,7 +27,7 @@ class Application {
 
   /** Returns information on each view including name and path. */
   def prepareFilterDetails = {
-    SynapseScout.getFilesInDirectoryOfType("content", "html").toList.map {
+    SynapseScout.getFilesInDirectoryOfType("site", "html").toList.map {
       item =>
         val file = item.toString
         val viewXml = file.substring(file.lastIndexOf("/") + 1)

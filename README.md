@@ -49,7 +49,9 @@ Without a view, or views, there is no website or webapp.  Views are the epicentr
 So, now we understand Synapse templates and views, how do we run our site ?  Simple, we merge the template into our views with a simple tool 'GiftWrap'.
 
     >cd $SYNAPSE_HOME
-    >sbt console
+    >sbt
+    >project synapse-tools
+    >console
     >import com.bheap.synapse.tools.GiftWrap
     >val gw = new GiftWrap("default.html", "html")
     >gw.wrap
@@ -59,7 +61,9 @@ Now check your views... peachy hey ?  You can do this as many times as you like.
 Now, lets run the site.
 
     >cd $SYNAPSE_HOME
-    >sbt run
+    >sbt
+    >project synapse-kernel
+    >run
 
 ## Features
 

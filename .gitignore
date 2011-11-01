@@ -1,6 +1,7 @@
 boot
 content
 lib_managed
+site
 src_managed
 target
 template

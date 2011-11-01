@@ -25,7 +25,7 @@ class GiftWrap(template: String, viewType: String) {
         val trans = transformer(templateXml)
         // @todo use platform independent separator
         val fileName = item.toString.split("/").last
-        XML.save(System.getProperty("user.dir") + "/target/" + fileName, trans(0))
+        XML.save(System.getProperty("user.dir") + "/site/" + fileName, trans(0))
     }
   }
 }

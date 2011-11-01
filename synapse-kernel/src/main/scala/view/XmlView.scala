@@ -1,9 +1,8 @@
 package com.bheap.synapse.view
 
 import scala.io.Source
-
-import com.codecommit.antixml._
+import scala.xml._
 
 class XmlView(viewFile: String) {
-  val view = XML fromSource (Source fromURL ("file:" + System.getProperty("user.dir") + "/content/" + viewFile))
+  val view = XML.loadFile(System.getProperty("user.dir") + "/site/" + viewFile)
 }
