@@ -19,7 +19,7 @@ class GiftWrap(template: String, viewType: String) {
       item =>
         val view = XML.loadFile(item)
         object transformer extends Transformer {
-          val contentDiv = (view \\ "div").find(item => (item \\ "@id").text == "synapse-content")
+          val contentDiv = (view \\ "div").find(item => (item \ "@id").text == "synapse-content")
           $("div#synapse-template").contents = contentDiv.get
         }
         val trans = transformer(templateXml)
