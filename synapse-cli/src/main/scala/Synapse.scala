@@ -9,14 +9,14 @@ object Synapse {
     var config = new Config()
 
     val parser = new OptionParser("synapse") {
-      opt("t", "task", "task is a string property (wrap|run)", {t: String => config.task = Some(t)})
+      opt("t", "task", "task is a string property (build|run)", {t: String => config.task = Some(t)})
     }
 
     if (parser.parse(args)) {
       config.task.get match {
-        case "wrap" =>
+        case "build" =>
           val gw = new GiftWrap("default.html", "html")
-          gw.wrap
+          gw.build
       }
     } else {
       println("that was bad okaaaayyyyy ?")

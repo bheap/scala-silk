@@ -2,7 +2,7 @@ package com.bheap.synapse.tools
 
 import scala.xml._
 
-import java.io.{File, FileWriter}
+import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException}
 
 import org.fusesource.scalate.scuery.Transformer
 
@@ -12,6 +12,11 @@ class GiftWrap(template: String, viewType: String) {
   def getViewFiles = {
     (new File(System.getProperty("user.dir") + "/content")).listFiles.
       filter(_.isFile).filter(_.getName.endsWith("." + viewType))
+  }
+
+  def build {
+    wrap
+    bundle(new File(System.getProperty("user.dir") + "/resource"), new File(System.getProperty("user.dir") + "/site/resource"))
   }
   
   def wrap {
@@ -31,6 +36,26 @@ class GiftWrap(template: String, viewType: String) {
         out.write(xhtml)
         out.flush
         out.close
+    }
+  }
+
+  def bundle(src: File, dst: File) {
+    if (src.isDirectory) {
+      if(!dst.exists()) dst.mkdir
+
+      val files = src.list
+      files foreach {
+        file =>
+          val srcFile = new File(src, file)
+          val dstFile = new File(dst, file)
+          bundle(srcFile, dstFile)
+      }
+    } else {
+      dst.createNewFile
+      dst.getCanonicalFile.getParentFile.mkdirs
+      
+			new FileOutputStream(dst) getChannel() transferFrom(
+			    new FileInputStream(src) getChannel, 0, Long.MaxValue )
     }
   }
 }
