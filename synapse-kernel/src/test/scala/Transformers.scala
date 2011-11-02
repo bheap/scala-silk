@@ -2,11 +2,11 @@ package com.bheap.synapse
 
 import scala.io.Source
 
-import com.codecommit.antixml._
+//import com.codecommit.antixml._
 
-import org.scalatest.FunSuite
+//import org.scalatest.FunSuite
 
-class Transformers extends FunSuite {
+//class Transformers extends FunSuite {
   //test("a simple transformation") {
     //val xml = XML fromSource (Source fromURL (getClass getResource ("/views/bookstore.xml")))
 
@@ -46,4 +46,4 @@ class Transformers extends FunSuite {
 
     //assert(1 === 1)
   //}
-}
+//}
