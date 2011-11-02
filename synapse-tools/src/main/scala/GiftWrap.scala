@@ -29,6 +29,7 @@ class GiftWrap(template: String, viewType: String) {
         val fileName = item.toString.split("/").last
         val out = new FileWriter(System.getProperty("user.dir") + "/site/" + fileName)
         out.write(xhtml)
+        out.flush
         out.close
     }
   }
