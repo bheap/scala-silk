@@ -46,6 +46,16 @@ Without a view, or views, there is no website or webapp.  Views are the epicentr
 
 ## Setup
 
+### The easy way
+
+Ensure synapse.jar and synapse are in ~/bin.
+
+    >synapse build
+
+This will wrap and bundle your site, the output of which will be in the 'site' folder.
+
+### The hard way
+
 So, now we understand Synapse templates and views, how do we run our site ?  Simple, we merge the template into our views with a simple tool 'GiftWrap'.
 
     >cd $SYNAPSE_HOME
