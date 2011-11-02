@@ -29,6 +29,11 @@ class GiftWrap(template: String, viewType: String) {
         }
         val trans = transformer(templateXml)
         val xhtml = Xhtml.toXhtml(trans(0))
+          .replace("&lt;", "<")
+          .replace("&gt;", ">")
+          .replace("&apos;", "'")
+          .replace("&quot;", "\"")
+          .replace("/&amp;", "&");
         
         // @todo use platform independent separator
         val fileName = item.toString.split("/").last
