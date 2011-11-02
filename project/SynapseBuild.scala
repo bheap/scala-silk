@@ -1,5 +1,6 @@
 import sbt._
 import Keys._
+import sbtassembly.Plugin.{assemblySettings, Assembly}
 
 object BuildSettings {
 	
@@ -47,13 +48,13 @@ object Resolvers {
 
 object Dependencies {
 
-  //val ax_version = "0.3-SNAPSHOT"
   val sc_version = "1.6.0-SNAPSHOT"
+  val so_version = "1.1.2"
   val uf_version = "0.3.3"
   val st_version = "1.4.1"
 
-  //val antiXML   = "com.codecommit"         %% "anti-xml"                % ax_version % "compile"
   val scalate   = "org.fusesource.scalate" % "scalate-core"             % sc_version % "compile"
+  val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % so_version % "compile"
   val uff       = "net.databinder"         %  "unfiltered-filter_2.8.1" % uf_version % "compile"
   val ufj       = "net.databinder"         %  "unfiltered-jetty_2.8.1"  % uf_version % "compile"
   val scalatest = "org.scalatest"          % "scalatest_2.9.0"          % st_version % "test"
@@ -65,16 +66,17 @@ object SynapseBuild extends Build {
   import BuildSettings._
 
   val scDeps = Seq(scalate)
+  val soDeps = Seq(scopt)
   val ufDeps = Seq(uff, ufj)
 
-  mainClass in (Compile, run) := Some("com.bheap.synapse.application.Server")
+  //jarName in Assembly := "synapse.jar"
 
   lazy val synapse = Project(
     id = "synapse",
     base = file("."),
     settings = buildSettings,
-    aggregate = Seq(kernel, tools, utils)
-  )
+    aggregate = Seq(kernel, tools, utils, cli)
+  ) settings(sbtassembly.Plugin.assemblySettings: _*)
 
   lazy val kernel = Project(
     id = "synapse-kernel",
@@ -85,7 +87,7 @@ object SynapseBuild extends Build {
       libraryDependencies ++= ufDeps,
       resolvers := Seq(fSnapshots)
     )
-  )
+  ) settings(sbtassembly.Plugin.assemblySettings: _*)
 
   lazy val tools = Project(
     id = "synapse-tools",
@@ -95,10 +97,21 @@ object SynapseBuild extends Build {
       libraryDependencies ++= scDeps,
       resolvers := Seq(fSnapshots)
     )
-  )
+  ) settings(sbtassembly.Plugin.assemblySettings: _*)
 
   lazy val utils = Project(
     id = "synapse-utils",
     base = file("synapse-utils")
-  )
+  ) settings(sbtassembly.Plugin.assemblySettings: _*)
+
+  lazy val cli = Project(
+    id = "synapse-cli",
+    base = file("synapse-cli"),
+    dependencies = Seq(tools),
+    settings = buildSettings ++ Seq(
+      libraryDependencies ++= soDeps,
+      resolvers := Seq(fSnapshots),
+      mainClass in (Compile, packageBin) := Some("com.bheap.synapse.interface.Synapse")
+    )
+  ) settings(sbtassembly.Plugin.assemblySettings: _*)
 }

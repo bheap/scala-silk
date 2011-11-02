@@ -2,13 +2,13 @@ package com.bheap.synapse
 
 import scala.io.Source
 
-import com.codecommit.antixml._
+//import com.codecommit.antixml._
 
-import org.scalatest.FunSuite
+//import org.scalatest.FunSuite
 
-import com.bheap.synapse.view.XmlView
+//import com.bheap.synapse.view.XmlView
 
-class Views extends FunSuite {
+//class Views extends FunSuite {
   /*test("a simple xhtml view") {
     val xmlView = new XmlView("simple-page.xhtml")
 
@@ -24,4 +24,4 @@ class Views extends FunSuite {
 
     assert(1 === 1)
   }*/
-}
+//}
