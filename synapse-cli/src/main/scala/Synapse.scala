@@ -2,6 +2,7 @@ package com.bheap.synapse.interface
 
 import scopt._
 
+import com.bheap.synapse.application.Application
 import com.bheap.synapse.tools.GiftWrap
 
 object Synapse {
@@ -17,6 +18,10 @@ object Synapse {
         case "build" =>
           val gw = new GiftWrap("default.html", "html")
           gw.build
+        case "run" =>
+          val app = new Application
+          app.initialise
+          app.start
       }
     } else {
       println("that was bad okaaaayyyyy ?")
