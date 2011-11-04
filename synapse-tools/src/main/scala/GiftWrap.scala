@@ -15,17 +15,38 @@ class GiftWrap(template: String, viewType: String) {
   }
 
   def build {
-    wrap
+    wrap(inject)
     bundle(new File(System.getProperty("user.dir") + "/resource"), new File(System.getProperty("user.dir") + "/site/resource"))
   }
-  
-  // wrap views in templates
-  def wrap {
-    getViewFiles.toList.foreach {
+
+  // inject components into views, maps a list of files into a list of nodes
+  def inject = {
+    getViewFiles.toList.map {
       item =>
-        val view = XML.loadFile(item)
+        val viewXML = XML.loadFile(item)
         object transformer extends Transformer {
-          val contentDiv = (view \\ "div").find(item => (item \ "@id").text == "synapse-content")
+          val viewDiv = (viewXML \\ "div").find(item => (item \ "@id").toString.contains("scp-"))
+          if (viewDiv.isDefined) {
+            val compStruct = (viewDiv.get \ "@id")(0).toString
+            val cPathBits = compStruct.split("-").last.split("_")
+            val cPath = cPathBits.head
+            val cName = cPathBits.last
+            val compXML = XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
+            val compDiv = (compXML \\ "div").find(item => (item \ "@id").text == compStruct) 
+            $("div#" + compStruct).contents = compDiv.get
+          }
+        }
+        val trans = transformer(viewXML)
+        (item, trans(0))
+    }
+  }
+  
+  // wrap views in templates 
+  def wrap(views: List[Tuple2[File, Node]]) {
+    views.foreach {
+      view =>
+        object transformer extends Transformer {
+          val contentDiv = (view._2 \\ "div").find(item => (item \ "@id").text == "synapse-content")
           $("div#synapse-template").contents = contentDiv.get
         }
         val trans = transformer(templateXml)
@@ -33,7 +54,7 @@ class GiftWrap(template: String, viewType: String) {
         val xhtml = postProcess(trans(0))
         
         // @todo use platform independent separator
-        val fileName = item.toString.split("/").last
+        val fileName = view._1.toString.split("/").last
         val out = new FileWriter(System.getProperty("user.dir") + "/site/" + fileName)
         out.write(xhtml)
         out.flush
