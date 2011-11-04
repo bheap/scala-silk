@@ -28,12 +28,8 @@ class GiftWrap(template: String, viewType: String) {
           $("div#synapse-template").contents = contentDiv.get
         }
         val trans = transformer(templateXml)
-        val xhtml = Xhtml.toXhtml(trans(0))
-          .replace("&lt;", "<")
-          .replace("&gt;", ">")
-          .replace("&apos;", "'")
-          .replace("&quot;", "\"")
-          .replace("/&amp;", "&");
+        
+        val xhtml = postProcess(trans(0))
         
         // @todo use platform independent separator
         val fileName = item.toString.split("/").last
@@ -62,5 +58,14 @@ class GiftWrap(template: String, viewType: String) {
 			new FileOutputStream(dst) getChannel() transferFrom(
 			    new FileInputStream(src) getChannel, 0, Long.MaxValue )
     }
+  }
+
+  def postProcess(node: Node) = {
+    Xhtml.toXhtml(node)
+      .replace("&lt;", "<")
+      .replace("&gt;", ">")
+      .replace("&apos;", "'")
+      .replace("&quot;", "\"")
+      .replace("/&amp;", "&")
   }
 }
