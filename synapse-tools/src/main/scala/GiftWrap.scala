@@ -25,15 +25,16 @@ class GiftWrap(template: String, viewType: String) {
       item =>
         val viewXML = XML.loadFile(item)
         object transformer extends Transformer {
-          val viewDiv = (viewXML \\ "div").find(item => (item \ "@id").toString.contains("scp-"))
-          if (viewDiv.isDefined) {
-            val compStruct = (viewDiv.get \ "@id")(0).toString
-            val cPathBits = compStruct.split("-").last.split("_")
-            val cPath = cPathBits.head
-            val cName = cPathBits.last
-            val compXML = XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
-            val compDiv = (compXML \\ "div").find(item => (item \ "@id").text == compStruct) 
-            $("div#" + compStruct).contents = compDiv.get
+          val viewDiv = (viewXML \\ "div").filter(item => (item \ "@id").toString.contains("scp-"))
+          viewDiv.foreach {
+	          comp => 
+              val compStruct = (comp \ "@id")(0).toString
+              val cPathBits = compStruct.split("-").last.split("_")
+              val cPath = cPathBits.head
+              val cName = cPathBits.last
+              val compXML = XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
+              val compDiv = (compXML \\ "div").find(item => (comp \ "@id").text == compStruct) 
+              $("div#" + compStruct).contents = compDiv.get
           }
         }
         val trans = transformer(viewXML)
