@@ -19,6 +19,7 @@ class GiftWrap(template: String, viewType: String) {
     bundle(new File(System.getProperty("user.dir") + "/resource"), new File(System.getProperty("user.dir") + "/site/resource"))
   }
   
+  // wrap views in templates
   def wrap {
     getViewFiles.toList.foreach {
       item =>
@@ -40,6 +41,7 @@ class GiftWrap(template: String, viewType: String) {
     }
   }
 
+  // bundle all resource files into the site output directory
   def bundle(src: File, dst: File) {
     if (src.isDirectory) {
       if(!dst.exists()) dst.mkdir
