@@ -10,7 +10,7 @@ class GiftWrap(template: String, viewType: String) {
   val templateXml = XML.loadFile(System.getProperty("user.dir") + "/template/" + template)
 
   def getViewFiles = {
-    (new File(System.getProperty("user.dir") + "/content")).listFiles.
+    (new File(System.getProperty("user.dir") + "/view")).listFiles.
       filter(_.isFile).filter(_.getName.endsWith("." + viewType))
   }
 

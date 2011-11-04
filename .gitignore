@@ -1,9 +1,9 @@
 boot
 component
-content
 lib_managed
 site
 src_managed
 target
 template
+view
 synapse.tmproj
