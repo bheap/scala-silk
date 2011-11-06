@@ -10,7 +10,7 @@ A publishing toolkit enables you to design and develop (in any order you choose)
 
 ## The laws of Synapse
 
-1. A view may never deviate from the standard markup site builders understand (HTML (4-5) and CSS (2.1-3))
+1. A view may never deviate from the markup site builders understand (HTML (4-5) and CSS (2.1-3)), or for xml/json for web services
 2. Keep it simple stupid (KISS), not just simple but also intuitive
 3. Always use convention over configuration (default for everything)
 4. The principle of least surprise must always be followed (always let the users know what to expect)
@@ -28,11 +28,11 @@ A publishing toolkit enables you to design and develop (in any order you choose)
 
 ## Getting started
 
-This section will walk you through the example site, under ~/.synapse/sites/bheap-example
+This section will walk you through the example site, under ~/.synapse/sites/synapse-examples
 
 ### Templates
 
-Most sites have at least one template, with a design including headers, footers, navigation etc.  This is where we start.  Under ~/.synapse/sites/bheap-example/templates there is a default template prepared for you called 'default.html'.  As indicated by its extension and mime-type this template is for html views.
+Most sites have at least one template, with a design including headers, footers, navigation etc.  This is where we start.  Under ~/.synapse/sites/synapse-examples/template there is a default template prepared for you called 'default.html'.  As indicated by its extension and mime-type this template is for html views.
 
 Do whatever you like in here as long as it is valid xhtml *and* contains a div tag with id 'synapse:view'.
 
@@ -42,7 +42,7 @@ Note, if you don't want templates, you don't have to use them, just build your v
 
 ### Views
 
-Without a view, or views, there is no website or webapp.  Views are the epicentre with Synapse.
+Without a view, or views, there is no website or webapp or set of web services.  Views are the epicentre with Synapse.
 
 ## Setup
 
