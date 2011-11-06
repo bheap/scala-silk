@@ -6,13 +6,10 @@ import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException
 
 import org.fusesource.scalate.scuery.Transformer
 
+import com.bheap.synapse.utils.SynapseScout
+
 class GiftWrap(template: String, viewType: String) {
   val templateXml = XML.loadFile(System.getProperty("user.dir") + "/template/" + template)
-
-  def getViewFiles = {
-    (new File(System.getProperty("user.dir") + "/view")).listFiles.
-      filter(_.isFile).filter(_.getName.endsWith("." + viewType))
-  }
 
   def build {
     wrap(inject)
@@ -21,7 +18,7 @@ class GiftWrap(template: String, viewType: String) {
 
   // inject components into views, maps a list of files into a list of nodes
   def inject = {
-    getViewFiles.toList.map {
+    SynapseScout.getFilesInDirectoryOfType("view", "html").toList.map {
       item =>
         val viewXML = XML.loadFile(item)
         object transformer extends Transformer {
