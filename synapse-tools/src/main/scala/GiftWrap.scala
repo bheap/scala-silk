@@ -18,7 +18,7 @@ class GiftWrap(template: String, viewType: String) {
 
   // inject components into views, maps a list of files into a list of nodes
   def inject = {
-    SynapseScout.getFilesInDirectoryOfType("view", "html").toList.map {
+    SynapseScout.getRecursiveFilesInDirectoryOfType(new File(System.getProperty("user.dir") + "/view"), """.*\.html$""".r).map {
       item =>
         val viewXML = XML.loadFile(item)
         object transformer extends Transformer {
@@ -53,7 +53,12 @@ class GiftWrap(template: String, viewType: String) {
         
         // @todo use platform independent separator
         val fileName = view._1.toString.split("/").last
-        val out = new FileWriter(System.getProperty("user.dir") + "/site/" + fileName)
+        val suffixPath = view._1.toString.split(System.getProperty("user.dir")).last.replace("/view/", "/site/")
+        val filePath = suffixPath.split("/").last
+        val chkDir = System.getProperty("user.dir") + suffixPath.split(filePath).head
+        if(!(new File(chkDir)).exists()) new File(chkDir).mkdir
+        
+        val out = new FileWriter(System.getProperty("user.dir") + suffixPath)
         out.write(xhtml)
         out.flush
         out.close
