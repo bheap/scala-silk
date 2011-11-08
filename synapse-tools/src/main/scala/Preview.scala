@@ -13,13 +13,17 @@ class Preview(path: String) {
   val templatePath = Paths.get(path + "/template")
   val resourcePath = Paths.get(path + "/resource")
   
-	val viewKey = viewPath.register(watchService, StandardWatchEventKind.ENTRY_CREATE, StandardWatchEventKind.ENTRY_DELETE)
-  val templateKey = templatePath.register(watchService, StandardWatchEventKind.ENTRY_CREATE, StandardWatchEventKind.ENTRY_DELETE)
-  val resourceKey = resourcePath.register(watchService, StandardWatchEventKind.ENTRY_CREATE, StandardWatchEventKind.ENTRY_DELETE)
+  // @todo probably fail on platforms other than OSX, they may be able to detect more than just create events.. rename ?
+	val viewKey = viewPath.register(watchService, StandardWatchEventKind.ENTRY_CREATE)
+  val templateKey = templatePath.register(watchService, StandardWatchEventKind.ENTRY_CREATE)
+  val resourceKey = resourcePath.register(watchService, StandardWatchEventKind.ENTRY_CREATE)
+
+  val pathMap = Map(viewKey -> viewPath, templateKey -> templatePath, resourceKey -> resourcePath)
 
   while (true) {
-    // take() will block until a file has been created/deleted
+    // take will block until a file has been created
     val signalledKey = watchService.take
+    val eventPath = pathMap(signalledKey)
 
     // get list of events from key
     val  eventList = signalledKey.pollEvents
@@ -28,23 +32,24 @@ class Preview(path: String) {
     // key to be reported again by the watch service
     signalledKey.reset
 
-    // we'll simply print what has happened; real applications
-    // will do something more sensible here
     eventList.foreach {
       e =>
-      var message = ""
         if (e.kind == StandardWatchEventKind.ENTRY_CREATE) {
           val context = e.context.asInstanceOf[Path]
-          message = path + "/" + context.toString + " event"
           val wd = new File(path)
           val proc = Runtime.getRuntime().exec("synapse build", null, wd)
-          Thread.sleep(1000)
-          val previewFile = if (context.toString.contains("~")) context.toString.init else context.toString
-          val proc2 = Runtime.getRuntime().exec("synapse-preview " + "file://" + path + "/site/" + previewFile, null, wd)
-        } else if (e.kind == StandardWatchEventKind.OVERFLOW) {
-          message = "OVERFLOW: more changes happened than we could retreive"
+          if (eventPath.toString.contains("/view")) {
+            Thread.sleep(1000)
+            val previewFile = if (context.toString.contains("~")) context.toString.init else context.toString
+            val proc2 = Runtime.getRuntime().exec("synapse-preview " + "file://" + path + "/site/" + previewFile, null, wd)
+          } else {
+            val indexFile = new File(path)
+            if (indexFile.exists) {
+              Thread.sleep(1000)
+              val proc2 = Runtime.getRuntime().exec("synapse-preview " + "file://" + path + "/site/index.html", null, wd) 
+            }
+          }
         }
-        println(message)
 	    }
 	}
 }
