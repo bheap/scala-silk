@@ -5,7 +5,7 @@ import java.io.File
 import scopt._
 
 import com.bheap.synapse.application.Application
-import com.bheap.synapse.tools.GiftWrap
+import com.bheap.synapse.tools.{GiftWrap, Preview}
 
 object Synapse {
   def main(args: Array[String]) {
@@ -35,6 +35,11 @@ object Synapse {
           val app = new Application
           app.initialise
           app.start
+        case n if n contains "preview-" =>
+          println("initialising preview")
+          println("n is : " + n)
+          println("path is : " + n.split("preview-").last)
+          val preview = new Preview(n.split("preview-").last)
         case _ =>
           println("Sorry, not a valid action, please try (create|build|run)")
       }
