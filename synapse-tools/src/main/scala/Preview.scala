@@ -37,10 +37,10 @@ class Preview(path: String) {
           val context = e.context.asInstanceOf[Path]
           message = path + "/" + context.toString + " event"
           val wd = new File(path)
-          val proc = Runtime.getRuntime().exec("/Users/rossputin/bin/synapse build", null, wd)
+          val proc = Runtime.getRuntime().exec("synapse build", null, wd)
           Thread.sleep(1000)
           val previewFile = if (context.toString.contains("~")) context.toString.init else context.toString
-          val proc2 = Runtime.getRuntime().exec("/Users/rossputin/bin/synapse-preview " + "file://" + path + "/site/" + previewFile, null, wd)
+          val proc2 = Runtime.getRuntime().exec("synapse-preview " + "file://" + path + "/site/" + previewFile, null, wd)
         } else if (e.kind == StandardWatchEventKind.OVERFLOW) {
           message = "OVERFLOW: more changes happened than we could retreive"
         }
