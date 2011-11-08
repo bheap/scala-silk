@@ -41,8 +41,8 @@ object Synapse {
           app.initialise
           app.start
           println("Synapse is running")
-        case n if n contains "preview-" =>
-          val preview = new Preview(n.split("preview-").last)
+        case "preview" =>
+          val preview = new Preview(System.getProperty("user.dir"))
           println("Synapse preview is running")
         case _ =>
           println("Sorry, not a valid action, please try " + tasks)
