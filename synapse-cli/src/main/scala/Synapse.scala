@@ -41,7 +41,7 @@ object Synapse {
           app.initialise
           app.start
           println("Synapse is running")
-        case "preview" =>
+        case "preview-start" =>
           println("Synapse preview is running in the background on path : " + System.getProperty("user.dir"))
           val preview = new Preview(System.getProperty("user.dir"))
         case _ =>
