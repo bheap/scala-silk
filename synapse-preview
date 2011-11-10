@@ -1,0 +1,10 @@
+exec osascript <<EOF 
+tell app "safari" 
+activate 
+if not (exists document 1) then 
+  make new document at the beginning of documents 
+  end if 
+  if not "$1" = "" then 
+    set the url of the front document to "$1" 
+    end if 
+    end tell 

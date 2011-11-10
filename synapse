@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cleaner () {
+  sp=`ps -A | grep 'synapse.jar -t preview' | grep -v grep | awk '{print $1}'`
+  if [ $sp > 0 ]; then
+    kill $sp
+  fi
+}
+
+if [ "$1" == "preview-start" ]; then
+  cleaner
+  java -jar $HOME/bin/synapse.jar -t preview-start &
+elif [ "$1" == "preview-stop" ]; then
+  cleaner
+else
+  java -jar $HOME/bin/synapse.jar -t $1
+fi
+
