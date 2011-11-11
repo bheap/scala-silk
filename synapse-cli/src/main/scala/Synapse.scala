@@ -43,6 +43,7 @@ object Synapse {
           println("Synapse is running")
         case "preview-start" =>
           println("Synapse preview is running in the background on path : " + System.getProperty("user.dir"))
+          println("Please hit enter to continue...")
           val preview = new Preview(System.getProperty("user.dir"))
         case _ =>
           println("Sorry, not a valid action, please try " + tasks)
