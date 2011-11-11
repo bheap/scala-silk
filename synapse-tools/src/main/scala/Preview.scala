@@ -20,6 +20,8 @@ class Preview(path: String) {
 
   val pathMap = Map(viewKey -> viewPath, templateKey -> templatePath, resourceKey -> resourcePath)
 
+  val fileFilter = List("html", "css", "js", "jpg", "png", "gif")
+
   while (true) {
     // take will block until a file has been created
     val signalledKey = watchService.take
@@ -36,17 +38,22 @@ class Preview(path: String) {
       e =>
         if (e.kind == StandardWatchEventKind.ENTRY_CREATE) {
           val context = e.context.asInstanceOf[Path]
-          val wd = new File(path)
-          val proc = Runtime.getRuntime().exec("synapse build", null, wd)
-          if (eventPath.toString.contains("/view")) {
-            Thread.sleep(1000)
-            val previewFile = if (context.toString.contains("~")) context.toString.init else context.toString
-            val proc2 = Runtime.getRuntime().exec("synapse-preview " + "file://" + path + "/site/" + previewFile, null, wd)
-          } else {
-            val indexFile = new File(path)
-            if (indexFile.exists) {
-              Thread.sleep(1000)
-              val proc2 = Runtime.getRuntime().exec("synapse-preview " + "file://" + path + "/site/index.html", null, wd) 
+          if ((context.toString count (_ == '.')) == 1) {
+            val fExt = context.toString.split('.').last
+            if (fileFilter.contains(fExt)) {
+              val wd = new File(path)
+              val proc = Runtime.getRuntime().exec("synapse build", null, wd)
+              if (eventPath.toString.contains("/view")) {
+                Thread.sleep(1200)
+                val previewFile = if (context.toString.contains("~")) context.toString.init else context.toString
+                val proc2 = Runtime.getRuntime().exec("synapse-preview " + "file://" + path + "/site/" + previewFile, null, wd)
+              } else {
+                val indexFile = new File(path)
+                if (indexFile.exists) {
+                  Thread.sleep(1200)
+                  val proc2 = Runtime.getRuntime().exec("synapse-preview " + "file://" + path + "/site/index.html", null, wd) 
+                }
+              }
             }
           }
         }
