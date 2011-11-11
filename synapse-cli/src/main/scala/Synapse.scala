@@ -10,7 +10,7 @@ import com.bheap.synapse.tools.{GiftWrap, Preview}
 object Synapse {
   def main(args: Array[String]) {
 
-    val tasks = "(create|build|run|preview)"
+    val tasks = "(create|build|run|preview-start)"
 
     var config = new Config()
 
