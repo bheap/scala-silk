@@ -91,3 +91,14 @@ Now, lets run the site.
 - HTML views will incorporate parts of the HTML 5 and CSS 3 specs
 - HTML views and templates (however they are done) will be validated using xhtml validation and css3 validation
 - Views will be mounted depending on the mime type, it will be assumed xhtml is root, json and xml will be 'rest', this can be overridden
+
+## Braindump
+
+This section covers thoughts I am not ready to consolidate yet.  Ideas for the functioning of Synapse as a product on a high level.
+
+### Convention over configuration
+
+- top level defaults are to be provided in .synapse in the users home folder (this enables multi site re-use and sensible defaults for serialisers, doctypes and compatibility components)
+- components specified in views will be searched for in local component folders, then in .synapse
+- config will be specified at top level in .synapse, and then overridable by the setup mechanism for a new site 'create' user will be prompted to override default settings in CLI interface
+
