@@ -10,31 +10,33 @@ A publishing toolkit enables you to design and develop (in any order you choose)
 
 ## The laws of Synapse
 
-1. A view may never deviate from the markup site builders understand (HTML (4-5) and CSS (2.1-3)), or for xml/json for web services
+1. A view may never deviate from the markup site builders understand (HTML (4-5) and CSS (2.1-3)), or xml/json for web services
 2. Keep it simple stupid (KISS), not just simple but also intuitive
 3. Always use convention over configuration (default for everything)
 4. The principle of least surprise must always be followed (always let the users know what to expect)
 5. Everything must be correct (receive liberally, give strictly)
 6. DRY (yeah, we are all lazy)
+7. One or a million?  Do you want your processes to run once or a million times ?  Remember very little needs to be dynamic.
 
 ## How Synapse obeys the laws
 
-- Lowest common denominator tools are always chosen first
+- Lowest common denominator tools are always chosen first, the right tool for the job
 - Re-use is king, the developers of Synapse are lazy
 - Thought always comes first, code later
 - Synapse will always be simple and intuitive
 - Synapse will recommend tools you should be using, and will never try to do their job
+- Caching is activated and aggressive by default, things only change when they need to
 - Synapse is opinionated
 
 ## Getting started
 
-This section will walk you through the example site, under ~/.synapse/sites/synapse-examples
+This section will walk you through the example site, synapse-sample-site.
 
 ### Templates
 
-Most sites have at least one template, with a design including headers, footers, navigation etc.  This is where we start.  Under ~/.synapse/sites/synapse-examples/template there is a default template prepared for you called 'default.html'.  As indicated by its extension and mime-type this template is for html views.
+Most sites have at least one template, with a design including headers, footers, navigation etc.  This is where we start.  Under synapse-sample-site/template there is a default template prepared for you called 'default.html'.  As indicated by its extension and mime-type this template is for html views.
 
-Do whatever you like in here as long as it is valid xhtml *and* contains a div tag with id 'synapse:view'.
+Do whatever you like in here as long as it is valid xhtml *and* contains a div tag with id 'synapse:template'.
 
 The content of your individual views will be written into this div tag by our template mix in tool.
 
@@ -43,6 +45,8 @@ Note, if you don't want templates, you don't have to use them, just build your v
 ### Views
 
 Without a view, or views, there is no website or webapp or set of web services.  Views are the epicentre with Synapse.
+
+In Synapse we like like all views to be constructed to they render independently from the template.  Start with valid html and body elements, then ensure everything you want to be pulled in as the view is in a div tag with id 'synapse:view'.
 
 ## Setup
 
