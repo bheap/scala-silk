@@ -6,7 +6,7 @@ A Scala publishing toolkit from [bheap](http://www.bheap.co.uk) ltd
 
 ## What is a publishing toolkit ?
 
-A publishing toolkit enables you to design and develop (in any order you choose) multiple websites and web applications re-using the same components and publishing pipelines.
+A publishing toolkit enables you to design and develop (in any order you choose) multiple websites, web applications and web services re-using the same components and publishing pipelines.
 
 ## The laws of Synapse
 
