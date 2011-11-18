@@ -36,7 +36,7 @@ This section will walk you through the example site, synapse-sample-site.
 
 Most sites have at least one template, with a design including headers, footers, navigation etc.  This is where we start.  Under synapse-sample-site/template there is a default template prepared for you called 'default.html'.  As indicated by its extension and mime-type this template is for html views.
 
-Do whatever you like in here as long as it is valid xhtml *and* contains a div tag with id 'synapse:template'.
+Do whatever you like in here as long as it is valid xhtml *and* contains a div tag with id 'synapse-template'.
 
 The content of your individual views will be written into this div tag by our template mix in tool.
 
@@ -46,7 +46,7 @@ Note, if you don't want templates, you don't have to use them, just build your v
 
 Without a view, or views, there is no website or webapp or set of web services.  Views are the epicentre with Synapse.
 
-In Synapse we like like all views to be constructed to they render independently from the template.  Start with valid html and body elements, then ensure everything you want to be pulled in as the view is in a div tag with id 'synapse:view'.
+In Synapse we like like all views to be constructed to they render independently from the template.  Start with valid html and body elements, then ensure everything you want to be pulled in as the view is in a div tag with id 'synapse-view'.
 
 ## Setup
 
