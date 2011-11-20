@@ -26,9 +26,11 @@ class GiftWrap(template: String, viewType: String) {
           viewDiv.foreach {
 	          comp => 
               val compStruct = (comp \ "@id")(0).toString
+              // @todo use platform independent separator
               val cPathBits = compStruct.split(":").last.split("/")
               val cPath = cPathBits.head
               val cName = cPathBits.last
+              // @todo use path independent separator
               val compXML = XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
               val compDiv = (compXML \\ "div").find(item => (comp \ "@id").text == compStruct) 
               $("div#" + compStruct.replaceAll(":", "").replaceAll("/", "")).contents = compDiv.get
