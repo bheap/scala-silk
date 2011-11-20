@@ -53,9 +53,8 @@ class GiftWrap(template: String, viewType: String) {
         
         val xhtml = postProcess(trans(0))
         
-        // @todo use platform independent separator
-        val fileName = view._1.toString.split("/").last
         val suffixPath = view._1.toString.split(System.getProperty("user.dir")).last.replace("/view/", "/site/")
+        // @todo use platform independent separator
         val filePath = suffixPath.split("/").last
         val chkDir = System.getProperty("user.dir") + suffixPath.split(filePath).head
         if(!(new File(chkDir)).exists()) new File(chkDir).mkdir
