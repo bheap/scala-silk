@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
-import sbtassembly.Plugin.{assemblySettings, Assembly}
+import sbtassembly.Plugin._
+import AssemblyKeys._
 
 object BuildSettings {
 	
@@ -76,7 +77,7 @@ object SynapseBuild extends Build {
     base = file("."),
     settings = buildSettings,
     aggregate = Seq(kernel, tools, utils, cli)
-  ) settings(sbtassembly.Plugin.assemblySettings: _*)
+  ) settings(assemblySettings: _*)
 
   lazy val kernel = Project(
     id = "synapse-kernel",
@@ -87,7 +88,7 @@ object SynapseBuild extends Build {
       libraryDependencies ++= ufDeps,
       resolvers := Seq(fSnapshots)
     )
-  ) settings(sbtassembly.Plugin.assemblySettings: _*)
+  ) settings(assemblySettings: _*)
 
   lazy val tools = Project(
     id = "synapse-tools",
@@ -97,12 +98,12 @@ object SynapseBuild extends Build {
       libraryDependencies ++= scDeps,
       resolvers := Seq(fSnapshots)
     )
-  ) settings(sbtassembly.Plugin.assemblySettings: _*)
+  ) settings(assemblySettings: _*)
 
   lazy val utils = Project(
     id = "synapse-utils",
     base = file("synapse-utils")
-  ) settings(sbtassembly.Plugin.assemblySettings: _*)
+  ) settings(assemblySettings: _*)
 
   lazy val cli = Project(
     id = "synapse-cli",
@@ -113,5 +114,5 @@ object SynapseBuild extends Build {
       resolvers := Seq(fSnapshots),
       mainClass in (Compile, packageBin) := Some("com.bheap.synapse.interface.Synapse")
     )
-  ) settings(sbtassembly.Plugin.assemblySettings: _*)
+  ) settings(assemblySettings: _*)
 }
