@@ -59,8 +59,8 @@ class GiftWrap(template: String, viewType: String) {
         // @todo use platform independent separator
         val filePath = suffixPath.split("/").last
         val chkDir = System.getProperty("user.dir") + suffixPath.split(filePath).head
-        if(!(new File(chkDir)).exists()) new File(chkDir).mkdir
-        
+        if(!(new File(chkDir)).exists()) new File(chkDir).mkdirs
+
         val out = new FileWriter(System.getProperty("user.dir") + suffixPath)
         out.write(xhtml)
         out.flush
