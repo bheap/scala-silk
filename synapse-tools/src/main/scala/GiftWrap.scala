@@ -6,6 +6,8 @@ import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException
 
 import org.fusesource.scalate.scuery.Transformer
 
+import com.bheap.io.PathUtils
+
 import com.bheap.synapse.utils.SynapseScout
 
 class GiftWrap(template: String, viewType: String) {
@@ -52,8 +54,41 @@ class GiftWrap(template: String, viewType: String) {
           $("div#synapse-template").contents = contentDiv.get
         }
         val trans = transformer(templateXml)
+
+        object linkTransformer extends Transformer {
+          $("a").attribute("href") {
+		        n =>
+              val currentHref = (n \ "@href").toString
+              // perform my criteria checks here, and regex to determine depth of location in path
+              if (currentHref.contains("http:") || currentHref.contains("mailto:") || currentHref.contains("https:") || currentHref.contains("feed:") || currentHref.startsWith("#")) currentHref
+		          else {
+                val rootPath = System.getProperty("user.dir") + "/view/"
+                println("current view path is : " + view._1.toString)
+                val viewDepth = (view._1.toString.split(rootPath).last count (item => item == '/')) + 1
+                println("viewDepth is : " + viewDepth)
+                println("currentHref is : " + currentHref)
+                val urlDepth = currentHref count (item => item == '/')
+                println("current urlDepth : " + urlDepth)
+                if (viewDepth > 1) {
+                  val urlSubPath = if (urlDepth == 0) "" else {
+                    (new File(rootPath + currentHref)).getParentFile.toString.split(rootPath).last
+                  }
+                  val urlPath = new File(rootPath + urlSubPath)
+                  println("urlPath is : " + urlPath)
+                  val pathDiff = PathUtils.relativize(view._1.getParentFile, urlPath)
+                  println("pathDiff is : " + pathDiff)
+                  pathDiff + "/" + (new File(rootPath + currentHref)).getName
+                } else {
+                  currentHref
+                }
+              }
+		      }
+		    }
+
+		    val result = linkTransformer(trans)
+        println("result is : " + result)
         
-        val xhtml = postProcess(trans(0))
+        val xhtml = postProcess(result(0))
         
         val suffixPath = view._1.toString.split(System.getProperty("user.dir")).last.replace("/view/", "/site/")
         // @todo use platform independent separator
