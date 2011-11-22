@@ -55,40 +55,19 @@ class GiftWrap(template: String, viewType: String) {
         }
         val trans = transformer(templateXml)
 
-        object linkTransformer extends Transformer {
-          $("a").attribute("href") {
-		        n =>
-              val currentHref = (n \ "@href").toString
-              // perform my criteria checks here, and regex to determine depth of location in path
-              if (currentHref.contains("http:") || currentHref.contains("mailto:") || currentHref.contains("https:") || currentHref.contains("feed:") || currentHref.startsWith("#")) currentHref
-		          else {
-                val rootPath = System.getProperty("user.dir") + "/view/"
-                println("current view path is : " + view._1.toString)
-                val viewDepth = (view._1.toString.split(rootPath).last count (item => item == '/')) + 1
-                println("viewDepth is : " + viewDepth)
-                println("currentHref is : " + currentHref)
-                val urlDepth = currentHref count (item => item == '/')
-                println("current urlDepth : " + urlDepth)
-                if (viewDepth > 1) {
-                  val urlSubPath = if (urlDepth == 0) "" else {
-                    (new File(rootPath + currentHref)).getParentFile.toString.split(rootPath).last
-                  }
-                  val urlPath = new File(rootPath + urlSubPath)
-                  println("urlPath is : " + urlPath)
-                  val pathDiff = PathUtils.relativize(view._1.getParentFile, urlPath)
-                  println("pathDiff is : " + pathDiff)
-                  pathDiff + "/" + (new File(rootPath + currentHref)).getName
-                } else {
-                  currentHref
-                }
-              }
-		      }
-		    }
+        val anchorUAT = new URIAttributeTransformer("a", "href", view._1)
+		    val anchorResult = anchorUAT(trans)
 
-		    val result = linkTransformer(trans)
-        println("result is : " + result)
-        
-        val xhtml = postProcess(result(0))
+        val linkUAT = new URIAttributeTransformer("link", "href", view._1)
+        val linkResult = linkUAT(anchorResult)
+
+        val scriptUAT = new URIAttributeTransformer("script", "src", view._1)
+        val scriptResult = scriptUAT(linkResult)
+
+        val imageUAT = new URIAttributeTransformer("img", "src", view._1)
+        val imageResult = imageUAT(scriptResult)
+
+        val xhtml = postProcess(imageResult(0))
         
         val suffixPath = view._1.toString.split(System.getProperty("user.dir")).last.replace("/view/", "/site/")
         // @todo use platform independent separator
@@ -149,5 +128,29 @@ class GiftWrap(template: String, viewType: String) {
       else if (firstP.isDefined) firstP
       else Some(content)
     parsedStr
+  }
+}
+
+class URIAttributeTransformer(element: String, attribute: String, view: File) extends Transformer {
+  $(element).attribute(attribute) {
+    n =>
+      val currentHref = (n \ ("@" + attribute)).toString
+      // perform my criteria checks here, and regex to determine depth of location in path
+      if (currentHref.contains("http:") || currentHref.contains("mailto:") || currentHref.contains("https:") || currentHref.contains("feed:") || currentHref.startsWith("#")) currentHref
+      else {
+        val rootPath = System.getProperty("user.dir") + "/view/"
+        val viewDepth = (view.toString.split(rootPath).last count (item => item == '/')) + 1
+        val urlDepth = currentHref count (item => item == '/')
+        if (viewDepth > 1) {
+          val urlSubPath = if (urlDepth == 0) "" else {
+            (new File(rootPath + currentHref)).getParentFile.toString.split(rootPath).last
+          }
+          val urlPath = new File(rootPath + urlSubPath)
+          val pathDiff = PathUtils.relativize(view.getParentFile, urlPath)
+          pathDiff + "/" + (new File(rootPath + currentHref)).getName
+        } else {
+          currentHref
+        }
+      }
   }
 }
