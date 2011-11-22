@@ -49,14 +49,11 @@ class GiftWrap(template: String, viewType: String) {
   def wrap(views: List[Tuple2[File, Node]]) {
     views.foreach {
       view =>
-        object transformer extends Transformer {
-          val contentDiv = (view._2 \\ "div").find(item => (item \ "@id").text == "synapse-content")
-          $("div#synapse-template").contents = contentDiv.get
-        }
-        val trans = transformer(templateXml)
+        val templateTransformer = new TemplateTransformer(view._2)
+        val templateResult = templateTransformer(templateXml)
 
         val anchorUAT = new URIAttributeTransformer("a", "href", view._1)
-		    val anchorResult = anchorUAT(trans)
+		    val anchorResult = anchorUAT(templateResult)
 
         val linkUAT = new URIAttributeTransformer("link", "href", view._1)
         val linkResult = linkUAT(anchorResult)
@@ -129,6 +126,11 @@ class GiftWrap(template: String, viewType: String) {
       else Some(content)
     parsedStr
   }
+}
+
+class TemplateTransformer(viewNode: Node) extends Transformer {
+  val contentDiv = (viewNode \\ "div").find(item => (item \ "@id").text == "synapse-content")
+  $("div#synapse-template").contents = contentDiv.get
 }
 
 class URIAttributeTransformer(element: String, attribute: String, view: File) extends Transformer {
