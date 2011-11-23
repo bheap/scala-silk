@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cleaner () {
+  sp=`ps -A | grep 'silk.jar -t preview' | grep -v grep | awk '{print $1}'`
+  if [ $sp > 0 ]; then
+    kill $sp
+  fi
+}
+
+if [ "$1" == "preview-start" ]; then
+  cleaner
+  java -jar $HOME/bin/silk.jar -t preview-start &
+elif [ "$1" == "preview-stop" ]; then
+  echo "Silk preview is stopped."
+  cleaner
+else
+  java -jar $HOME/bin/silk.jar -t $1
+fi
+
