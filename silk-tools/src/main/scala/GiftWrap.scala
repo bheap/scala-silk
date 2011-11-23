@@ -129,7 +129,7 @@ class GiftWrap(template: String, viewType: String) {
 }
 
 class TemplateTransformer(viewNode: Node) extends Transformer {
-  val contentDiv = (viewNode \\ "div").find(item => (item \ "@id").text == "silk-content")
+  val contentDiv = (viewNode \\ "div").find(item => (item \ "@id").text == "silk-view")
   $("div#silk-template").contents = contentDiv.get
 }
 
