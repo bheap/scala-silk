@@ -134,7 +134,7 @@ class TemplateTransformer(viewNode: Node) extends Transformer {
 }
 
 class URIAttributeTransformer(element: String, attribute: String, view: File) extends Transformer {
-  $(element).attribute(attribute) {
+  $(element).selectiveAttribute(attribute) {
     n =>
       val currentHref = (n \ ("@" + attribute)).toString
       // perform my criteria checks here, and regex to determine depth of location in path

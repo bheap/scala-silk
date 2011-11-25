@@ -54,7 +54,7 @@ object Dependencies {
   val uf_version = "0.3.3"
   val st_version = "1.4.1"
 
-  val scalate   = "org.fusesource.scalate" % "scalate-core"             % sc_version % "compile"
+  //val scalate   = "org.fusesource.scalate" % "scalate-core"             % sc_version % "compile"
   val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % so_version % "compile"
   val uff       = "net.databinder"         %  "unfiltered-filter_2.8.1" % uf_version % "compile"
   val ufj       = "net.databinder"         %  "unfiltered-jetty_2.8.1"  % uf_version % "compile"
@@ -66,7 +66,7 @@ object SilkBuild extends Build {
   import Dependencies._
   import BuildSettings._
 
-  val scDeps = Seq(scalate)
+  //val scDeps = Seq(scalate)
   val soDeps = Seq(scopt)
   val ufDeps = Seq(uff, ufj)
 
@@ -84,7 +84,6 @@ object SilkBuild extends Build {
     base = file("silk-kernel"),
     dependencies = Seq(utils),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= scDeps,
       libraryDependencies ++= ufDeps,
       resolvers := Seq(fSnapshots)
     )
@@ -95,7 +94,7 @@ object SilkBuild extends Build {
     base = file("silk-tools"),
     dependencies = Seq(kernel),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= scDeps,
+      //libraryDependencies ++= scDeps,
       resolvers := Seq(fSnapshots)
     )
   ) settings(assemblySettings: _*)
