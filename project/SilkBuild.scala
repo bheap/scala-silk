@@ -6,7 +6,7 @@ import AssemblyKeys._
 object BuildSettings {
 	
   val buildOrganization = "com.bheap.silk"
-  val buildVersion      = "0.1-SNAPSHOT"
+  val buildVersion      = "0.1.0-SNAPSHOT"
   val buildScalaVersion = "2.9.1"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
