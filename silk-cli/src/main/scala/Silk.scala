@@ -10,7 +10,7 @@ import com.bheap.silk.tools.{GiftWrap, Preview}
 object Silk {
   def main(args: Array[String]) {
 
-    val tasks = "(create|spin|run|preview-start)"
+    val tasks = "(clone|spin|run|preview-start)"
 
     var config = new Config()
 
@@ -20,7 +20,7 @@ object Silk {
 
     if (parser.parse(args)) {
       config.task.get match {
-        case "create" =>
+        case "clone" =>
           val componentDir = new File(System.getProperty("user.dir") + "/component")
           val resourceDir = new File(System.getProperty("user.dir") + "/resource")
           val siteDir = new File(System.getProperty("user.dir") + "/site")
@@ -31,11 +31,11 @@ object Silk {
           if(!(siteDir).exists()) siteDir.mkdir
           if(!(templateDir).exists()) templateDir.mkdir
           if(!(viewDir).exists()) viewDir.mkdir
-          println("Silk create complete")
+          println("Silk clone complete")
         case "spin" =>
           val gw = new GiftWrap("default.html", "html")
           gw.build
-          println("Silk spinning complete")
+          println("Silk spin complete")
         case "run" =>
           val app = new Application
           app.initialise
