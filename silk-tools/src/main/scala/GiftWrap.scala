@@ -2,13 +2,14 @@ package com.bheap.silk.tools
 
 import scala.xml._
 
-import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException}
+import java.io.{File, FileWriter}
 
 import org.fusesource.scalate.scuery.Transformer
 
 import com.bheap.io.PathUtils
 
 import com.bheap.silk.utils.SilkScout
+import com.bheap.silk.utils.SilkBundle._
 
 class GiftWrap(template: String, viewType: String) {
   val templateXml = XML.loadFile(System.getProperty("user.dir") + "/template/" + template)
@@ -76,27 +77,6 @@ class GiftWrap(template: String, viewType: String) {
         out.write(xhtml)
         out.flush
         out.close
-    }
-  }
-
-  // bundle all resource files into the site output directory
-  def bundle(src: File, dst: File) {
-    if (src.isDirectory) {
-      if(!dst.exists()) dst.mkdir
-
-      val files = src.list
-      files foreach {
-        file =>
-          val srcFile = new File(src, file)
-          val dstFile = new File(dst, file)
-          bundle(srcFile, dstFile)
-      }
-    } else {
-      dst.createNewFile
-      dst.getCanonicalFile.getParentFile.mkdirs
-      
-			new FileOutputStream(dst) getChannel() transferFrom(
-			    new FileInputStream(src) getChannel, 0, Long.MaxValue )
     }
   }
 

@@ -6,6 +6,7 @@ import scopt._
 
 import com.bheap.silk.application.Application
 import com.bheap.silk.tools.{GiftWrap, Preview}
+import com.bheap.silk.utils.SilkBundle._
 
 object Silk {
   def main(args: Array[String]) {
@@ -16,21 +17,17 @@ object Silk {
 
     val parser = new OptionParser("silk") {
       opt("t", "task", "task is a string property " + tasks, {t: String => config.task = Some(t)})
+      argOpt("<prototype>", "a prototype site", {ps: String => config.prototypeSite = Some(ps)})
     }
 
     if (parser.parse(args)) {
       config.task.get match {
         case "clone" =>
-          val componentDir = new File(System.getProperty("user.dir") + "/component")
-          val resourceDir = new File(System.getProperty("user.dir") + "/resource")
-          val siteDir = new File(System.getProperty("user.dir") + "/site")
-          val templateDir = new File(System.getProperty("user.dir") + "/template")
-          val viewDir = new File(System.getProperty("user.dir") + "/view")
-          if(!(componentDir).exists()) componentDir.mkdir
-          if(!(resourceDir).exists()) resourceDir.mkdir
-          if(!(siteDir).exists()) siteDir.mkdir
-          if(!(templateDir).exists()) templateDir.mkdir
-          if(!(viewDir).exists()) viewDir.mkdir
+          val selectedProtoSite = config.prototypeSite getOrElse "default-empty"
+          println("Cloning from prototype site : " + selectedProtoSite + "...")
+          val prototypeSite = "/.silk/repositories/prototype-site/com/bheap/silk/" + selectedProtoSite
+          val silkVersion = "0.1.0"
+          bundle(new File(System.getProperty("user.home") + prototypeSite + "/" + silkVersion), new File(System.getProperty("user.dir")))
           println("Silk clone complete")
         case "spin" =>
           val gw = new GiftWrap("default.html", "html")
@@ -54,4 +51,4 @@ object Silk {
   }
 }
 
-case class Config(var task: Option[String] = None)
+case class Config(var task: Option[String] = None, var prototypeSite: Option[String] = None)
