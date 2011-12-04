@@ -11,7 +11,7 @@ import com.bheap.silk.utils.SilkBundle._
 object Silk {
   def main(args: Array[String]) {
 
-    val tasks = "(update|clone|spin|run|preview-start)"
+    val tasks = "(update|sites|clone|spin|run|preview-start)"
 
     var config = new Config()
 

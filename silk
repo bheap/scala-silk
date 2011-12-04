@@ -15,11 +15,9 @@ if [ "$1" == "preview-start" ]; then
 elif [ "$1" == "preview-stop" ]; then
   echo "Silk preview is stopped."
   cleaner
-elif [ "$1" == "prototype-site" ]; then
-	if [ "$2" == "--list" ]; then
-    echo "Installed prototype-sites are:"
-    find $SKPS -type f -name dna.xml -exec grep 'id' {} \;
-  fi
+elif [ "$1" == "sites" ]; then
+  echo "Installed prototype-sites are:"
+  find $SKPS -type f -name dna.xml -exec grep 'id' {} \;
 elif [ "$1" == "update" ]; then
 	mkdir -p $SKPS
 	curl "http://www.bheap.co.uk/downloads/silk/updates/0.1.0/prototype-site-dna.tgz" \
