@@ -11,7 +11,7 @@ import com.bheap.silk.utils.SilkBundle._
 object Silk {
   def main(args: Array[String]) {
 
-    val tasks = "(clone|spin|run|preview-start)"
+    val tasks = "(update|clone|spin|run|preview-start)"
 
     var config = new Config()
 
@@ -23,12 +23,19 @@ object Silk {
     if (parser.parse(args)) {
       config.task.get match {
         case "clone" =>
-          val selectedProtoSite = config.prototypeSite getOrElse "default-empty"
-          println("Cloning from prototype site : " + selectedProtoSite + "...")
-          val prototypeSite = "/.silk/repositories/prototype-site/com/bheap/silk/" + selectedProtoSite
-          val silkVersion = "0.1.0"
-          bundle(new File(System.getProperty("user.home") + prototypeSite + "/" + silkVersion), new File(System.getProperty("user.dir")))
-          println("Silk clone complete")
+          val silkDir = System.getProperty("user.home") + "/.silk"
+          val prototypeSiteDir = silkDir + "/repositories/prototype-site"
+          val packageDir = "/com/bheap/silk"
+          if ((new File(silkDir)).exists) {
+            if (config.prototypeSite.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototypeSite.getOrElse("noooooo")).exists)) {
+              val selectedProtoSite = config.prototypeSite.get
+              println("Cloning from prototype site : " + selectedProtoSite + "...")
+              val prototypeSite = prototypeSiteDir + "/com/bheap/silk/" + selectedProtoSite
+              val silkVersion = "0.1.0"
+              bundle(new File(prototypeSite + "/" + silkVersion), new File(System.getProperty("user.dir")))
+              println("Silk clone complete")
+            } else println("No prototype-site found with that id, please run silk prototype-site --list")
+          } else println("Please run silk update, there are no prototype-sites on your system")
         case "spin" =>
           val gw = new GiftWrap("default.html", "html")
           gw.build
