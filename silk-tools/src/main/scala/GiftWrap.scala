@@ -17,6 +17,7 @@ class GiftWrap(template: String, viewType: String) {
   def build {
     wrap(inject)
     bundle(new File(System.getProperty("user.dir") + "/resource"), new File(System.getProperty("user.dir") + "/site/resource"))
+    bundle(new File(System.getProperty("user.dir") + "/meta"), new File(System.getProperty("user.dir") + "/site"))
   }
 
   // inject components into views, maps a list of files into a list of nodes
