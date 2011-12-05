@@ -24,7 +24,7 @@ object Silk {
       config.task.get match {
         case "clone" =>
           val silkDir = System.getProperty("user.home") + "/.silk"
-          val prototypeSiteDir = silkDir + "/repositories/prototype-site"
+          val prototypeSiteDir = silkDir + "/repositories/site-prototype"
           val packageDir = "/com/bheap/silk"
           if ((new File(silkDir)).exists) {
             if (config.prototypeSite.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototypeSite.getOrElse("noooooo")).exists)) {
