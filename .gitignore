@@ -1,10 +1,6 @@
 boot
-component
 lib_managed
-resource
 site
 src_managed
 target
-template
-view
 synapse.tmproj
