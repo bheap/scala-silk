@@ -1,5 +1,7 @@
 package com.bheap.silk.interface
 
+import scala.xml._
+
 import java.io.File
 
 import scopt._
@@ -11,7 +13,7 @@ import com.bheap.silk.utils.SilkBundle._
 object Silk {
   def main(args: Array[String]) {
 
-    val tasks = "(update|sites|clone|spin|run|preview-start)"
+    val tasks = "(update|sites|site-install|clone|spin|run|preview-start)"
 
     var config = new Config()
 
@@ -36,6 +38,21 @@ object Silk {
               println("Silk clone complete")
             } else println("No prototype-site found with that id, please run silk prototype-site --list")
           } else println("Please run silk update, there are no prototype-sites on your system")
+        case "site-install" =>
+          val silkDir = System.getProperty("user.home") + "/.silk"
+          val prototypeSiteDir = silkDir + "/repositories/site-prototype"
+          val dnaXml = XML.loadFile(System.getProperty("user.dir") + "/.dna/dna.xml")
+          val pkg = (dnaXml \\ "package").text.replace(".", "/")
+          val id = (dnaXml \\ "id").text
+          val silkVersion = (dnaXml \\ "silk-version").text
+          println("Installing site prototype : " + id)
+          println("package is : " + pkg)
+          println("silk version is : " + silkVersion)
+          val specificSP = new File(prototypeSiteDir + "/" + pkg + "/" + id + "/" + silkVersion)
+          if (specificSP.exists) specificSP.delete
+          specificSP.mkdirs
+          bundle(new File(System.getProperty("user.dir")), specificSP)
+          println("Silk site install complete")
         case "spin" =>
           val gw = new GiftWrap("default.html", "html")
           gw.build
