@@ -1,0 +1,8 @@
+start=
+  element silk {
+    element output {
+      element content { text },
+      element serialiser { text },
+      element compatibility { text }
+    }*
+  }
