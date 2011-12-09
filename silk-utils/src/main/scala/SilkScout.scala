@@ -6,8 +6,8 @@ import java.io.File
 
 object SilkScout {
   def getFilesInDirectoryOfType(directory: String, fileType: String) = {
-    // @todo use path independent separator
-    (new File(System.getProperty("user.dir") + "/" + directory)).listFiles.
+    val userDir = new File(System.getProperty("user.dir"))
+    (new File(userDir, directory)).listFiles.
       filter(_.isFile).filter(_.getName.endsWith("." + fileType))
   }
 
