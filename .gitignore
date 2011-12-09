@@ -4,5 +4,6 @@ lib_managed
 site
 src_managed
 target
+template
 synapse.tmproj
 view
