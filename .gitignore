@@ -1,6 +1,8 @@
 boot
+component
 lib_managed
 site
 src_managed
 target
 synapse.tmproj
+view
