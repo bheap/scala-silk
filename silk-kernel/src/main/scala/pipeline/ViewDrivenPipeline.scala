@@ -6,7 +6,7 @@ import java.io.File
 
 import com.bheap.silk.generator.PathPreservingFileSourceGenerator._
 import com.bheap.silk.transformer.ComponentIdTransformer._
-import com.bheap.silk.transformer.ComponentTransformer
+import com.bheap.silk.transformer.{ComponentTransformer, TemplateTransformer}
 
 /** Controls manipulation and representation of your site content.
   *
@@ -19,17 +19,19 @@ object ViewDrivenPipeline {
 
   val userDir = new File(System.getProperty("user.dir"))
   val viewDir = new File(userDir, "view")
+  val templateDir = new File(userDir, "template")
 
   // execute our pipeline
   def process {
     val gen = generate
     val componentsTransformed = transformComponents(gen)
-    println("componentsTransformed is : " + componentsTransformed)
+    val templatedViewsTransformed = transformTemplatedViews(componentsTransformed)
+    println("templated is : " + templatedViewsTransformed)
   }
 
   // read in the view(s)
+  // @todo make conditional based on mimetype
   def generate = {
-    // if mimetype (x)html
     generateFromXHTML(viewDir)
   }
 
@@ -37,7 +39,16 @@ object ViewDrivenPipeline {
     views.map {
       item =>
         val cTransformer = new ComponentTransformer(item._2)
-        (item._1, cTransformer(diluteSilkComponents(item._2)))
+        (item._1, cTransformer(diluteSilkComponents(item._2))(0))
+    }
+  }
+
+  def transformTemplatedViews(views: List[Tuple2[File, Node]]) = {
+    val templateXml = XML.loadFile(new File(templateDir, "default.html"))
+    views.map {
+      item =>
+        val templateTransformer = new TemplateTransformer(item._2)
+        (item._1, templateTransformer(templateXml))
     }
   }
 }
