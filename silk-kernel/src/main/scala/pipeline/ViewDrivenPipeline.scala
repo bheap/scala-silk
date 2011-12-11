@@ -5,6 +5,7 @@ import scala.xml._
 import java.io.File
 
 import com.bheap.silk.generator.PathPreservingFileSourceGenerator._
+import com.bheap.silk.serialiser.Serialiser._
 import com.bheap.silk.transformer.ComponentIdTransformer._
 import com.bheap.silk.transformer.{ComponentTransformer, TemplateTransformer, URIAttributeTransformer}
 
@@ -26,7 +27,8 @@ object ViewDrivenPipeline {
     val gen = generate
     val componentsTransformed = transformComponents(gen)
     val templatedViewsTransformed = transformTemplatedViews(componentsTransformed)
-    println("templated is : " + templatedViewsTransformed)
+    val serialised = serialiseViews(templatedViewsTransformed)
+    println("serialised is : " + serialised)
   }
 
   // read in the view(s)
@@ -62,7 +64,14 @@ object ViewDrivenPipeline {
 
         val imageUAT = new URIAttributeTransformer("img", "src", view._1)
         val imageTransformed = imageUAT(scriptTransformed)
-        (view._1, imageTransformed)
+        (view._1, imageTransformed(0))
+    }
+  }
+
+  def serialiseViews(views: List[Tuple2[File, Node]]) = {
+    views.map {
+      view =>
+        (view._1, serialiseToHTML5(view._2))
     }
   }
 }
