@@ -71,7 +71,7 @@ object ViewDrivenPipeline {
   def serialiseViews(views: List[Tuple2[File, Node]]) = {
     views.map {
       view =>
-        (view._1, serialiseToHTML5(view._2))
+        (view._1, serialiseToHtml5(view._2))
     }
   }
 }
