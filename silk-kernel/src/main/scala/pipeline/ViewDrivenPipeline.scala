@@ -6,7 +6,7 @@ import java.io.File
 
 import com.bheap.silk.generator.PathPreservingFileSourceGenerator._
 import com.bheap.silk.transformer.ComponentIdTransformer._
-import com.bheap.silk.transformer.{ComponentTransformer, TemplateTransformer}
+import com.bheap.silk.transformer.{ComponentTransformer, TemplateTransformer, URIAttributeTransformer}
 
 /** Controls manipulation and representation of your site content.
   *
@@ -37,18 +37,32 @@ object ViewDrivenPipeline {
 
   def transformComponents(views: List[Tuple2[File, Node]]) = {
     views.map {
-      item =>
-        val cTransformer = new ComponentTransformer(item._2)
-        (item._1, cTransformer(diluteSilkComponents(item._2))(0))
+      view =>
+        val cTransformer = new ComponentTransformer(view._2)
+        (view._1, cTransformer(diluteSilkComponents(view._2))(0))
     }
   }
 
   def transformTemplatedViews(views: List[Tuple2[File, Node]]) = {
     val templateXml = XML.loadFile(new File(templateDir, "default.html"))
     views.map {
-      item =>
-        val templateTransformer = new TemplateTransformer(item._2)
-        (item._1, templateTransformer(templateXml))
+      view =>
+        // @todo enable template defined in view without polluting semantic meaning
+        val templateTransformer = new TemplateTransformer(view._2)
+        val templateTransformed = templateTransformer(templateXml)
+
+        val anchorUAT = new URIAttributeTransformer("a", "href", view._1)
+		    val anchorTransformed = anchorUAT(templateTransformed)
+
+        val linkUAT = new URIAttributeTransformer("link", "href", view._1)
+        val linkTransformed = linkUAT(anchorTransformed)
+
+        val scriptUAT = new URIAttributeTransformer("script", "src", view._1)
+        val scriptTransformed = scriptUAT(linkTransformed)
+
+        val imageUAT = new URIAttributeTransformer("img", "src", view._1)
+        val imageTransformed = imageUAT(scriptTransformed)
+        (view._1, imageTransformed)
     }
   }
 }
