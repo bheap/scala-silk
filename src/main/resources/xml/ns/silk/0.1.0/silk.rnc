@@ -1,6 +1,6 @@
 start=
   element silk {
-    element output {
+    element pipeline {
       element content { text },
       element serialiser { text },
       element compatibility { text }
