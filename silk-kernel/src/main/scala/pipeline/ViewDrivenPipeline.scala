@@ -8,6 +8,7 @@ import com.bheap.silk.generator.PathPreservingFileSourceGenerator._
 import com.bheap.silk.serialiser.Serialiser._
 import com.bheap.silk.transformer.ComponentIdTransformer._
 import com.bheap.silk.transformer.{ComponentTransformer, TemplateTransformer, URIAttributeTransformer}
+import com.bheap.silk.utils.SilkBundle._
 
 /** Controls manipulation and representation of your site content.
   *
@@ -21,6 +22,7 @@ object ViewDrivenPipeline {
   val userDir = new File(System.getProperty("user.dir"))
   val viewDir = new File(userDir, "view")
   val templateDir = new File(userDir, "template")
+  val siteDir = new File(userDir, "site")
 
   // execute our pipeline
   def process {
@@ -29,6 +31,8 @@ object ViewDrivenPipeline {
     val templatedViewsTransformed = transformTemplatedViews(componentsTransformed)
     val serialised = serialiseViews(templatedViewsTransformed)
     writeViews(serialised)
+    bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
+    bundle(new File(userDir, "meta"), siteDir)
   }
 
   // read in the view(s)
