@@ -1,0 +1,8 @@
+start=
+  element silk {
+    element pipeline {
+      element content { text },
+      element serialiser { text },
+      element compatibility { text }
+    }*
+  }

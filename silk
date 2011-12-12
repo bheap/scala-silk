@@ -8,7 +8,8 @@ cleaner () {
 }
 
 SK=$HOME/.silk
-SKPS=$SK/repositories/site-prototype
+SKMC=$SK/config
+SKSP=$SK/repositories/site-prototype
 if [ "$1" == "preview-start" ]; then
   cleaner
   java -jar $HOME/bin/silk.jar -t preview-start &
@@ -17,14 +18,21 @@ elif [ "$1" == "preview-stop" ]; then
   cleaner
 elif [ "$1" == "sites" ]; then
   echo "Installed site-prototypes are:"
-  find $SKPS -type f -name dna.xml -exec grep 'id' {} \;
+  find $SKSP -type f -name dna.xml -exec grep 'id' {} \;
 elif [ "$1" == "update" ]; then
-	mkdir -p $SKPS
+  mkdir -p $SKMC
+  curl "http://www.bheap.co.uk/downloads/silk/updates/0.1.0/silk.xml" \
+          > $SKMC/silk.xml
+	mkdir -p $SKSP
 	curl "http://www.bheap.co.uk/downloads/silk/updates/0.1.0/site-prototype.tgz" \
 	        > site-prototype.tgz
-	tar xf site-prototype.tgz -C $SKPS
+	tar xf site-prototype.tgz -C $SKSP
 	rm site-prototype.tgz
   echo "Silk update complete"
+elif [ "$1" == "spin" ]; then
+  rm -rf ${PWD}/site
+  mkdir ${PWD}/site
+  java -jar $HOME/bin/silk.jar -t $1 $2
 else
   java -jar $HOME/bin/silk.jar -t $1 $2
 fi

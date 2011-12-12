@@ -1,6 +1,11 @@
 boot
+component
 lib_managed
+meta
+resource
 site
 src_managed
 target
+template
 synapse.tmproj
+view
