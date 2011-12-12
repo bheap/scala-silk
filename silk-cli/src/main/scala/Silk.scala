@@ -7,7 +7,8 @@ import java.io.File
 import scopt._
 
 import com.bheap.silk.application.Application
-import com.bheap.silk.tools.{GiftWrap, Preview}
+import com.bheap.silk.pipeline.ViewDrivenPipeline
+import com.bheap.silk.tools.Preview
 import com.bheap.silk.utils.SilkBundle._
 
 object Silk {
@@ -54,8 +55,7 @@ object Silk {
           bundle(new File(System.getProperty("user.dir")), specificSP)
           println("Silk site install complete")
         case "spin" =>
-          val gw = new GiftWrap("default.html", "html")
-          gw.build
+          ViewDrivenPipeline.process
           println("Silk spin complete")
         case "run" =>
           val app = new Application
