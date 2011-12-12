@@ -29,6 +29,10 @@ elif [ "$1" == "update" ]; then
 	tar xf site-prototype.tgz -C $SKSP
 	rm site-prototype.tgz
   echo "Silk update complete"
+elif [ "$1" == "spin" ]; then
+  rm -rf ${PWD}/site
+  mkdir ${PWD}/site
+  java -jar $HOME/bin/silk.jar -t $1 $2
 else
   java -jar $HOME/bin/silk.jar -t $1 $2
 fi
