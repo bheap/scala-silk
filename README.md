@@ -30,11 +30,31 @@ A publishing toolkit enables you to design and develop (in any order you choose)
 
 ## Getting started
 
-This section will walk you through the example site, silk-sample-site.
+### Installing
+
+    >./silk_install.sh
+
+### See which site prototypes are available
+
+    >silk sites
+
+### Clone a site prototype
+
+    >silk clone somesite
+
+### Spin your site
+
+    >silk spin
+
+### What now ?
+
+Have a poke around in your generated Silk site.
+
+    >open site/index.html
 
 ### Templates
 
-Most sites have at least one template, with a design including headers, footers, navigation etc.  This is where we start.  Under silk-sample-site/template there is a default template prepared for you called 'default.html'.  As indicated by its extension and mime-type this template is for html views.
+Most sites have at least one template, with a design including headers, footers, navigation etc.  This is where we start.  In your generated Silk site under 'template' there is a default template prepared for you called 'default.html'.  As indicated by its extension and mime-type this template is for html views.
 
 Do whatever you like in here as long as it is valid xhtml *and* contains a div tag with id 'silk-template'.
 
@@ -46,37 +66,13 @@ Note, if you don't want templates, you don't have to use them, just build your v
 
 Without a view, or views, there is no website or webapp or set of web services.  Views are the epicentre with Silk.
 
-In Silk we like like all views to be constructed to they render independently from the template.  Start with valid html and body elements, then ensure everything you want to be pulled in as the view is in a div tag with id 'silk-view'.
+In Silk we like like all views to be constructed so they render independently from the template.  Start with valid html and body elements, then ensure everything you want to be pulled in as the view is in a div tag with id 'silk-view'.
 
-## Setup
+### Components
 
-### The easy way
+Components provide a means to build sites out of reusable lego like blocks of content.  Your Silk generated site may have an example of a component.  Again components start with a valid html and body element, and contain an element with an id something like 'silk-component:static/simple'.
 
-Ensure silk.jar and silk are in ~/bin.
-
-    >silk spin
-
-This will wrap and bundle your site, the output of which will be in the 'site' folder.
-
-### The hard way
-
-So, now we understand Silk templates and views, how do we run our site ?  Simple, we transform components, views and templates, and mix them all together with a simple tool, 'pipelines'.  The default pipeline is called the ViewDrivenPipeline.  It makes several assumptions to really bootstrap development.
-
-    >cd $SILK_HOME
-    >sbt
-    >project silk-kernel
-    >console
-    >com.bheap.silk.pipeline.ViewDrivenPipeline
-    >ViewDrivenPipeline.process
-
-Now check your views... peachy hey ?  You can do this as many times as you like... just update your template, and repeat.
-
-Now, lets run the site.
-
-    >cd $SILK_HOME
-    >sbt
-    >project silk-kernel
-    >run
+This specifies a component which exists in a directory called 'static' which is itself called 'simple'.
 
 ## Features
 
