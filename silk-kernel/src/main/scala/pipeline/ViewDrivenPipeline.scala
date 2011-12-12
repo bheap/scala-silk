@@ -2,7 +2,7 @@ package com.bheap.silk.pipeline
 
 import scala.xml._
 
-import java.io.File
+import java.io.{File, FileWriter}
 
 import com.bheap.silk.generator.PathPreservingFileSourceGenerator._
 import com.bheap.silk.serialiser.Serialiser._
@@ -28,7 +28,7 @@ object ViewDrivenPipeline {
     val componentsTransformed = transformComponents(gen)
     val templatedViewsTransformed = transformTemplatedViews(componentsTransformed)
     val serialised = serialiseViews(templatedViewsTransformed)
-    println("serialised is : " + serialised)
+    writeViews(serialised)
   }
 
   // read in the view(s)
@@ -72,6 +72,18 @@ object ViewDrivenPipeline {
     views.map {
       view =>
         (view._1, serialiseToHtml5(view._2))
+    }
+  }
+
+  def writeViews(views: List[Tuple2[File, String]]) {
+    views.map {
+      view =>
+        val fPath = new File(view._1.getParent.replace("/view", "/site"))
+        if (!fPath.exists) new File(view._1.getParent.replace("/view", "/site")).mkdirs
+        val out = new FileWriter(new File(fPath, view._1.getName))
+        out.write(view._2)
+        out.flush
+        out.close
     }
   }
 }
