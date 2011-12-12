@@ -54,21 +54,20 @@ In Silk we like like all views to be constructed to they render independently fr
 
 Ensure silk.jar and silk are in ~/bin.
 
-    >silk build
+    >silk spin
 
 This will wrap and bundle your site, the output of which will be in the 'site' folder.
 
 ### The hard way
 
-So, now we understand Silk templates and views, how do we run our site ?  Simple, we merge the template into our views with a simple tool 'GiftWrap'.
+So, now we understand Silk templates and views, how do we run our site ?  Simple, we transform components, views and templates, and mix them all together with a simple tool, 'pipelines'.  The default pipeline is called the ViewDrivenPipeline.  It makes several assumptions to really bootstrap development.
 
     >cd $SILK_HOME
     >sbt
-    >project silk-tools
+    >project silk-kernel
     >console
-    >import com.bheap.silk.tools.GiftWrap
-    >val gw = new GiftWrap("default.html", "html")
-    >gw.wrap
+    >com.bheap.silk.pipeline.ViewDrivenPipeline
+    >ViewDrivenPipeline.process
 
 Now check your views... peachy hey ?  You can do this as many times as you like... just update your template, and repeat.
 
