@@ -18,7 +18,9 @@ import com.bheap.silk.utils.SilkBundle._
   * @since 1.0 */
 object Silk {
 
-  val userHomeStr = System.getProperty("user.home")
+  val userHomeDirStr = System.getProperty("user.home")
+  val userHomeDir = new File(userHomeDirStr)
+  val silkHomeDir = new File(userHomeDir, ".silk")
   val userDirStr = System.getProperty("user.dir")
   val userDir = new File(userDirStr)
 
@@ -36,11 +38,14 @@ object Silk {
     if (parser.parse(args)) {
       config.task.get match {
         case "clone" =>
-          val silkDir = userHomeStr + "/.silk"
+          val silkDir = userHomeDirStr + "/.silk"
           val prototypeSiteDir = silkDir + "/repositories/site-prototype"
           val packageDir = "/com/bheap/silk"
           if ((new File(silkDir)).exists) {
             if (config.prototypeSite.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototypeSite.getOrElse("noooooo")).exists)) {
+              val silkLocalDir = new File(userDir, ".silk")
+              if (!silkLocalDir.exists) silkLocalDir.mkdir
+              bundleFile(new File(silkHomeDir, "silk.xml"), new File(silkLocalDir, "silk.xml"))
               val selectedProtoSite = config.prototypeSite.get
               println("Cloning from prototype site : " + selectedProtoSite + "...")
               val prototypeSite = prototypeSiteDir + "/com/bheap/silk/" + selectedProtoSite
@@ -50,7 +55,7 @@ object Silk {
             } else println("No prototype-site found with that id, please run silk prototype-site --list")
           } else println("Please run silk update, there are no prototype-sites on your system")
         case "site-install" =>
-          val silkDir = userHomeStr + "/.silk"
+          val silkDir = userHomeDirStr + "/.silk"
           val prototypeSiteDir = silkDir + "/repositories/site-prototype"
           val dnaXml = XML.loadFile(userDirStr + "/.dna/dna.xml")
           val pkg = (dnaXml \\ "package").text.replace(".", "/")

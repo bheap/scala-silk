@@ -24,8 +24,12 @@ object SilkBundle {
       dst.createNewFile
       dst.getCanonicalFile.getParentFile.mkdirs
       
-			new FileOutputStream(dst) getChannel() transferFrom(
-			    new FileInputStream(src) getChannel, 0, Long.MaxValue )
+      bundleFile(src, dst)
     }
+  }
+
+  def bundleFile(src: File, dst: File) {
+    new FileOutputStream(dst) getChannel() transferFrom(
+		    new FileInputStream(src) getChannel, 0, Long.MaxValue )
   }
 }
