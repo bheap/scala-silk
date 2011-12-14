@@ -6,6 +6,13 @@ import java.io.File
 
 import name.pachler.nio.file._
 
+/** A rudimentary preview function.
+  *
+  * Launches a rendered version of a file you modify in a browser automatically.
+  * Leverages jpathwatch currently and only works with some editors.
+  *
+  * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
+  * @since 1.0 */
 class Preview(path: String) {
 
   val watchService = FileSystems.getDefault.newWatchService

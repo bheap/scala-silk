@@ -2,6 +2,12 @@ package com.bheap.silk.utils
 
 import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException}
 
+/** Put required resources in place for site spinning.
+  *
+  * Essentially just a targeted directory copy.
+  *
+  * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
+  * @since 1.0 */
 object SilkBundle {
   def bundle(src: File, dst: File) {
     if (src.isDirectory) {

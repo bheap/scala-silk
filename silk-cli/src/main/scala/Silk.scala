@@ -10,6 +10,12 @@ import com.bheap.silk.pipeline.ViewDrivenPipeline
 import com.bheap.silk.tools.Preview
 import com.bheap.silk.utils.SilkBundle._
 
+/** The CLI.
+  *
+  * An intuitive, simple CLI.
+  *
+  * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
+  * @since 1.0 */
 object Silk {
   def main(args: Array[String]) {
 
