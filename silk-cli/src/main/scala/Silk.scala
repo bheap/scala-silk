@@ -6,7 +6,6 @@ import java.io.File
 
 import scopt._
 
-import com.bheap.silk.application.Application
 import com.bheap.silk.pipeline.ViewDrivenPipeline
 import com.bheap.silk.tools.Preview
 import com.bheap.silk.utils.SilkBundle._
@@ -14,7 +13,7 @@ import com.bheap.silk.utils.SilkBundle._
 object Silk {
   def main(args: Array[String]) {
 
-    val tasks = "(update|sites|site-install|clone|spin|run|preview-start)"
+    val tasks = "(update|sites|site-install|clone|spin|preview-start)"
 
     var config = new Config()
 
@@ -57,11 +56,6 @@ object Silk {
         case "spin" =>
           ViewDrivenPipeline.process
           println("Silk spin complete")
-        case "run" =>
-          val app = new Application
-          app.initialise
-          app.start
-          println("Silk is running")
         case "preview-start" =>
           println("Silk preview is running in the background on path : " + System.getProperty("user.dir"))
           println("Please hit enter to continue...")

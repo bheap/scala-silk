@@ -1,8 +1,0 @@
-<page>
-  <url>/products</url>
-  <view>products.xhtml</view>
-  <template>default.xhtml</template>
-  <title>Products</title>
-  <serialise>xhtml</serialise>
-  <description>A products page</description>
-</page>
