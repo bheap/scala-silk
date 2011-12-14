@@ -5,11 +5,6 @@ import scala.util.matching.Regex
 import java.io.File
 
 object SilkScout {
-  def getFilesInDirectoryOfType(directory: String, fileType: String) = {
-    val userDir = new File(System.getProperty("user.dir"))
-    (new File(userDir, directory)).listFiles.
-      filter(_.isFile).filter(_.getName.endsWith("." + fileType))
-  }
 
   def getRecursiveFilesInDirectoryOfType(file: File, regex: Regex): List[File] = {
 	  val these = file.listFiles.toList
