@@ -20,9 +20,9 @@ elif [ "$1" == "sites" ]; then
   echo "Installed site-prototypes are:"
   find $SKSP -type f -name dna.xml -exec grep 'id' {} \;
 elif [ "$1" == "update" ]; then
-  mkdir -p $SKMC
+  mkdir -p $SK
   curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/silk.xml" \
-          > $SKMC/silk.xml
+          > $SK/silk.xml
 	mkdir -p $SKSP
 	curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/site-prototype.tgz" \
 	        > site-prototype.tgz
