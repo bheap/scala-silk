@@ -2,6 +2,8 @@ package com.bheap.silk.transformer
 
 import scala.xml._
 
+import java.io.File
+
 import org.fusesource.scalate.scuery.Transformer
 
 /** Injects components.
@@ -11,6 +13,7 @@ import org.fusesource.scalate.scuery.Transformer
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 class ComponentTransformer(view: Node) extends Transformer {
+
   val viewDiv = (view \\ "div").filter(item => (item \ "@id").toString.contains("silk-component"))
   viewDiv.foreach {
     comp => 
@@ -19,7 +22,12 @@ class ComponentTransformer(view: Node) extends Transformer {
       val cPath = cPathBits.head
       val cName = cPathBits.last
       // @todo use path independent separator
-      val compXML = XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
+      val localComp = new File(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
+      val compXML = if (localComp.exists) {
+        XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
+      } else {
+        XML.loadFile(System.getProperty("user.home") + "/.silk/repositories/component/com/bheap/silk/component-missing-default/0.1.0/component-missing-default.html")
+      }
       val compDiv = (compXML \\ "div").find(item => (comp \ "@id").text == compStruct) 
       $("div#" + compStruct.replaceAll(":", "").replaceAll("/", "")).contents = compDiv.get
   }
