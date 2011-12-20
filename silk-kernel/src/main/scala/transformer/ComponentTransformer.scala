@@ -15,7 +15,6 @@ class ComponentTransformer(view: Node) extends Transformer {
   viewDiv.foreach {
     comp => 
       val compStruct = (comp \ "@id")(0).toString
-      // @todo use platform independent separator
       val cPathBits = compStruct.split(":").last.split("/")
       val cPath = cPathBits.head
       val cName = cPathBits.last
