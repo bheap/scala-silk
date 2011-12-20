@@ -8,8 +8,8 @@ cleaner () {
 }
 
 SK=$HOME/.silk
-SKMC=$SK/config
 SKSP=$SK/repositories/site-prototype
+SKC=$SK/repositories/component
 if [ "$1" == "preview-start" ]; then
   cleaner
   java -jar $HOME/bin/silk.jar -t preview-start &
@@ -19,6 +19,9 @@ elif [ "$1" == "preview-stop" ]; then
 elif [ "$1" == "sites" ]; then
   echo "Installed site-prototypes are:"
   find $SKSP -type f -name dna.xml -exec grep 'id' {} \;
+elif [ "$1" == "components" ]; then
+  echo "Installed components are:"
+  find $SKC -type f -name dna.xml -exec grep 'id' {} \;
 elif [ "$1" == "update" ]; then
   mkdir -p $SK
   curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/silk.xml" \
@@ -28,6 +31,11 @@ elif [ "$1" == "update" ]; then
 	        > site-prototype.tgz
 	tar xf site-prototype.tgz -C $SKSP
 	rm site-prototype.tgz
+  mkdir -p $SKC
+  curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/component.tgz" \
+          > component.tgz
+  tar xf component.tgz -C $SKC
+  rm component.tgz
   echo "Silk update complete"
 elif [ "$1" == "spin" ]; then
   rm -rf ${PWD}/site
