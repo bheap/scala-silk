@@ -1,8 +1,14 @@
+default namespace = "http://www.bheap.co.uk/xml/ns/silk/0.1.0"
+
 start=
   element silk {
+  (
     element pipeline {
-      element content { text },
+    (
+      element purpose { ("site"|"service") },
       element serialiser { text },
       element compatibility { text }
-    }*
+    )*
+    }
+  )
   }
