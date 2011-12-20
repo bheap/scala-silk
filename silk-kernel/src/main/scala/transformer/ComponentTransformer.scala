@@ -26,7 +26,7 @@ class ComponentTransformer(view: Node) extends Transformer {
       val compXML = if (localComp.exists) {
         XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
       } else {
-        XML.loadFile(System.getProperty("user.home") + "/.silk/repositories/component/com/bheap/silk/component-missing-default/0.1.0/component-missing-default.html")
+        XML.loadFile(System.getProperty("user.home") + "/.silk/repositories/component/com/bheap/silk/component-missing/0.1.0/component-missing.html")
       }
       val compDiv = (compXML \\ "div").find(item => (comp \ "@id").text == compStruct) 
       $("div#" + compStruct.replaceAll(":", "").replaceAll("/", "")).contents = compDiv.get
