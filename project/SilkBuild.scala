@@ -43,17 +43,20 @@ object ShellPrompt {
 }
 
 object Resolvers {
-	
-  val fSnapshots  = "Fusesource Snapshots" at "http://repo.fusesource.com/nexus/content/repositories/snapshots/"
+
+  val typesafeReleases = "Typesafe Releases"    at "http://repo.typesafe.com/typesafe/releases"
+  val fSnapshots       = "Fusesource Snapshots" at "http://repo.fusesource.com/nexus/content/repositories/snapshots/"
 }
 
 object Dependencies {
 
+  val cf_version = "0.2.0"
   val sc_version = "1.6.0-SNAPSHOT"
   val so_version = "1.1.2"
   val uf_version = "0.3.3"
   val st_version = "1.4.1"
 
+  val config    = "com.typesafe.config"    % "config"                   % cf_version % "compile"
   //val scalate   = "org.fusesource.scalate" % "scalate-core"             % sc_version % "compile"
   val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % so_version % "compile"
   val uff       = "net.databinder"         %  "unfiltered-filter_2.8.1" % uf_version % "compile"
@@ -66,6 +69,7 @@ object SilkBuild extends Build {
   import Dependencies._
   import BuildSettings._
 
+  val cfDeps = Seq(config)
   //val scDeps = Seq(scalate)
   val soDeps = Seq(scopt)
   val ufDeps = Seq(uff, ufj)
@@ -101,7 +105,11 @@ object SilkBuild extends Build {
 
   lazy val utils = Project(
     id = "silk-utils",
-    base = file("silk-utils")
+    base = file("silk-utils"),
+    settings = buildSettings ++ Seq(
+      libraryDependencies ++= cfDeps,
+      resolvers := Seq(typesafeReleases)
+    )
   ) settings(assemblySettings: _*)
 
   lazy val cli = Project(

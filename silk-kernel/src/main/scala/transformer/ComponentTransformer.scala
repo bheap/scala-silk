@@ -6,6 +6,8 @@ import java.io.File
 
 import org.fusesource.scalate.scuery.Transformer
 
+import com.bheap.silk.utils.SilkConfig
+
 /** Injects components.
   *
   * Does a lookup and retrieves component content.
@@ -13,6 +15,8 @@ import org.fusesource.scalate.scuery.Transformer
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 class ComponentTransformer(view: Node) extends Transformer {
+
+  import SilkConfig._
 
   val viewDiv = (view \\ "div").filter(item => (item \ "@id").toString.contains("silk-component"))
   viewDiv.foreach {
@@ -27,7 +31,12 @@ class ComponentTransformer(view: Node) extends Transformer {
       val compXML = if (localComp.exists) {
         XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
       } else {
-        XML.loadFile(System.getProperty("user.home") + "/.silk/repositories/component/com/bheap/silk/component-missing/0.1.0/component-missing.html")
+        val compBaseName = "component-missing"
+        val theme = dnaConfig.getString("site-prototype.theme")
+        val compName = if (theme == "none") compBaseName else compBaseName + "-" + theme
+        XML.loadFile(System.getProperty("user.home") + 
+          "/.silk/repositories/component/com/bheap/silk/" + 
+          compName + "/0.1.0/" + compName + ".html")
       }
       val compDiv = (compXML \\ "div").find(item => (comp \ "@id").text == compStruct) 
       $("div#" + compStruct.replaceAll(":", "").replaceAll("/", "")).contents = compDiv.get
