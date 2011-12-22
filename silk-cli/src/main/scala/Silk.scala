@@ -42,7 +42,7 @@ object Silk {
             if (config.prototypeSite.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototypeSite.getOrElse("noooooo")).exists)) {
               val silkLocalDir = new File(userDir, ".silk")
               if (!silkLocalDir.exists) silkLocalDir.mkdir
-              bundleFile(new File(silkHomeDir, "silk.xml"), new File(silkLocalDir, "silk.xml"))
+              bundleFile(new File(silkHomeDir, "silk.conf"), new File(silkLocalDir, "silk.conf"))
               val selectedProtoSite = config.prototypeSite.get
               println("Cloning from prototype site : " + selectedProtoSite + "...")
               val prototypeSite = prototypeSiteDir + "/com/bheap/silk/" + selectedProtoSite
@@ -54,7 +54,7 @@ object Silk {
         case "site-install" =>
           val silkDir = userHomeDirStr + "/.silk"
           val prototypeSiteDir = silkDir + "/repositories/site-prototype"
-          val dnaXml = XML.loadFile(userDirStr + "/.dna/dna.xml")
+          val dnaXml = XML.loadFile(userDirStr + "/.dna/dna.conf")
           val pkg = (dnaXml \\ "package").text.replace(".", "/")
           val id = (dnaXml \\ "id").text
           val silkVersion = (dnaXml \\ "silk-version").text
