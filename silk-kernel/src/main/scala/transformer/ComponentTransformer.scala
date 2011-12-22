@@ -22,6 +22,7 @@ class ComponentTransformer(view: Node) extends Transformer {
       val cPath = cPathBits.head
       val cName = cPathBits.last
       // @todo use path independent separator
+      // @todo first try for a local component-missing
       val localComp = new File(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
       val compXML = if (localComp.exists) {
         XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
