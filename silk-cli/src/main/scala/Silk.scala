@@ -54,10 +54,9 @@ object Silk {
         case "site-install" =>
           val silkDir = userHomeDirStr + "/.silk"
           val prototypeSiteDir = silkDir + "/repositories/site-prototype"
-          val dnaXml = XML.loadFile(userDirStr + "/.dna/dna.conf")
-          val pkg = (dnaXml \\ "package").text.replace(".", "/")
-          val id = (dnaXml \\ "id").text
-          val silkVersion = (dnaXml \\ "silk-version").text
+          val pkg = dnaConfig.getString("site-prototype.package").replace(".", "/")
+          val id = dnaConfig.getString("site-prototype.id")
+          val silkVersion = dnaConfig.getString("site-prototype.silk-version")
           println("Installing site prototype : " + id)
           println("package is : " + pkg)
           println("silk version is : " + silkVersion)
