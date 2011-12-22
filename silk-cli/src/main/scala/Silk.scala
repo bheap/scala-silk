@@ -9,6 +9,7 @@ import scopt._
 import com.bheap.silk.pipeline.ViewDrivenPipeline
 import com.bheap.silk.tools.Preview
 import com.bheap.silk.utils.SilkBundle._
+import com.bheap.silk.utils.SilkConfig
 
 /** The CLI.
   *
@@ -18,11 +19,7 @@ import com.bheap.silk.utils.SilkBundle._
   * @since 1.0 */
 object Silk {
 
-  val userHomeDirStr = System.getProperty("user.home")
-  val userHomeDir = new File(userHomeDirStr)
-  val silkHomeDir = new File(userHomeDir, ".silk")
-  val userDirStr = System.getProperty("user.dir")
-  val userDir = new File(userDirStr)
+  import SilkConfig._
 
   def main(args: Array[String]) {
 
