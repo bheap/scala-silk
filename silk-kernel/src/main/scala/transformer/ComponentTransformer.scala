@@ -14,6 +14,8 @@ import com.bheap.silk.utils.SilkConfig
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
+// @todo use path independent separator
+// @todo first try for a local component-missing
 class ComponentTransformer(view: Node) extends Transformer {
 
   import SilkConfig._
@@ -25,8 +27,6 @@ class ComponentTransformer(view: Node) extends Transformer {
       val cPathBits = compStruct.split(":").last.split("/")
       val cPath = cPathBits.head
       val cName = cPathBits.last
-      // @todo use path independent separator
-      // @todo first try for a local component-missing
       val localComp = new File(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
       val compXML = if (localComp.exists) {
         XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
