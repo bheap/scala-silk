@@ -23,7 +23,7 @@ object Silk {
 
   def main(args: Array[String]) {
 
-    val tasks = "(update|sites|site-install|clone|spin|preview-start)"
+    val tasks = "(update|sites|site-install|components|clone|spin|preview-start)"
 
     var config = new Config()
 
