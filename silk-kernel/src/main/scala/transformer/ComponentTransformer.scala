@@ -27,9 +27,9 @@ class ComponentTransformer(view: Node) extends Transformer {
       val cPathBits = compStruct.split(":").last.split("/")
       val cPath = cPathBits.head
       val cName = cPathBits.last
-      val localComp = new File(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
+      val localComp = new File(userDirStr + "/component/" + cPath + "/" + cName + ".html")
       val compXML = if (localComp.exists) {
-        XML.loadFile(System.getProperty("user.dir") + "/component/" + cPath + "/" + cName + ".html")
+        XML.loadFile(userDirStr + "/component/" + cPath + "/" + cName + ".html")
       } else {
         val compBaseName = "component-missing"
         val theme = dnaConfig.getString("site-prototype.theme")
