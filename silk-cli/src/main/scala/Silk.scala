@@ -29,7 +29,7 @@ object Silk {
 
     val parser = new OptionParser("silk") {
       opt("t", "task", "task is a string property " + tasks, {t: String => config.task = Some(t)})
-      argOpt("<prototype>", "a prototype site", {ps: String => config.prototypeSite = Some(ps)})
+      argOpt("<prototype>", "a site prototype", {ps: String => config.prototypeSite = Some(ps)})
     }
 
     if (parser.parse(args)) {
@@ -44,13 +44,13 @@ object Silk {
               if (!silkLocalDir.exists) silkLocalDir.mkdir
               bundleFile(new File(silkHomeDir, "silk.conf"), new File(silkLocalDir, "silk.conf"))
               val selectedProtoSite = config.prototypeSite.get
-              println("Cloning from prototype site : " + selectedProtoSite + "...")
+              println("Cloning from site prototype : " + selectedProtoSite + "...")
               val prototypeSite = prototypeSiteDir + "/com/bheap/silk/" + selectedProtoSite
               val silkVersion = "0.1.0"
               bundle(new File(prototypeSite + "/" + silkVersion), userDir)
-              println("Silk clone complete")
-            } else println("No prototype-site found with that id, please run silk prototype-site --list")
-          } else println("Please run silk update, there are no prototype-sites on your system")
+              println("Silk site prototype clone complete")
+            } else println("No site prototype found with that id, please run silk sites")
+          } else println("Please run silk update, there are no site prototypes on your system")
         case "site-install" =>
           val silkDir = userHomeDirStr + "/.silk"
           val prototypeSiteDir = silkDir + "/repositories/site-prototype"
