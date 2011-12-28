@@ -23,7 +23,7 @@ object Silk {
 
   def main(args: Array[String]) {
 
-    val tasks = "(update|sites|site-clone|site-install|components|component-clone|spin|preview-start)"
+    val tasks = "(update|sites|site-clone|site-install|components|component-clone|component-install|spin|preview-start)"
 
     var config = new Config()
 
@@ -79,6 +79,20 @@ object Silk {
               println("Silk component clone complete")
             } else println("No component found with that id, please run silk components")
           } else println("Please run silk update, there are no components on your system")
+        case "component-install" =>
+          val silkDir = userHomeDirStr + "/.silk"
+          val componentDir = silkDir + "/repositories/component"
+          val pkg = dnaConfig.getString("component.package").replace(".", "/")
+          val id = dnaConfig.getString("component.id")
+          val silkVersion = dnaConfig.getString("component.silk-version")
+          println("Installing component : " + id)
+          println("package is : " + pkg)
+          println("silk version is : " + silkVersion)
+          val specificComp = new File(componentDir + "/" + pkg + "/" + id + "/" + silkVersion)
+          if (specificComp.exists) specificComp.delete
+          specificComp.mkdirs
+          bundle(userDir, specificComp)
+          println("Silk component install complete")
         case "spin" =>
           ViewDrivenPipeline.process
           println("Silk spin complete")
