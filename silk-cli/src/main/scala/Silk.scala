@@ -23,7 +23,7 @@ object Silk {
 
   def main(args: Array[String]) {
 
-    val tasks = "(update|sites|site-install|components|site-clone|spin|preview-start)"
+    val tasks = "(update|sites|site-clone|site-install|components|component-clone|spin|preview-start)"
 
     var config = new Config()
 
@@ -65,6 +65,23 @@ object Silk {
           specificSP.mkdirs
           bundle(userDir, specificSP)
           println("Silk site install complete")
+        case "component-clone" =>
+          val silkDir = userHomeDirStr + "/.silk"
+          val componentDir = silkDir + "/repositories/component"
+          val packageDir = "/com/bheap/silk"
+          if ((new File(silkDir)).exists) {
+            if (config.prototypeSite.isDefined && (new File(componentDir + packageDir + "/" + config.prototypeSite.getOrElse("noooooo")).exists)) {
+              val silkLocalDir = new File(userDir, ".silk")
+              if (!silkLocalDir.exists) silkLocalDir.mkdir
+              bundleFile(new File(silkHomeDir, "silk.conf"), new File(silkLocalDir, "silk.conf"))
+              val selectedProtoSite = config.prototypeSite.get
+              println("Cloning from component : " + selectedProtoSite + "...")
+              val prototypeSite = componentDir + "/com/bheap/silk/" + selectedProtoSite
+              val silkVersion = "0.1.0"
+              bundle(new File(prototypeSite + "/" + silkVersion), userDir)
+              println("Silk component clone complete")
+            } else println("No component found with that id, please run silk components")
+          } else println("Please run silk update, there are no components on your system")
         case "spin" =>
           ViewDrivenPipeline.process
           println("Silk spin complete")
