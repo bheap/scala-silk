@@ -71,14 +71,11 @@ object Silk {
           val packageDir = "/com/bheap/silk"
           if ((new File(silkDir)).exists) {
             if (config.prototype.isDefined && (new File(componentDir + packageDir + "/" + config.prototype.getOrElse("noooooo")).exists)) {
-              val silkLocalDir = new File(userDir, ".silk")
-              if (!silkLocalDir.exists) silkLocalDir.mkdir
-              bundleFile(new File(silkHomeDir, "silk.conf"), new File(silkLocalDir, "silk.conf"))
-              val selectedProtoSite = config.prototype.get
-              println("Cloning from component : " + selectedProtoSite + "...")
-              val prototypeSite = componentDir + "/com/bheap/silk/" + selectedProtoSite
+              val selectedComponent = config.prototype.get
+              println("Cloning from component : " + selectedComponent + "...")
+              val component = componentDir + "/com/bheap/silk/" + selectedComponent
               val silkVersion = "0.1.0"
-              bundle(new File(prototypeSite + "/" + silkVersion), userDir)
+              bundle(new File(component + "/" + silkVersion), userDir)
               println("Silk component clone complete")
             } else println("No component found with that id, please run silk components")
           } else println("Please run silk update, there are no components on your system")
