@@ -29,7 +29,7 @@ object Silk {
 
     val parser = new OptionParser("silk") {
       opt("t", "task", "task is a string property " + tasks, {t: String => config.task = Some(t)})
-      argOpt("<prototype>", "a site prototype", {ps: String => config.prototypeSite = Some(ps)})
+      argOpt("<prototype>", "a site or component prototype", {ps: String => config.prototype = Some(ps)})
     }
 
     if (parser.parse(args)) {
@@ -39,11 +39,11 @@ object Silk {
           val prototypeSiteDir = silkDir + "/repositories/site-prototype"
           val packageDir = "/com/bheap/silk"
           if ((new File(silkDir)).exists) {
-            if (config.prototypeSite.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototypeSite.getOrElse("noooooo")).exists)) {
+            if (config.prototype.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototype.getOrElse("noooooo")).exists)) {
               val silkLocalDir = new File(userDir, ".silk")
               if (!silkLocalDir.exists) silkLocalDir.mkdir
               bundleFile(new File(silkHomeDir, "silk.conf"), new File(silkLocalDir, "silk.conf"))
-              val selectedProtoSite = config.prototypeSite.get
+              val selectedProtoSite = config.prototype.get
               println("Cloning from site prototype : " + selectedProtoSite + "...")
               val prototypeSite = prototypeSiteDir + "/com/bheap/silk/" + selectedProtoSite
               val silkVersion = "0.1.0"
@@ -70,11 +70,11 @@ object Silk {
           val componentDir = silkDir + "/repositories/component"
           val packageDir = "/com/bheap/silk"
           if ((new File(silkDir)).exists) {
-            if (config.prototypeSite.isDefined && (new File(componentDir + packageDir + "/" + config.prototypeSite.getOrElse("noooooo")).exists)) {
+            if (config.prototype.isDefined && (new File(componentDir + packageDir + "/" + config.prototype.getOrElse("noooooo")).exists)) {
               val silkLocalDir = new File(userDir, ".silk")
               if (!silkLocalDir.exists) silkLocalDir.mkdir
               bundleFile(new File(silkHomeDir, "silk.conf"), new File(silkLocalDir, "silk.conf"))
-              val selectedProtoSite = config.prototypeSite.get
+              val selectedProtoSite = config.prototype.get
               println("Cloning from component : " + selectedProtoSite + "...")
               val prototypeSite = componentDir + "/com/bheap/silk/" + selectedProtoSite
               val silkVersion = "0.1.0"
@@ -98,4 +98,4 @@ object Silk {
   }
 }
 
-case class Config(var task: Option[String] = None, var prototypeSite: Option[String] = None)
+case class Config(var task: Option[String] = None, var prototype: Option[String] = None)
