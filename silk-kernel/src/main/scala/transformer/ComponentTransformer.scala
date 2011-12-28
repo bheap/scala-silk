@@ -15,7 +15,7 @@ import com.bheap.silk.utils.SilkConfig
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 // @todo use path independent separator
-// @todo first try for a local component-missing, then core, then missing
+// @todo rudimentary draft only, ugly and makes assumptions about package and version, refactor into component locator code
 class ComponentTransformer(view: Node) extends Transformer {
 
   import SilkConfig._
@@ -28,8 +28,13 @@ class ComponentTransformer(view: Node) extends Transformer {
       val cPath = cPathBits.head
       val cName = cPathBits.last
       val localComp = new File(userDirStr + "/component/" + cPath + "/" + cName + ".html")
+      val coreCompStr = userHomeDirStr + "/.silk/repositories/component/com/bheap/silk/" +
+	      cName + "/0.1.0/" + cName + ".html"
+      val coreComp = new File(coreCompStr)
       val compXML = if (localComp.exists) {
         XML.loadFile(userDirStr + "/component/" + cPath + "/" + cName + ".html")
+      } else if (coreComp.exists) {
+        XML.loadFile(coreCompStr)
       } else {
         val compBaseName = "component-missing"
         val theme = dnaConfig.getString("site-prototype.theme")
