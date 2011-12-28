@@ -23,7 +23,7 @@ object Silk {
 
   def main(args: Array[String]) {
 
-    val tasks = "(update|sites|site-install|components|clone|spin|preview-start)"
+    val tasks = "(update|sites|site-install|components|site-clone|spin|preview-start)"
 
     var config = new Config()
 
@@ -34,7 +34,7 @@ object Silk {
 
     if (parser.parse(args)) {
       config.task.get match {
-        case "clone" =>
+        case "site-clone" =>
           val silkDir = userHomeDirStr + "/.silk"
           val prototypeSiteDir = silkDir + "/repositories/site-prototype"
           val packageDir = "/com/bheap/silk"
