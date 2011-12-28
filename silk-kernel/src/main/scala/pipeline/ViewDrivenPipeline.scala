@@ -7,7 +7,7 @@ import java.io.{File, FileWriter}
 import com.bheap.silk.generator.PathPreservingFileSourceGenerator._
 import com.bheap.silk.serialiser.Serialiser._
 import com.bheap.silk.transformer.ComponentIdTransformer._
-import com.bheap.silk.transformer.{ComponentTransformer, TemplateTransformer, URIAttributeTransformer}
+import com.bheap.silk.transformer.{ComponentTransformer, ScriptTransformer, TemplateTransformer, URIAttributeTransformer}
 import com.bheap.silk.utils.SilkBundle._
 
 /** Controls manipulation and representation of your site content.
@@ -29,7 +29,8 @@ object ViewDrivenPipeline {
     val gen = generate
     val componentsTransformed = transformComponents(gen)
     val templatedViewsTransformed = transformTemplatedViews(componentsTransformed)
-    val serialised = serialiseViews(templatedViewsTransformed)
+    val scriptTransformed = transformScripts(templatedViewsTransformed)
+    val serialised = serialiseViews(scriptTransformed)
     writeViews(serialised)
     bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
     bundle(new File(userDir, "meta"), siteDir)
@@ -69,6 +70,13 @@ object ViewDrivenPipeline {
         val imageUAT = new URIAttributeTransformer("img", "src", view._1)
         val imageTransformed = imageUAT(scriptTransformed)
         (view._1, imageTransformed(0))
+    }
+  }
+
+  def transformScripts(views: List[Tuple2[File, Node]]) = {
+    views.map {
+      view =>
+        (view._1, ScriptTransformer(view._2))
     }
   }
 
