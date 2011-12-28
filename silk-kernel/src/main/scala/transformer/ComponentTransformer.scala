@@ -15,7 +15,7 @@ import com.bheap.silk.utils.SilkConfig
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 // @todo use path independent separator
-// @todo first try for a local component-missing
+// @todo first try for a local component-missing, then core, then missing
 class ComponentTransformer(view: Node) extends Transformer {
 
   import SilkConfig._
