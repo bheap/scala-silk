@@ -8,6 +8,7 @@ import scala.xml._
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
+// @todo oh god this is horrible, I have had no time but promise to fix it, was I mad.. or just tired beyond belief ?
 object ComponentIdTransformer {
 	
   // load file into string, parse Silk component attribute values ready for css transformation
