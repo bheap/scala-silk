@@ -54,7 +54,7 @@ object ViewDrivenPipeline {
     val templateXml = XML.loadFile(new File(templateDir, "default.html"))
     views.map {
       view =>
-        // @todo enable template defined in view without polluting semantic meaning
+        // @todo enable template defined in view without polluting semantic meaning (currently we are stuck with 'default')
         val templateTransformer = new TemplateTransformer(view._2)
         val templateTransformed = templateTransformer(templateXml)
 
