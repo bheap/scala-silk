@@ -17,6 +17,7 @@ import com.bheap.silk.utils.SilkBundle._
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 // @todo read the silk master config to drive pipeline
+// @todo improve the template processing, currently is lumped in with transformTemplatedViews
 object ViewDrivenPipeline {
 
   val userDir = new File(System.getProperty("user.dir"))
