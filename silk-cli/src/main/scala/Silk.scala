@@ -112,6 +112,7 @@ object Silk {
     println("Silk component install complete")
   }
 
+  // @todo determine pipeline from Silk config
   def spin {
     ViewDrivenPipeline.process
     println("Silk spin complete")
