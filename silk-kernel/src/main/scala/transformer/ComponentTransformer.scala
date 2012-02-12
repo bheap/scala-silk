@@ -34,6 +34,7 @@ import com.bheap.silk.utils.SilkConfig
 // @todo use path independent separator
 // @todo rudimentary draft only, ugly and makes assumptions about package and version
 // @todo transform component name element into relevant transformer somehow, currently hardcoded to SiteModified....
+// @todo remove duplication between div and span processing
 class ComponentTransformer(view: Node) extends Transformer {
 
   import SilkConfig._
@@ -63,6 +64,33 @@ class ComponentTransformer(view: Node) extends Transformer {
 
       val compDiv = (transplantXML \\ "div").find(item => (compItem \ "@id").text == id) 
       $("div#" + id.replaceAll(":", "").replaceAll("/", "")).contents = compDiv.get
+  }
+
+  val viewSpan = (view \\ "span").filter(item => (item \ "@id").toString.contains("silk-component"))
+  viewSpan.foreach {
+    compItem =>
+      val id = (compItem \ "@id")(0).toString
+      val compDetails = getComponentDetails(id)
+
+      val dataPath = (for {
+          src <- compDetails.dsSource
+          sct <- compDetails.dsSection
+        }
+	      yield {src + "/" + sct}) getOrElse ""
+
+      val data = (new Datasource).get(dataPath)
+
+      val compXML = lookupComponent(compDetails)
+      
+      val transplantXML = if (compDetails.dsSource.isDefined) {
+        val constructor = classOf[SiteModifiedTimestampTransformer].getConstructors()(0)
+        val args = Array[AnyRef](data.get.toString)
+        val comp = constructor.newInstance(args:_*).asInstanceOf[Transformer]
+        comp(compXML)
+      } else compXML
+
+      val compSpan = (transplantXML \\ "span").find(item => (compItem \ "@id").text == id) 
+      $("span#" + id.replaceAll(":", "").replaceAll("/", "")).contents = compSpan.get
   }
 
   // @todo make this functional
