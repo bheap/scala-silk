@@ -7,7 +7,6 @@ import java.io.File
 import scopt._
 
 import com.bheap.silk.pipeline.ViewDrivenPipeline
-import com.bheap.silk.tools.Preview
 import com.bheap.silk.utils.SilkBundle._
 import com.bheap.silk.utils.SilkConfig
 
@@ -23,7 +22,7 @@ object Silk {
 
   def main(args: Array[String]) {
 
-    val tasks = "(update|sites|site-clone|site-install|components|component-clone|component-install|spin|preview-start)"
+    val tasks = "(update|sites|site-clone|site-install|components|component-clone|component-install|spin)"
 
     var config = new Config()
 
@@ -39,10 +38,6 @@ object Silk {
         case "component-clone" => componentClone(config)
         case "component-install" => componentInstall
         case "spin" => spin
-        case "preview-start" =>
-          println("Silk preview is running in the background on path : " + userDirStr)
-          println("Please hit enter to continue...")
-          val preview = new Preview(userDirStr)
         case _ => println("Sorry, not a valid action, please try " + tasks)
       }
     } else {

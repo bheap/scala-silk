@@ -1,22 +1,9 @@
 #!/bin/bash
 
-cleaner () {
-  sp=`ps -A | grep 'silk.jar -t preview' | grep -v grep | awk '{print $1}'`
-  if [ $sp > 0 ]; then
-    kill $sp
-  fi
-}
-
 SK=$HOME/.silk
 SKSP=$SK/repositories/site-prototype
 SKC=$SK/repositories/component
-if [ "$1" == "preview-start" ]; then
-  cleaner
-  java -jar $HOME/bin/silk.jar -t preview-start &
-elif [ "$1" == "preview-stop" ]; then
-  echo "Silk preview is stopped."
-  cleaner
-elif [ "$1" == "sites" ]; then
+if [ "$1" == "sites" ]; then
   echo "Installed site-prototypes are:"
   find $SKSP -type f -name dna.conf -exec grep 'id' {} \;
 elif [ "$1" == "components" ]; then
