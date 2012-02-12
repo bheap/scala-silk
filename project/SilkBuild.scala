@@ -80,7 +80,7 @@ object SilkBuild extends Build {
     id = "silk",
     base = file("."),
     settings = buildSettings,
-    aggregate = Seq(kernel, tools, utils, cli)
+    aggregate = Seq(kernel, utils, cli)
   ) settings(assemblySettings: _*)
 
   lazy val kernel = Project(
@@ -89,16 +89,6 @@ object SilkBuild extends Build {
     dependencies = Seq(utils),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= ufDeps,
-      resolvers := Seq(fSnapshots)
-    )
-  ) settings(assemblySettings: _*)
-
-  lazy val tools = Project(
-    id = "silk-tools",
-    base = file("silk-tools"),
-    dependencies = Seq(kernel),
-    settings = buildSettings ++ Seq(
-      //libraryDependencies ++= scDeps,
       resolvers := Seq(fSnapshots)
     )
   ) settings(assemblySettings: _*)
@@ -115,7 +105,7 @@ object SilkBuild extends Build {
   lazy val cli = Project(
     id = "silk-cli",
     base = file("silk-cli"),
-    dependencies = Seq(tools),
+    dependencies = Seq(kernel),
     settings = buildSettings ++ Seq(
       libraryDependencies ++= soDeps,
       resolvers := Seq(fSnapshots),
