@@ -26,5 +26,5 @@ import org.fusesource.scalate.scuery.Transformer
   * @since 1.0 */
 // @todo not happy with this existing as just another component, migrate to components folder ?
 class SiteModifiedTimestampTransformer(data: String) extends Transformer {
-  $("div span").contents = data
+  $("span").contents = data
 }
