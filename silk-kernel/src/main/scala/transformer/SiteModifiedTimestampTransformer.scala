@@ -22,6 +22,9 @@ import org.fusesource.scalate.scuery.Transformer
 
 /** Transforms a site-modified-timestamp component.
   *
+  * This is localised so we are dealing with a small encapsulated fragment at this point, hence the
+  * use of a simple span in this case.
+  *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 // @todo not happy with this existing as just another component, migrate to components folder ?
