@@ -16,12 +16,12 @@ elif [ "$1" == "update" ]; then
 	mkdir -p $SKSP
 	curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/site-prototype.tgz" \
 	        > site-prototype.tgz
-	tar xf site-prototype.tgz -C $SKSP
+	tar xf site-prototype.tgz --exclude="._*" -C $SKSP
 	rm site-prototype.tgz
   mkdir -p $SKC
   curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/component.tgz" \
           > component.tgz
-  tar xf component.tgz -C $SKC
+  tar xf component.tgz --exclude="._*" -C $SKC
   rm component.tgz
   echo "Silk update complete"
 elif [ "$1" == "spin" ]; then
