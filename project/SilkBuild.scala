@@ -60,6 +60,7 @@ object ShellPrompt {
 
 object Resolvers {
 
+  val scalaToolsReleases = "Scalatools Releases" at "http://scala-tools.org/repo-releases"
   val typesafeReleases = "Typesafe Releases"    at "http://repo.typesafe.com/typesafe/releases"
   val fSnapshots       = "Fusesource Snapshots" at "http://repo.fusesource.com/nexus/content/repositories/snapshots/"
 }
@@ -72,6 +73,7 @@ object Dependencies {
   val uf_version = "0.3.3"
   val st_version = "1.4.1"
 
+  val antiXML   = "com.codecommit"         %% "anti-xml"                % "0.3"
   val config    = "com.typesafe.config"    % "config"                   % cf_version % "compile"
   //val scalate   = "org.fusesource.scalate" % "scalate-core"             % sc_version % "compile"
   val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % so_version % "compile"
@@ -85,6 +87,7 @@ object SilkBuild extends Build {
   import Dependencies._
   import BuildSettings._
 
+  val anDeps = Seq(antiXML)
   val cfDeps = Seq(config)
   //val scDeps = Seq(scalate)
   val soDeps = Seq(scopt)
@@ -104,6 +107,7 @@ object SilkBuild extends Build {
     base = file("silk-kernel"),
     dependencies = Seq(utils),
     settings = buildSettings ++ Seq(
+      libraryDependencies ++= anDeps,
       libraryDependencies ++= ufDeps,
       resolvers := Seq(fSnapshots)
     )
