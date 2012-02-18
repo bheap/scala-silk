@@ -67,19 +67,15 @@ object Resolvers {
 
 object Dependencies {
 
-  val cf_version = "0.2.0"
-  val sc_version = "1.6.0-SNAPSHOT"
-  val so_version = "1.1.2"
   val uf_version = "0.3.3"
-  val st_version = "1.4.1"
 
-  val antiXML   = "com.codecommit"         %% "anti-xml"                % "0.3"
-  val config    = "com.typesafe.config"    % "config"                   % cf_version % "compile"
-  //val scalate   = "org.fusesource.scalate" % "scalate-core"             % sc_version % "compile"
-  val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % so_version % "compile"
+  val antiXML   = "com.codecommit"         %% "anti-xml"                % "0.3"      % "compile"
+  val config    = "com.typesafe.config"    % "config"                   % "0.2.0"    % "compile"
+  //val scalate   = "org.fusesource.scalate" % "scalate-core"             % "1.6.0-SNAPSHOT" % "compile"
+  val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % "1.1.2"    % "compile"
   val uff       = "net.databinder"         %  "unfiltered-filter_2.8.1" % uf_version % "compile"
   val ufj       = "net.databinder"         %  "unfiltered-jetty_2.8.1"  % uf_version % "compile"
-  val scalatest = "org.scalatest"          % "scalatest_2.9.0"          % st_version % "test"
+  val scalatest = "org.scalatest"          % "scalatest_2.9.0"          % "1.4.1"    % "test"
 }
 
 object SilkBuild extends Build {
