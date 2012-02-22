@@ -27,7 +27,7 @@ import com.bheap.silk.utils.{SilkConfig, SilkXML}
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-// @todo read the silk master config to drive details such as temlpate mechanism
+// @todo read the silk master config to drive details such as template mechanism
 object TemplateTransformer {
 
   import SilkConfig._
