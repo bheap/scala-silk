@@ -103,7 +103,6 @@ object SilkBuild extends Build {
     base = file("silk-kernel"),
     dependencies = Seq(utils),
     settings = buildSettings ++ Seq(
-      libraryDependencies ++= anDeps,
       libraryDependencies ++= ufDeps,
       resolvers := Seq(fSnapshots)
     )
@@ -113,6 +112,7 @@ object SilkBuild extends Build {
     id = "silk-utils",
     base = file("silk-utils"),
     settings = buildSettings ++ Seq(
+      libraryDependencies ++= anDeps,
       libraryDependencies ++= cfDeps,
       resolvers := Seq(typesafeReleases)
     )
