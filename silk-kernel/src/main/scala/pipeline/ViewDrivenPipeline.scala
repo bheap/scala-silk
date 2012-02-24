@@ -50,14 +50,14 @@ object ViewDrivenPipeline {
     generated foreach {
       viewFile =>
         val view = ScalaXML.loadFile(viewFile).convert
-        val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view).head
-        val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToTemplateWrapped)
+        val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)(0).asInstanceOf[Elem]
+        val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)(0).asInstanceOf[Elem]
+        val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToComponentInjected)
         Serialiser.writeView(viewFile, serialisedToHtml5)
         SilkBundle.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
 		    SilkBundle.bundle(new File(userDir, "meta"), siteDir)
     }
-    /*val componentsTransformed = transformComponents(gen)
-    val scriptTransformed = transformScripts(templatedViewsTransformed)*/
+    //*val scriptTransformed = transformScripts(templatedViewsTransformed)*/
   }
 
   //def transformTemplatedViews(views: List[Tuple2[File, Node]]) = {

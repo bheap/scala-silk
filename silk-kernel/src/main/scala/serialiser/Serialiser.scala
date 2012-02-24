@@ -31,7 +31,7 @@ import java.io.{File, FileWriter}
 // @todo enable conversion between anti-xml and scala-xml to leverage xhtml if required for some sites
 object Serialiser {
 
-  def serialiseToHtml5(view: Node) = {
+  def serialiseToHtml5(view: Elem) = {
     "<!doctype html>" + view.toString
     //Xhtml.toXhtml(node).replace("<html>", "<!doctype html><html>")
   }
