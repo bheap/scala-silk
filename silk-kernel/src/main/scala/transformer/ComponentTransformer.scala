@@ -41,17 +41,22 @@ object ComponentTransformer {
   import SilkConfig._
   import SilkXML._
 
-  /** Search for components to replace content.
+  /** Transform components.
     *
     * First search for a local component, then a core component, finally
     * default to the missing-component. */
-  // @todo deal with span inline components again
+  // @todo currently hardcoded to only deal with div and span, review draft.. should Silk do more ?
   def transformComponents(xml: Elem) = {
-    val compsReplace = findElements(xml, 'div, "silk-component") map {
+    val divCompsTransformed = seekAndReplace(xml, 'div).head.asInstanceOf[Elem]
+    seekAndReplace(divCompsTransformed, 'span)
+  }
+
+  /** Search and replace a Silk component with a given element name. */
+  def seekAndReplace(xml: Elem, sym: Symbol) = {
+    val compsReplace = findElements(xml, sym, "silk-component") map {
       comp =>
         val compDetails = getComponentDetails(comp.attrs("id"))
-        val component = lookupComponent(compDetails)
-        findElements(component, 'div, "silk-component").head
+        findElements(lookupComponent(compDetails), sym, "silk-component").head
     }
     compsReplace.unselect.unselect
   }
