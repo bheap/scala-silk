@@ -20,12 +20,14 @@ import scala.util.matching.Regex
 
 import java.io.File
 
-/** Convenience recursive directory scan.
+/** Includes a convenience recursive directory scan.
   *
   * Used to detect structure of site to spin.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
+// @todo rename this to something useful
+// @todo probably roll in the directory path depth detection currently entangled in URIAttributeRewriter
 object Scout {
 
   def getRecursiveFilesInDirectoryOfType(file: File, regex: Regex): List[File] = {
