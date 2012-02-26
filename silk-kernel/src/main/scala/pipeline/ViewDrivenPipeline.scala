@@ -42,8 +42,7 @@ object ViewDrivenPipeline {
   /** Execute our pipeline.
     *
     * Always generate -> transform -> serialise. 
-    * Note Generate leverages a default data medium, in this case the default of XML.
-    */
+    * Note Generate leverages a default data medium, in this case the default of XML. */
   // @todo read transformation steps from Silk pipeline config
   def process {
     val generated = Generator.generateFromXHTML(viewDir)
@@ -52,38 +51,39 @@ object ViewDrivenPipeline {
         val view = ScalaXML.loadFile(viewFile).convert
         val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)(0).asInstanceOf[Elem]
         val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)(0).asInstanceOf[Elem]
-        val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToComponentInjected)
-        Serialiser.writeView(viewFile, serialisedToHtml5)
+        val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)(0).asInstanceOf[Elem]
+        val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToURIAttributeRewritten)
+        writeView(viewFile, serialisedToHtml5)
         SilkBundle.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
 		    SilkBundle.bundle(new File(userDir, "meta"), siteDir)
     }
     //*val scriptTransformed = transformScripts(templatedViewsTransformed)*/
   }
 
-  //def transformTemplatedViews(views: List[Tuple2[File, Node]]) = {
-    //val templateXml = XML.loadFile(new File(templateDir, "default.html"))
-    //val cTransformer = new ComponentTransformer(templateXml)
-    //val processedTemplate = cTransformer(diluteSilkComponents(templateXml))(0)
-    //views.map {
-      //view =>
-        // @todo enable template defined in view without polluting semantic meaning (currently we are stuck with 'default')
-        //val templateTransformer = new TemplateTransformer(view._2)
-        //val templateTransformed = templateTransformer(processedTemplate)
+  /** Rewrite URI attributes for all relevant element types.
+    *
+    * Note this method handles all conversions between anti-xml and scala xml
+    * required for scuery. */
+  def rewriteAttributes(viewFile: File, xml: Elem) = {
+    val anchorUAT = new URIAttributeTransformer("a", "href", viewFile)
+    val anchorTransformed = anchorUAT(ScalaXML.loadString(xml.toString))
+		val linkUAT = new URIAttributeTransformer("link", "href", viewFile)
+    val linkTransformed = linkUAT(anchorTransformed)
+    val scriptUAT = new URIAttributeTransformer("script", "src", viewFile)
+    val scriptTransformed = scriptUAT(linkTransformed)
+    val imageUAT = new URIAttributeTransformer("img", "src", viewFile)
+    val imageTransformed = imageUAT(scriptTransformed)
+    imageTransformed.convert
+  }
 
-        //val anchorUAT = new URIAttributeTransformer("a", "href", view._1)
-		    //val anchorTransformed = anchorUAT(templateTransformed)
-
-        //val linkUAT = new URIAttributeTransformer("link", "href", view._1)
-        //val linkTransformed = linkUAT(anchorTransformed)
-
-        //val scriptUAT = new URIAttributeTransformer("script", "src", view._1)
-        //val scriptTransformed = scriptUAT(linkTransformed)
-
-        //val imageUAT = new URIAttributeTransformer("img", "src", view._1)
-        //val imageTransformed = imageUAT(scriptTransformed)
-        //(view._1, imageTransformed(0))
-    //}
-  //}
+  def writeView(file: File, view: String) {
+    val fPath = new File(file.getParent.replace("/view", "/site"))
+    if (!fPath.exists) new File(file.getParent.replace("/view", "/site")).mkdirs
+    val out = new FileWriter(new File(fPath, file.getName))
+    out.write(view)
+    out.flush
+    out.close
+  }
 
   /*def transformScripts(views: List[Tuple2[File, Node]]) = {
     views.map {
