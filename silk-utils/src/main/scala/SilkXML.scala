@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.generator
+package com.bheap.silk.utils
 
-import scala.util.matching.Regex
-import scala.xml._
+import com.codecommit.antixml._
 
-import java.io.File
-
-import com.bheap.silk.utils.SilkScout
-
-/** Defines some generators.
-  *
-  * Source different contents and convert them to something Silk can work with.
+/** Some handy utilities for querying and manipulating antixml.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-object PathPreservingFileSourceGenerator {
+object SilkXML {
 
-  def generateFromXHTML(source: File) = {
-    generateXmlFromFileSource(source, """.*\.html$""".r)
+  /** Searches an XML block for elements with a given name and a given id. */
+  def findElements(xml: Elem, sym: Symbol, sig: String) = {
+    xml \\ sym select Selector {case item: Elem if verifyAttribute(item.attrs, sig) => item }
   }
 
-  def generateXmlFromFileSource(source: File, mimeType: Regex) = {
-    SilkScout.getRecursiveFilesInDirectoryOfType(source, mimeType)
+  /** A safe check for an attribute value. */
+  def verifyAttribute(att: Attributes, sig: String) = {
+    if (att.contains("id")) {
+	    att("id").contains(sig)
+    } else false
   }
 }

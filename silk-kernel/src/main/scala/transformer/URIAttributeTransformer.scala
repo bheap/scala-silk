@@ -28,6 +28,7 @@ import com.bheap.io.PathUtils
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
+// @todo re-write to pass in a simple depth value, decouple from knowledge of file system
 class URIAttributeTransformer(element: String, attribute: String, view: File) extends Transformer {
   $(element).selectiveAttribute(attribute) {
     n =>

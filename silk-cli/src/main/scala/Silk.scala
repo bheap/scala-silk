@@ -32,6 +32,7 @@ import com.bheap.silk.utils.SilkConfig
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
+// @todo a large amount of refactoring required to de-dupe the clone and install functions
 object Silk {
 
   import SilkConfig._

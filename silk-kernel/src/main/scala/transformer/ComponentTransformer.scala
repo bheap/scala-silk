@@ -16,14 +16,15 @@
 
 package com.bheap.silk.transformer
 
-import scala.xml._
+import scala.xml.{XML => ScalaXML}
+import com.codecommit.antixml._
 
 import java.io.File
 
 import org.fusesource.scalate.scuery.Transformer
 
 import com.bheap.silk.datasource.Datasource
-import com.bheap.silk.utils.SilkConfig
+import com.bheap.silk.utils.{SilkConfig, SilkXML}
 
 /** Injects components.
   *
@@ -31,69 +32,33 @@ import com.bheap.silk.utils.SilkConfig
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-// @todo use path independent separator
-// @todo rudimentary draft only, ugly and makes assumptions about package and version
-// @todo transform component name element into relevant transformer somehow, currently hardcoded to SiteModified....
-// @todo remove duplication between div and span processing
-class ComponentTransformer(view: Node) extends Transformer {
+// @todo use path independent separators throughout
+object ComponentTransformer {
 
   import SilkConfig._
+  import SilkXML._
 
-  val viewDiv = (view \\ "div").filter(item => (item \ "@id").toString.contains("silk-component"))
-  viewDiv.foreach {
-    compItem =>
-      val id = (compItem \ "@id")(0).toString
-      val compDetails = getComponentDetails(id)
-
-      val dataPath = (for {
-          src <- compDetails.dsSource
-          sct <- compDetails.dsSection
-        }
-	      yield {src + "/" + sct}) getOrElse ""
-
-      val data = (new Datasource).get(dataPath)
-
-      val compXML = lookupComponent(compDetails)
-      
-      val transplantXML = if (compDetails.dsSource.isDefined) {
-        val constructor = classOf[SiteModifiedTimestampTransformer].getConstructors()(0)
-        val args = Array[AnyRef](data.get.toString)
-        val comp = constructor.newInstance(args:_*).asInstanceOf[Transformer]
-        comp(compXML)
-      } else compXML
-
-      val compDiv = (transplantXML \\ "div").find(item => (compItem \ "@id").text == id) 
-      $("div#" + id.replaceAll(":", "").replaceAll("/", "")).contents = compDiv.get
+  /** Transform components.
+    *
+    * First search for a local component, then a core component, finally
+    * default to the missing-component. */
+  // @todo currently hardcoded to only deal with div and span, review draft.. should Silk do more ?
+  def transformComponents(xml: Elem) = {
+    val divCompsTransformed = seekAndReplace(xml, 'div).head.asInstanceOf[Elem]
+    seekAndReplace(divCompsTransformed, 'span)
   }
 
-  val viewSpan = (view \\ "span").filter(item => (item \ "@id").toString.contains("silk-component"))
-  viewSpan.foreach {
-    compItem =>
-      val id = (compItem \ "@id")(0).toString
-      val compDetails = getComponentDetails(id)
-
-      val dataPath = (for {
-          src <- compDetails.dsSource
-          sct <- compDetails.dsSection
-        }
-	      yield {src + "/" + sct}) getOrElse ""
-
-      val data = (new Datasource).get(dataPath)
-
-      val compXML = lookupComponent(compDetails)
-      
-      val transplantXML = if (compDetails.dsSource.isDefined) {
-        val constructor = classOf[SiteModifiedTimestampTransformer].getConstructors()(0)
-        val args = Array[AnyRef](data.get.toString)
-        val comp = constructor.newInstance(args:_*).asInstanceOf[Transformer]
-        comp(compXML)
-      } else compXML
-
-      val compSpan = (transplantXML \\ "span").find(item => (compItem \ "@id").text == id) 
-      $("span#" + id.replaceAll(":", "").replaceAll("/", "")).contents = compSpan.get
+  /** Search and replace a Silk component with a given element name. */
+  def seekAndReplace(xml: Elem, sym: Symbol) = {
+    val compsReplace = findElements(xml, sym, "silk-component") map {
+      comp =>
+        val compDetails = getComponentDetails(comp.attrs("id"))
+        findElements(lookupComponent(compDetails), sym, "silk-component").head
+    }
+    compsReplace.unselect.unselect
   }
 
-  // @todo make this functional
+  // @todo make this functional, this is temporary and horrible code
   def getComponentDetails(id: String) = {
     val cIdBits = id.split(":")
     val cPathBits = cIdBits(1)
@@ -125,22 +90,23 @@ class ComponentTransformer(view: Node) extends Transformer {
     ComponentDetails(cPath getOrElse "", cName, dsFilter, dsSource, dsSection)
   }
 
+  // @todo rudimentary draft only, ugly and makes assumptions about package and version
   def lookupComponent(comp: ComponentDetails) = {
     val localComp = new File(userDirStr + "/component/" + comp.path + comp.name + ".html")
     val coreCompStr = userHomeDirStr + "/.silk/repositories/component/com/bheap/silk/" +
       comp.name + "/0.1.0/" + comp.name + ".html"
     val coreComp = new File(coreCompStr)
     if (localComp.exists) {
-      XML.loadFile(userDirStr + "/component/" + comp.path + comp.name + ".html")
+      ScalaXML.loadFile(userDirStr + "/component/" + comp.path + comp.name + ".html").convert
     } else if (coreComp.exists) {
-      XML.loadFile(coreCompStr)
+      ScalaXML.loadFile(coreCompStr).convert
     } else {
       val compBaseName = "component-missing"
-      val theme = dnaConfig.getString("site-prototype.theme")
+      val theme = "none" //dnaConfig.getString("site-prototype.theme")
       val compName = if (theme == "none") compBaseName else compBaseName + "-" + theme
-      XML.loadFile(System.getProperty("user.home") + 
+      ScalaXML.loadFile(System.getProperty("user.home") + 
         "/.silk/repositories/component/com/bheap/silk/" + 
-        compName + "/0.1.0/" + compName + ".html")
+        compName + "/0.1.0/" + compName + ".html").convert
     }
   }
 }

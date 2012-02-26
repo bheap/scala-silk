@@ -16,15 +16,40 @@
 
 package com.bheap.silk.transformer
 
-import scala.xml._
+import scala.xml.{XML => ScalaXML}
+import com.codecommit.antixml._
 
-import org.fusesource.scalate.scuery.Transformer
+import java.io.File
+
+import com.bheap.silk.utils.{SilkConfig, SilkXML}
 
 /** Transforms a view into a template wrapped view.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-class TemplateTransformer(viewNode: Node) extends Transformer {
-  val contentDiv = (viewNode \\ "div").find(item => (item \ "@id").text == "silk-view")
-  $("div#silk-template").contents = contentDiv.get
+// @todo read the silk master config to drive details such as template mechanism
+object TemplateTransformer {
+
+  import SilkConfig._
+  import SilkXML._
+
+  // @todo mechanism will be defined from Silk config
+  val templateDir = new File(userDir, "template")
+
+  /** Wrap each view in the relevant template.
+    *
+    * This effectively finalises a high level model for each view. 
+    *
+    * Template rules follow inheritance and convention.  Check in order;
+    * is a local template defined in the page (head furniture), is a
+    * specific external template specified (head furniture), if not
+    * fall back to the local default template, or the core default template.
+    */
+  // @todo create a core default template
+  def transformTemplateWrapped(xml: Elem) = {
+    val template = ScalaXML.loadFile(new File(templateDir, "default.html")).convert
+    val templateReplace = findElements(template, 'div, "silk-template")
+    val viewReplace = findElements(xml, 'div, "silk-view")
+    templateReplace.updated(0, viewReplace.head).unselect.unselect
+  }
 }

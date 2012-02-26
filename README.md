@@ -6,7 +6,7 @@ A Scala publishing toolkit from [bheap](http://www.bheap.co.uk) ltd
 
 ## Documentation
 
-Please see the [Silk site](http://silk.herokuapp.com) for documentation.
+Please see the [Silk site](http://silk.heroku.com) for documentation.
 
 ## Community
 

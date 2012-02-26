@@ -21,7 +21,8 @@ import scala.xml.transform._
 
 /** Transforms content in script tags ready for browser consumption.
   *
-  * Partially ported from some prototype code by <a href="mailto:barrie@bheap.co.uk">barrie@bheap.co.uk</a>.
+  * The replace operation element of this code was ported from some prototype code by 
+  * <a href="mailto:barrie@bheap.co.uk">barrie@bheap.co.uk</a>.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
