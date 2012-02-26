@@ -32,10 +32,7 @@ import com.bheap.silk.utils.{SilkConfig, SilkXML}
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-// @todo use path independent separator
-// @todo rudimentary draft only, ugly and makes assumptions about package and version
-// @todo transform component name element into relevant transformer somehow, currently hardcoded to SiteModified....
-// @todo remove duplication between div and span processing
+// @todo use path independent separators throughout
 object ComponentTransformer {
 
   import SilkConfig._
@@ -61,7 +58,7 @@ object ComponentTransformer {
     compsReplace.unselect.unselect
   }
 
-  // @todo make this functional
+  // @todo make this functional, this is temporary and horrible code
   def getComponentDetails(id: String) = {
     val cIdBits = id.split(":")
     val cPathBits = cIdBits(1)
@@ -93,6 +90,7 @@ object ComponentTransformer {
     ComponentDetails(cPath getOrElse "", cName, dsFilter, dsSource, dsSection)
   }
 
+  // @todo rudimentary draft only, ugly and makes assumptions about package and version
   def lookupComponent(comp: ComponentDetails) = {
     val localComp = new File(userDirStr + "/component/" + comp.path + comp.name + ".html")
     val coreCompStr = userHomeDirStr + "/.silk/repositories/component/com/bheap/silk/" +
