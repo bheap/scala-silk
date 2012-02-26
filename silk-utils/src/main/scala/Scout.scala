@@ -16,23 +16,21 @@
 
 package com.bheap.silk.utils
 
-import com.codecommit.antixml._
+import scala.util.matching.Regex
 
-/** Some handy utilities for querying and manipulating antixml.
+import java.io.File
+
+/** Convenience recursive directory scan.
+  *
+  * Used to detect structure of site to spin.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-object SilkXML {
+object Scout {
 
-  /** Searches an XML block for elements with a given name and a given id. */
-  def findElements(xml: Elem, sym: Symbol, sig: String) = {
-    xml \\ sym select Selector {case item: Elem if verifyAttribute(item.attrs, sig) => item }
-  }
-
-  /** A safe check for an attribute value. */
-  def verifyAttribute(att: Attributes, sig: String) = {
-    if (att.contains("id")) {
-	    att("id").contains(sig)
-    } else false
-  }
+  def getRecursiveFilesInDirectoryOfType(file: File, regex: Regex): List[File] = {
+	  val these = file.listFiles.toList
+	  val good = these.filter(item => regex.findFirstIn(item.getName).isDefined)
+	  good ++ these.filter(_.isDirectory).flatMap(getRecursiveFilesInDirectoryOfType(_,regex)).toList
+	}
 }

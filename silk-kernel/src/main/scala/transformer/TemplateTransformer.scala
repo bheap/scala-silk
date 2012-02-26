@@ -21,7 +21,7 @@ import com.codecommit.antixml._
 
 import java.io.File
 
-import com.bheap.silk.utils.{SilkConfig, SilkXML}
+import com.bheap.silk.utils.{Config, XML}
 
 /** Transforms a view into a template wrapped view.
   *
@@ -30,8 +30,8 @@ import com.bheap.silk.utils.{SilkConfig, SilkXML}
 // @todo read the silk master config to drive details such as template mechanism
 object TemplateTransformer {
 
-  import SilkConfig._
-  import SilkXML._
+  import Config._
+  import XML._
 
   // @todo mechanism will be defined from Silk config
   val templateDir = new File(userDir, "template")

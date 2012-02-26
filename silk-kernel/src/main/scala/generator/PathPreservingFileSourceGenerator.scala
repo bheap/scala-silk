@@ -21,7 +21,7 @@ import scala.xml._
 
 import java.io.File
 
-import com.bheap.silk.utils.SilkScout
+import com.bheap.silk.utils.Scout
 
 /** Defines some generators.
   *
@@ -36,6 +36,6 @@ object PathPreservingFileSourceGenerator {
   }
 
   def generateXmlFromFileSource(source: File, mimeType: Regex) = {
-    SilkScout.getRecursiveFilesInDirectoryOfType(source, mimeType)
+    Scout.getRecursiveFilesInDirectoryOfType(source, mimeType)
   }
 }

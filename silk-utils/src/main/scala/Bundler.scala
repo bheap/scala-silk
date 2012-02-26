@@ -24,7 +24,7 @@ import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-object SilkBundle {
+object Bundler {
   def bundle(src: File, dst: File) {
     if (src.isDirectory) {
       if(!dst.exists()) dst.mkdir

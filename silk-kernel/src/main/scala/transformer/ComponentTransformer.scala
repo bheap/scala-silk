@@ -24,7 +24,7 @@ import java.io.File
 import org.fusesource.scalate.scuery.Transformer
 
 import com.bheap.silk.datasource.Datasource
-import com.bheap.silk.utils.{SilkConfig, SilkXML}
+import com.bheap.silk.utils.{Config, XML}
 
 /** Injects components.
   *
@@ -35,8 +35,8 @@ import com.bheap.silk.utils.{SilkConfig, SilkXML}
 // @todo use path independent separators throughout
 object ComponentTransformer {
 
-  import SilkConfig._
-  import SilkXML._
+  import Config._
+  import XML._
 
   /** Transform components.
     *

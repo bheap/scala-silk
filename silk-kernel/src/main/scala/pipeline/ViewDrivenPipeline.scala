@@ -24,7 +24,7 @@ import java.io.{File, FileWriter}
 import com.bheap.silk.generator.{PathPreservingFileSourceGenerator => Generator}
 import com.bheap.silk.serialiser.Serialiser
 import com.bheap.silk.transformer.{ComponentTransformer, ScriptTransformer, TemplateTransformer, URIAttributeTransformer}
-import com.bheap.silk.utils.SilkBundle
+import com.bheap.silk.utils.Bundler
 
 /** Controls manipulation and representation of your site content.
   *
@@ -54,8 +54,8 @@ object ViewDrivenPipeline {
         val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)(0).asInstanceOf[Elem]
         val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToURIAttributeRewritten)
         writeView(viewFile, serialisedToHtml5)
-        SilkBundle.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
-		    SilkBundle.bundle(new File(userDir, "meta"), siteDir)
+        Bundler.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
+		    Bundler.bundle(new File(userDir, "meta"), siteDir)
     }
     //*val scriptTransformed = transformScripts(templatedViewsTransformed)*/
   }

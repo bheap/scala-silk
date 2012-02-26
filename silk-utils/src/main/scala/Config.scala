@@ -28,7 +28,7 @@ import com.typesafe.config._
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-object SilkConfig {
+object Config {
 
   val userHomeDirStr = System.getProperty("user.home")
   val userHomeDir = new File(userHomeDirStr)
