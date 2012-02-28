@@ -27,6 +27,7 @@ import com.typesafe.config._
   * As a side effect we also define some useful properties directly here.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
+  * @author <a href="mailto:nick.featch@gmail.com">schnick</a>
   * @since 1.0 */
 object Config {
 
@@ -37,10 +38,9 @@ object Config {
   val userDir = new File(userDirStr)
 
   val masterSilkConfig = new File(silkHomeDir, "silk.conf")
-  val localSilkConfigDir = new File(userDir, ".silk")
+  val localSilkConfigDir = new File(userDir, "config")
   val localSilkConfig = new File(localSilkConfigDir, "silk.conf")
-  val localDnaDir = new File(userDir, ".dna")
-  val localDnaConfig = new File(localDnaDir, "dna.conf")
+  val localDnaConfig = new File(localSilkConfigDir, "dna.conf")
 
   val silkConfig = if (localSilkConfig.exists) ConfigFactory.parseFile(localSilkConfig) else ConfigFactory.parseFile(masterSilkConfig)
   val dnaConfig = ConfigFactory.parseFile(localDnaConfig)
