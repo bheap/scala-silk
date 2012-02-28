@@ -28,6 +28,7 @@ import com.bheap.silk.utils.{Config, XML}
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 // @todo read the silk master config to drive details such as template mechanism
+// @todo template information should be passed in and decoupled from this transformer
 object TemplateTransformer {
 
   import Config._
