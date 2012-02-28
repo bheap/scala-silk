@@ -23,7 +23,7 @@ import java.io.{File, FileWriter}
 
 import com.bheap.silk.generator.{PathPreservingFileSourceGenerator => Generator}
 import com.bheap.silk.serialiser.Serialiser
-import com.bheap.silk.transformer.{ComponentTransformer, ScriptTransformer, TemplateTransformer, URIAttributeTransformer}
+import com.bheap.silk.transformer.{ComponentTransformer, TemplateTransformer, URIAttributeTransformer}
 import com.bheap.silk.utils.Bundler
 
 /** Controls manipulation and representation of your site content.
@@ -84,11 +84,4 @@ object ViewDrivenPipeline {
     out.flush
     out.close
   }
-
-  /*def transformScripts(views: List[Tuple2[File, Node]]) = {
-    views.map {
-      view =>
-        (view._1, ScriptTransformer(view._2))
-    }
-  }*/
 }
