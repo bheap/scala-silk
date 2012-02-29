@@ -67,9 +67,8 @@ object Silk {
     val packageDir = "/com/bheap/silk"
     if ((new File(silkDir)).exists) {
       if (config.prototype.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototype.getOrElse("noooooo")).exists)) {
-        val silkLocalDir = new File(userDir, ".silk")
-        if (!silkLocalDir.exists) silkLocalDir.mkdir
-        Bundler.bundleFile(new File(silkHomeDir, "silk.conf"), new File(silkLocalDir, "silk.conf"))
+        if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
+        Bundler.bundleFile(masterSilkConfig, localSilkConfig)
         val selectedProtoSite = config.prototype.get
         println("Cloning from site prototype : " + selectedProtoSite + "...")
         val prototypeSite = prototypeSiteDir + "/com/bheap/silk/" + selectedProtoSite
