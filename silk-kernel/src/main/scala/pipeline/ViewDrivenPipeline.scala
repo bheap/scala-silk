@@ -23,7 +23,7 @@ import java.io.{File, FileWriter}
 
 import com.bheap.silk.generator.{PathPreservingFileSourceGenerator => Generator}
 import com.bheap.silk.serialiser.Serialiser
-import com.bheap.silk.transformer.{ComponentTransformer, TemplateTransformer, URIAttributeTransformer}
+import com.bheap.silk.transformer.{ComponentTransformer, ScriptTransformer, TemplateTransformer, URIAttributeTransformer}
 import com.bheap.silk.utils.Bundler
 
 /** Controls manipulation and representation of your site content.
@@ -52,12 +52,13 @@ object ViewDrivenPipeline {
         val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)(0).asInstanceOf[Elem]
         val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)(0).asInstanceOf[Elem]
         val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)(0).asInstanceOf[Elem]
-        val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToURIAttributeRewritten)
+        // note now we switch back to ScalaXML for script transformation and serialisatin
+        val transformedToSaneScript = ScriptTransformer(ScalaXML.loadString(transformedToURIAttributeRewritten.toString))
+        val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToSaneScript)
         writeView(viewFile, serialisedToHtml5)
         Bundler.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
 		    Bundler.bundle(new File(userDir, "meta"), siteDir)
     }
-    //*val scriptTransformed = transformScripts(templatedViewsTransformed)*/
   }
 
   /** Rewrite URI attributes for all relevant element types.

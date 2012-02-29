@@ -16,9 +16,7 @@
 
 package com.bheap.silk.serialiser
 
-import scala.xml.{Xhtml, XML => ScalaXML}
-
-import com.codecommit.antixml._
+import scala.xml._
 
 import java.io.{File, FileWriter}
 
@@ -30,9 +28,8 @@ import java.io.{File, FileWriter}
   * @since 1.0 */
 object Serialiser {
 
-  def serialiseToHtml5(xml: Elem) = {
-    val scalaConvert = ScalaXML.loadString(xml.toString)
-    Xhtml.toXhtml(scalaConvert).replace("<html>", "<!doctype html><html>")
+  def serialiseToHtml5(node: Node) = {
+    Xhtml.toXhtml(node).replace("<html>", "<!doctype html><html>")
   }
 
   /*def serialiseToHtml5WithIE(node: Node) = {
