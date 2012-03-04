@@ -32,7 +32,6 @@ import com.bheap.silk.utils.{Config, XML}
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-// @todo use path independent separators throughout
 object ComponentTransformer {
 
   import Config._
