@@ -24,7 +24,7 @@ import java.io.{File, FileWriter}
 import com.bheap.silk.generator.{PathPreservingFileSourceGenerator => Generator}
 import com.bheap.silk.serialiser.Serialiser
 import com.bheap.silk.transformer.{ComponentTransformer, ScriptTransformer, TemplateTransformer, URIAttributeTransformer}
-import com.bheap.silk.utils.Bundler
+import com.bheap.silk.utils.{Bundler, Config}
 
 /** Controls manipulation and representation of your site content.
   *
@@ -78,8 +78,8 @@ object ViewDrivenPipeline {
   }
 
   def writeView(file: File, view: String) {
-    val fPath = new File(file.getParent.replace("/view", "/site"))
-    if (!fPath.exists) new File(file.getParent.replace("/view", "/site")).mkdirs
+    val fPath = new File(file.getParent.replace(Config.fs + "view", Config.fs + "site"))
+    if (!fPath.exists) new File(file.getParent.replace(Config.fs + "view", Config.fs + "site")).mkdirs
     val out = new FileWriter(new File(fPath, file.getName))
     out.write(view)
     out.flush
