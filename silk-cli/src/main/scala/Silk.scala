@@ -62,18 +62,12 @@ object Silk {
   }
 
   def siteClone(config: Config) {
-    val silkDir = userHomeDirStr + "/.silk"
-    val prototypeSiteDir = silkDir + "/repositories/site-prototype"
-    val packageDir = "/com/bheap/silk"
-    if ((new File(silkDir)).exists) {
-      if (config.prototype.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototype.getOrElse("noooooo")).exists)) {
+    if (silkHomeDir.exists) {
+      if (new File(siteProtoDir,  corePackageDir + fs + config.prototype.getOrElse("nooo")).exists) {
         if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
         Bundler.bundleFile(masterSilkConfig, localSilkConfig)
-        val selectedProtoSite = config.prototype.get
-        println("Cloning from site prototype : " + selectedProtoSite + "...")
-        val prototypeSite = prototypeSiteDir + "/com/bheap/silk/" + selectedProtoSite
-        val silkVersion = "0.1.0"
-        Bundler.bundle(new File(prototypeSite + "/" + silkVersion), userDir)
+        println("Cloning from site prototype : " + config.prototype.get + "...")
+        Bundler.bundle(new File(siteProtoDir,  corePackageDir + fs + config.prototype.get + fs + "0.1.0"), userDir)
         println("Silk site prototype clone complete")
       } else println("No site prototype found with that id, please run silk sites")
     } else println("Please run silk update, there are no site prototypes on your system")
@@ -96,16 +90,10 @@ object Silk {
   }
 
   def componentClone(config: Config) {
-    val silkDir = userHomeDirStr + "/.silk"
-    val componentDir = silkDir + "/repositories/component"
-    val packageDir = "/com/bheap/silk"
-    if ((new File(silkDir)).exists) {
-      if (config.prototype.isDefined && (new File(componentDir + packageDir + "/" + config.prototype.getOrElse("noooooo")).exists)) {
-        val selectedComponent = config.prototype.get
-        println("Cloning from component : " + selectedComponent + "...")
-        val component = componentDir + "/com/bheap/silk/" + selectedComponent
-        val silkVersion = "0.1.0"
-        Bundler.bundle(new File(component + "/" + silkVersion), userDir)
+    if (silkHomeDir.exists) {
+      if (new File(compDir,  corePackageDir + fs + config.prototype.getOrElse("nooo")).exists) {
+        println("Cloning from component : " + config.prototype.get + "...")
+        Bundler.bundle(new File(compDir, corePackageDir + fs + config.prototype.get + fs + "0.1.0"), userDir)
         println("Silk component clone complete")
       } else println("No component found with that id, please run silk components")
     } else println("Please run silk update, there are no components on your system")
