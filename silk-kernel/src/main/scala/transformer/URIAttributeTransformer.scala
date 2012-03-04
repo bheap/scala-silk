@@ -42,11 +42,11 @@ class URIAttributeTransformer(element: String, attribute: String, view: File) ex
       if (currentHref.contains("http:") || currentHref.contains("mailto:") || currentHref.contains("https:") || currentHref.contains("feed:") || currentHref.startsWith("#")) currentHref
       else {
         val rootPath = userDirStr + fs + "view" + fs
-        val viewDepth = (view.toString.split(rootPath).last count (item => item == fsChar)) + 1
+        val viewDepth = (view.toString.split(rootPath.replace("\\", "\\\\")).last count (item => item == fsChar)) + 1
         val urlDepth = currentHref count (item => item == fsChar)
         if (viewDepth > 1) {
           val urlSubPath = if (urlDepth == 0) "" else {
-            (new File(rootPath + currentHref)).getParentFile.toString.split(rootPath).last
+            (new File(rootPath + currentHref)).getParentFile.toString.split(rootPath.replace("\\", "\\\\")).last
           }
           val urlPath = new File(rootPath + urlSubPath)
           val pathDiff = PathUtils.relativize(view.getParentFile, urlPath)
