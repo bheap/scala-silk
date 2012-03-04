@@ -73,8 +73,6 @@ object Dependencies {
   val config    = "com.typesafe.config"    % "config"                   % "0.2.0"    % "compile"
   //val scalate   = "org.fusesource.scalate" % "scalate-core"             % "1.6.0-SNAPSHOT" % "compile"
   val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % "1.1.2"    % "compile"
-  val uff       = "net.databinder"         %  "unfiltered-filter_2.8.1" % uf_version % "compile"
-  val ufj       = "net.databinder"         %  "unfiltered-jetty_2.8.1"  % uf_version % "compile"
   val scalatest = "org.scalatest"          % "scalatest_2.9.0"          % "1.4.1"    % "test"
 }
 
@@ -87,7 +85,6 @@ object SilkBuild extends Build {
   val cfDeps = Seq(config)
   //val scDeps = Seq(scalate)
   val soDeps = Seq(scopt)
-  val ufDeps = Seq(uff, ufj)
 
   //jarName in Assembly := "silk.jar"
 
@@ -101,11 +98,7 @@ object SilkBuild extends Build {
   lazy val kernel = Project(
     id = "silk-kernel",
     base = file("silk-kernel"),
-    dependencies = Seq(utils),
-    settings = buildSettings ++ Seq(
-      libraryDependencies ++= ufDeps,
-      resolvers := Seq(fSnapshots)
-    )
+    dependencies = Seq(utils)
   ) settings(assemblySettings: _*)
 
   lazy val utils = Project(
