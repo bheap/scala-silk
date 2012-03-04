@@ -33,18 +33,23 @@ object Config {
 
   // Our platform specific separator
   val fs = File.separator
+  val fsCharArr = fs.toCharArray
+  val fsChar = fsCharArr(0)
 
   // Home Dir related
   val userHomeDirStr = System.getProperty("user.home")
   val userHomeDir = new File(userHomeDirStr)
-  val silkHomeDir = new File(userHomeDir, ".silk")
+  val silkHomeStr = userHomeDirStr + fs + ".silk"
+  val silkHomeDir = new File(silkHomeStr)
 
   // Core directory structures
-  val compDir = new File(silkHomeDir, "repositories" + fs + "component")
-  val siteProtoDir = new File(silkHomeDir, "repositories" + fs + "site-prototype")
+  val compStr = silkHomeStr + fs + "repositories" + fs + "component"
+  val compDir = new File(compStr)
+  val siteProtoStr = silkHomeStr + fs + "repositories" + fs + "site-prototype"
+  val siteProtoDir = new File(siteProtoStr)
 
   // Core package
-  val corePackageDir = "com" + fs + "bheap" + fs + "silk"
+  val corePkgStr = "com" + fs + "bheap" + fs + "silk"
 
   // User current Dir related
   val userDirStr = System.getProperty("user.dir")
