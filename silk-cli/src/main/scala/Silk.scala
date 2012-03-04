@@ -74,15 +74,13 @@ object Silk {
   }
 
   def siteInstall {
-    val silkDir = userHomeDirStr + "/.silk"
-    val prototypeSiteDir = silkDir + "/repositories/site-prototype"
-    val pkg = dnaConfig.getString("site-prototype.package").replace(".", "/")
+    val pkg = dnaConfig.getString("site-prototype.package").replace(".", fs)
     val id = dnaConfig.getString("site-prototype.id")
     val silkVersion = dnaConfig.getString("site-prototype.silk-version")
     println("Installing site prototype : " + id)
     println("package is : " + pkg)
     println("silk version is : " + silkVersion)
-    val specificSP = new File(prototypeSiteDir + "/" + pkg + "/" + id + "/" + silkVersion)
+    val specificSP = new File(siteProtoDir + fs + pkg + fs + id + fs + silkVersion)
     if (specificSP.exists) specificSP.delete
     specificSP.mkdirs
     Bundler.bundle(userDir, specificSP)
@@ -100,15 +98,13 @@ object Silk {
   }
 
   def componentInstall {
-    val silkDir = userHomeDirStr + "/.silk"
-    val componentDir = silkDir + "/repositories/component"
-    val pkg = dnaConfig.getString("component.package").replace(".", "/")
+    val pkg = dnaConfig.getString("component.package").replace(".", fs)
     val id = dnaConfig.getString("component.id")
     val silkVersion = dnaConfig.getString("component.silk-version")
     println("Installing component : " + id)
     println("package is : " + pkg)
     println("silk version is : " + silkVersion)
-    val specificComp = new File(componentDir + "/" + pkg + "/" + id + "/" + silkVersion)
+    val specificComp = new File(compDir + fs + pkg + fs + id + fs + silkVersion)
     if (specificComp.exists) specificComp.delete
     specificComp.mkdirs
     Bundler.bundle(userDir, specificComp)
