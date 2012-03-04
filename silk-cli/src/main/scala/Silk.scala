@@ -32,6 +32,7 @@ import com.bheap.silk.utils.{Bundler, Config => SilkConfig}
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 // @todo a large amount of refactoring required to de-dupe the clone and install functions
+// @todo use package and version capabilities to enable community site prototypes and components
 object Silk {
 
   import SilkConfig._
@@ -62,33 +63,25 @@ object Silk {
   }
 
   def siteClone(config: Config) {
-    val silkDir = userHomeDirStr + "/.silk"
-    val prototypeSiteDir = silkDir + "/repositories/site-prototype"
-    val packageDir = "/com/bheap/silk"
-    if ((new File(silkDir)).exists) {
-      if (config.prototype.isDefined && (new File(prototypeSiteDir + packageDir + "/" + config.prototype.getOrElse("noooooo")).exists)) {
+    if (silkHomeDir.exists) {
+      if (new File(siteProtoDir,  corePkgStr + fs + config.prototype.getOrElse("nooo")).exists) {
         if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
         Bundler.bundleFile(masterSilkConfig, localSilkConfig)
-        val selectedProtoSite = config.prototype.get
-        println("Cloning from site prototype : " + selectedProtoSite + "...")
-        val prototypeSite = prototypeSiteDir + "/com/bheap/silk/" + selectedProtoSite
-        val silkVersion = "0.1.0"
-        Bundler.bundle(new File(prototypeSite + "/" + silkVersion), userDir)
+        println("Cloning from site prototype : " + config.prototype.get + "...")
+        Bundler.bundle(new File(siteProtoDir,  corePkgStr + fs + config.prototype.get + fs + "0.1.0"), userDir)
         println("Silk site prototype clone complete")
       } else println("No site prototype found with that id, please run silk sites")
     } else println("Please run silk update, there are no site prototypes on your system")
   }
 
   def siteInstall {
-    val silkDir = userHomeDirStr + "/.silk"
-    val prototypeSiteDir = silkDir + "/repositories/site-prototype"
-    val pkg = dnaConfig.getString("site-prototype.package").replace(".", "/")
+    val pkg = dnaConfig.getString("site-prototype.package").replace(".", fs)
     val id = dnaConfig.getString("site-prototype.id")
     val silkVersion = dnaConfig.getString("site-prototype.silk-version")
     println("Installing site prototype : " + id)
     println("package is : " + pkg)
     println("silk version is : " + silkVersion)
-    val specificSP = new File(prototypeSiteDir + "/" + pkg + "/" + id + "/" + silkVersion)
+    val specificSP = new File(siteProtoDir + fs + pkg + fs + id + fs + silkVersion)
     if (specificSP.exists) specificSP.delete
     specificSP.mkdirs
     Bundler.bundle(userDir, specificSP)
@@ -96,31 +89,23 @@ object Silk {
   }
 
   def componentClone(config: Config) {
-    val silkDir = userHomeDirStr + "/.silk"
-    val componentDir = silkDir + "/repositories/component"
-    val packageDir = "/com/bheap/silk"
-    if ((new File(silkDir)).exists) {
-      if (config.prototype.isDefined && (new File(componentDir + packageDir + "/" + config.prototype.getOrElse("noooooo")).exists)) {
-        val selectedComponent = config.prototype.get
-        println("Cloning from component : " + selectedComponent + "...")
-        val component = componentDir + "/com/bheap/silk/" + selectedComponent
-        val silkVersion = "0.1.0"
-        Bundler.bundle(new File(component + "/" + silkVersion), userDir)
+    if (silkHomeDir.exists) {
+      if (new File(compDir,  corePkgStr + fs + config.prototype.getOrElse("nooo")).exists) {
+        println("Cloning from component : " + config.prototype.get + "...")
+        Bundler.bundle(new File(compDir, corePkgStr + fs + config.prototype.get + fs + "0.1.0"), userDir)
         println("Silk component clone complete")
       } else println("No component found with that id, please run silk components")
     } else println("Please run silk update, there are no components on your system")
   }
 
   def componentInstall {
-    val silkDir = userHomeDirStr + "/.silk"
-    val componentDir = silkDir + "/repositories/component"
-    val pkg = dnaConfig.getString("component.package").replace(".", "/")
+    val pkg = dnaConfig.getString("component.package").replace(".", fs)
     val id = dnaConfig.getString("component.id")
     val silkVersion = dnaConfig.getString("component.silk-version")
     println("Installing component : " + id)
     println("package is : " + pkg)
     println("silk version is : " + silkVersion)
-    val specificComp = new File(componentDir + "/" + pkg + "/" + id + "/" + silkVersion)
+    val specificComp = new File(compDir + fs + pkg + fs + id + fs + silkVersion)
     if (specificComp.exists) specificComp.delete
     specificComp.mkdirs
     Bundler.bundle(userDir, specificComp)

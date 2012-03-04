@@ -31,17 +31,41 @@ import com.typesafe.config._
   * @since 1.0 */
 object Config {
 
+  // Our platform specific separator
+  val fs = File.separator
+  val fsCharArr = fs.toCharArray
+  val fsChar = fsCharArr(0)
+
+  // Home Dir related
   val userHomeDirStr = System.getProperty("user.home")
   val userHomeDir = new File(userHomeDirStr)
-  val silkHomeDir = new File(userHomeDir, ".silk")
+  val silkHomeStr = userHomeDirStr + fs + ".silk"
+  val silkHomeDir = new File(silkHomeStr)
+
+  // Core directory structures
+  val compStr = silkHomeStr + fs + "repositories" + fs + "component"
+  val compDir = new File(compStr)
+  val siteProtoStr = silkHomeStr + fs + "repositories" + fs + "site-prototype"
+  val siteProtoDir = new File(siteProtoStr)
+
+  // Core package
+  val corePkgStr = "com" + fs + "bheap" + fs + "silk"
+
+  // User current Dir related
   val userDirStr = System.getProperty("user.dir")
   val userDir = new File(userDirStr)
 
+  // Master config file
   val masterSilkConfig = new File(silkHomeDir, "silk.conf")
+
+  // Local config files
   val localSilkConfigDir = new File(userDir, "config")
   val localSilkConfig = new File(localSilkConfigDir, "silk.conf")
   val localDnaConfig = new File(localSilkConfigDir, "dna.conf")
 
+  // There may be a local Silk conf which can override master Silk conf
   val silkConfig = if (localSilkConfig.exists) ConfigFactory.parseFile(localSilkConfig) else ConfigFactory.parseFile(masterSilkConfig)
+
+  // There is always a dna.conf
   val dnaConfig = ConfigFactory.parseFile(localDnaConfig)
 }

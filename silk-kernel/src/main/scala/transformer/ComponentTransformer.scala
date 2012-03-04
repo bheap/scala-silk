@@ -63,26 +63,26 @@ object ComponentTransformer {
     val cIdBits = id.split(":")
     val cPathBits = cIdBits(1)
     val cDatasourceBits: Option[String] = if (cIdBits.size > 2) Some(cIdBits(2)) else None
-    val cPath: Option[String] = if (cPathBits.contains("/")) Some(cPathBits.split("/").head + "/") else None
-    val cName = if (cPathBits.contains("/")) cPathBits.split("/").last else cPathBits
+    val cPath: Option[String] = if (cPathBits.contains(fs)) Some(cPathBits.split(fs).head) else None
+    val cName = if (cPathBits.contains(fs)) cPathBits.split(fs).last else cPathBits
 
     val dsFilter = if (cDatasourceBits.isDefined) {
       val cdb = cDatasourceBits.get
-      if (cdb.count(_ == '/') > 1) Some(cdb.split("/").head) else None
+      if (cdb.count(_ == fsChar) > 1) Some(cdb.split(fs).head) else None
     } else {
       None
     }
 
     val dsSource = if (cDatasourceBits.isDefined) {
       val cdb = cDatasourceBits.get
-      if (cdb.count(_ == '/') > 1) Some(cdb.split("/").tail.head) else Some(cdb.split("/").head)
+      if (cdb.count(_ == fsChar) > 1) Some(cdb.split(fs).tail.head) else Some(cdb.split(fs).head)
     } else {
       None
     }
 
     val dsSection = if (cDatasourceBits.isDefined) {
       val cdb = cDatasourceBits.get
-      Some(cdb.split("/").last)
+      Some(cdb.split(fs).last)
     } else {
       None
     }
@@ -92,21 +92,18 @@ object ComponentTransformer {
 
   // @todo rudimentary draft only, ugly and makes assumptions about package and version
   def lookupComponent(comp: ComponentDetails) = {
-    val localComp = new File(userDirStr + "/component/" + comp.path + comp.name + ".html")
-    val coreCompStr = userHomeDirStr + "/.silk/repositories/component/com/bheap/silk/" +
-      comp.name + "/0.1.0/" + comp.name + ".html"
+    val localComp = new File(userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html")
+    val coreCompStr = compStr + fs + corePkgStr + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
     val coreComp = new File(coreCompStr)
     if (localComp.exists) {
-      ScalaXML.loadFile(userDirStr + "/component/" + comp.path + comp.name + ".html").convert
+      ScalaXML.loadFile(localComp.toString).convert
     } else if (coreComp.exists) {
       ScalaXML.loadFile(coreCompStr).convert
     } else {
       val compBaseName = "component-missing"
       val theme = "none" //dnaConfig.getString("site-prototype.theme")
       val compName = if (theme == "none") compBaseName else compBaseName + "-" + theme
-      ScalaXML.loadFile(System.getProperty("user.home") + 
-        "/.silk/repositories/component/com/bheap/silk/" + 
-        compName + "/0.1.0/" + compName + ".html").convert
+      ScalaXML.loadFile(compStr + fs + corePkgStr + fs + compName + fs + "0.1.0" + fs + compName + ".html").convert
     }
   }
 }
