@@ -31,7 +31,7 @@ import com.bheap.silk.utils.{Bundler, Config => SilkConfig}
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-// @todo a large amount of refactoring required to de-dupe the clone and install functions
+// @todo refactoring required to de-dupe the clone and install functions
 // @todo use package and version capabilities to enable community site prototypes and components
 object Silk {
 
