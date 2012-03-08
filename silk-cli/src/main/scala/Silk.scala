@@ -61,7 +61,7 @@ object Silk {
     }
   }
 
-  // artifactName name is either 'component' or 'site-prototype'
+  // artifactName is either 'component' or 'site-prototype'
   def artifactClone(prototype: Option[String], artifactName: String, artifactBase: File) {
     if (silkHomeDir.exists) {
       if (new File(artifactBase + fs + corePkgStr + fs + prototype.getOrElse("nooo")).exists) {
