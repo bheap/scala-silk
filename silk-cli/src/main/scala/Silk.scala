@@ -41,7 +41,7 @@ object Silk {
 
     val tasks = "(update|sites|site-clone|site-install|components|component-clone|component-install|spin)"
 
-    var config = new Config()
+    var config = Config()
 
     val parser = new OptionParser("silk") {
       opt("t", "task", "task is a string property " + tasks, {t: String => config.task = Some(t)})
