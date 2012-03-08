@@ -61,7 +61,13 @@ object Silk {
     }
   }
 
-  // artifactName is either 'component' or 'site-prototype'
+  /** Clone an artifact.
+    *
+    * Currently either a Site Prototype or a Component.
+    *
+    * @param prototype Option[String] an id for a site-prototype or component
+    * @param artifactName String either 'site-prototype' or 'component'
+    * @param artifactBase File a root directory */
   def artifactClone(prototype: Option[String], artifactName: String, artifactBase: File) {
     if (silkHomeDir.exists) {
       if (new File(artifactBase + fs + corePkgStr + fs + prototype.getOrElse("nooo")).exists) {
@@ -75,7 +81,12 @@ object Silk {
     } else println("Please run silk update, your system is not setup properly")
   }
 
-  // artifactName is either 'component' or 'site-prototype'
+  /** Install an artifact.
+    *
+    * Currently either a Site Prototype or a Component.
+    *
+    * @param artifactName String either 'site-prototype' or 'component'
+    * @param artifactBase File a root directory */
   def artifactInstall(artifactName: String, artifactBase: File) {
     val pkg = dnaConfig.getString(artifactName + ".package").replace(".", fs)
     val id = dnaConfig.getString(artifactName + ".id")
