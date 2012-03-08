@@ -50,9 +50,9 @@ object Silk {
 
     if (parser.parse(args)) {
       config.task.get match {
-        case "site-clone" => siteClone(config)
+        case "site-clone" => siteClone(config.prototype)
         case "site-install" => artifactInstall("site-prototype", siteProtoDir)
-        case "component-clone" => componentClone(config)
+        case "component-clone" => componentClone(config.prototype)
         case "component-install" => artifactInstall("component", compDir)
         case "spin" => spin
         case _ => println("Sorry, not a valid action, please try " + tasks)
@@ -62,23 +62,23 @@ object Silk {
     }
   }
 
-  def siteClone(config: Config) {
+  def siteClone(prototype: Option[String]) {
     if (silkHomeDir.exists) {
-      if (new File(siteProtoDir,  corePkgStr + fs + config.prototype.getOrElse("nooo")).exists) {
+      if (new File(siteProtoDir,  corePkgStr + fs + prototype.getOrElse("nooo")).exists) {
         if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
         Bundler.bundleFile(masterSilkConfig, localSilkConfig)
-        println("Cloning from site prototype : " + config.prototype.get + "...")
-        Bundler.bundle(new File(siteProtoDir,  corePkgStr + fs + config.prototype.get + fs + "0.1.0"), userDir)
+        println("Cloning from site prototype : " + prototype.get + "...")
+        Bundler.bundle(new File(siteProtoDir,  corePkgStr + fs + prototype.get + fs + "0.1.0"), userDir)
         println("Silk site prototype clone complete")
       } else println("No site prototype found with that id, please run silk sites")
     } else println("Please run silk update, there are no site prototypes on your system")
   }
 
-  def componentClone(config: Config) {
+  def componentClone(prototype: Option[String]) {
     if (silkHomeDir.exists) {
-      if (new File(compDir,  corePkgStr + fs + config.prototype.getOrElse("nooo")).exists) {
-        println("Cloning from component : " + config.prototype.get + "...")
-        Bundler.bundle(new File(compDir, corePkgStr + fs + config.prototype.get + fs + "0.1.0"), userDir)
+      if (new File(compDir,  corePkgStr + fs + prototype.getOrElse("nooo")).exists) {
+        println("Cloning from component : " + prototype.get + "...")
+        Bundler.bundle(new File(compDir, corePkgStr + fs + prototype.get + fs + "0.1.0"), userDir)
         println("Silk component clone complete")
       } else println("No component found with that id, please run silk components")
     } else println("Please run silk update, there are no components on your system")
