@@ -31,7 +31,7 @@ import com.bheap.silk.utils.{Bundler, Config => SilkConfig}
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-// @todo refactoring required to de-dupe the clone and install functions
+// @todo refactoring required to de-dupe the clone functions
 // @todo use package and version capabilities to enable community site prototypes and components
 object Silk {
 
@@ -51,9 +51,9 @@ object Silk {
     if (parser.parse(args)) {
       config.task.get match {
         case "site-clone" => siteClone(config)
-        case "site-install" => siteInstall
+        case "site-install" => artifactInstall("site-prototype", siteProtoDir)
         case "component-clone" => componentClone(config)
-        case "component-install" => componentInstall
+        case "component-install" => artifactInstall("component", compDir)
         case "spin" => spin
         case _ => println("Sorry, not a valid action, please try " + tasks)
       }
@@ -74,20 +74,6 @@ object Silk {
     } else println("Please run silk update, there are no site prototypes on your system")
   }
 
-  def siteInstall {
-    val pkg = dnaConfig.getString("site-prototype.package").replace(".", fs)
-    val id = dnaConfig.getString("site-prototype.id")
-    val silkVersion = dnaConfig.getString("site-prototype.silk-version")
-    println("Installing site prototype : " + id)
-    println("package is : " + pkg)
-    println("silk version is : " + silkVersion)
-    val specificSP = new File(siteProtoDir + fs + pkg + fs + id + fs + silkVersion)
-    if (specificSP.exists) specificSP.delete
-    specificSP.mkdirs
-    Bundler.bundle(userDir, specificSP)
-    println("Silk site install complete")
-  }
-
   def componentClone(config: Config) {
     if (silkHomeDir.exists) {
       if (new File(compDir,  corePkgStr + fs + config.prototype.getOrElse("nooo")).exists) {
@@ -98,18 +84,19 @@ object Silk {
     } else println("Please run silk update, there are no components on your system")
   }
 
-  def componentInstall {
-    val pkg = dnaConfig.getString("component.package").replace(".", fs)
-    val id = dnaConfig.getString("component.id")
-    val silkVersion = dnaConfig.getString("component.silk-version")
-    println("Installing component : " + id)
+  // artifactName is either 'component' or 'site-prototype'
+  def artifactInstall(artifactName: String, artifactBase: File) {
+    val pkg = dnaConfig.getString(artifactName + ".package").replace(".", fs)
+    val id = dnaConfig.getString(artifactName + ".id")
+    val silkVersion = dnaConfig.getString(artifactName + ".silk-version")
+    println("Installing %s : %s".format(artifactName, id))
     println("package is : " + pkg)
     println("silk version is : " + silkVersion)
-    val specificComp = new File(compDir + fs + pkg + fs + id + fs + silkVersion)
-    if (specificComp.exists) specificComp.delete
-    specificComp.mkdirs
-    Bundler.bundle(userDir, specificComp)
-    println("Silk component install complete")
+    val artifactFile = new File(artifactBase + fs + pkg + fs + id + fs + silkVersion)
+    if (artifactFile.exists) artifactFile.delete
+    artifactFile.mkdirs
+    Bundler.bundle(userDir, artifactFile)
+    println("Silk " + artifactName + " install complete")
   }
 
   // @todo determine pipeline from Silk config
