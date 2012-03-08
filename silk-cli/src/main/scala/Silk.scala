@@ -31,7 +31,6 @@ import com.bheap.silk.utils.{Bundler, Config => SilkConfig}
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-// @todo refactoring required to de-dupe the clone functions
 // @todo use package and version capabilities to enable community site prototypes and components
 object Silk {
 
@@ -50,9 +49,9 @@ object Silk {
 
     if (parser.parse(args)) {
       config.task.get match {
-        case "site-clone" => siteClone(config.prototype)
+        case "site-clone" => artifactClone(config.prototype, "site-prototype", siteProtoDir)
         case "site-install" => artifactInstall("site-prototype", siteProtoDir)
-        case "component-clone" => componentClone(config.prototype)
+        case "component-clone" => artifactClone(config.prototype, "component", compDir)
         case "component-install" => artifactInstall("component", compDir)
         case "spin" => spin
         case _ => println("Sorry, not a valid action, please try " + tasks)
@@ -62,26 +61,18 @@ object Silk {
     }
   }
 
-  def siteClone(prototype: Option[String]) {
+  // artifactName name is either 'component' or 'site-prototype'
+  def artifactClone(prototype: Option[String], artifactName: String, artifactBase: File) {
     if (silkHomeDir.exists) {
-      if (new File(siteProtoDir,  corePkgStr + fs + prototype.getOrElse("nooo")).exists) {
-        if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
-        Bundler.bundleFile(masterSilkConfig, localSilkConfig)
-        println("Cloning from site prototype : " + prototype.get + "...")
-        Bundler.bundle(new File(siteProtoDir,  corePkgStr + fs + prototype.get + fs + "0.1.0"), userDir)
-        println("Silk site prototype clone complete")
-      } else println("No site prototype found with that id, please run silk sites")
-    } else println("Please run silk update, there are no site prototypes on your system")
-  }
-
-  def componentClone(prototype: Option[String]) {
-    if (silkHomeDir.exists) {
-      if (new File(compDir,  corePkgStr + fs + prototype.getOrElse("nooo")).exists) {
-        println("Cloning from component : " + prototype.get + "...")
-        Bundler.bundle(new File(compDir, corePkgStr + fs + prototype.get + fs + "0.1.0"), userDir)
-        println("Silk component clone complete")
-      } else println("No component found with that id, please run silk components")
-    } else println("Please run silk update, there are no components on your system")
+      if (new File(artifactBase + fs + corePkgStr + fs + prototype.getOrElse("nooo")).exists) {
+        if (artifactName.equals("site-prototype")) {
+          if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
+          Bundler.bundleFile(masterSilkConfig, localSilkConfig)
+        }
+        Bundler.bundle(new File(artifactBase + fs + corePkgStr + fs + prototype.get + fs + "0.1.0"), userDir)
+        println("Silk %s : %s clone complete".format(artifactName, prototype.get))
+      } else println("Sorry, no artifact found with that id")
+    } else println("Please run silk update, your system is not setup properly")
   }
 
   // artifactName is either 'component' or 'site-prototype'
@@ -89,14 +80,13 @@ object Silk {
     val pkg = dnaConfig.getString(artifactName + ".package").replace(".", fs)
     val id = dnaConfig.getString(artifactName + ".id")
     val silkVersion = dnaConfig.getString(artifactName + ".silk-version")
-    println("Installing %s : %s".format(artifactName, id))
     println("package is : " + pkg)
     println("silk version is : " + silkVersion)
     val artifactFile = new File(artifactBase + fs + pkg + fs + id + fs + silkVersion)
     if (artifactFile.exists) artifactFile.delete
     artifactFile.mkdirs
     Bundler.bundle(userDir, artifactFile)
-    println("Silk " + artifactName + " install complete")
+    println("Silk %s : %s install complete".format(artifactName, id))
   }
 
   // @todo determine pipeline from Silk config
