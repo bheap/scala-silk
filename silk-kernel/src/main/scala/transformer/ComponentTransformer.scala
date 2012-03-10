@@ -89,7 +89,7 @@ object ComponentTransformer {
     ComponentDetails(cPath getOrElse "", cName, dsFilter, dsSource, dsSection)
   }
 
-  // @todo rudimentary draft only, ugly and makes assumptions about package and version
+  // @todo rudimentary draft only, ugly and makes assumptions about package, version and theme
   def lookupComponent(comp: ComponentDetails) = {
     val localComp = new File(userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html")
     val coreCompStr = compStr + fs + corePkgStr + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
