@@ -62,9 +62,26 @@ object ComponentTransformer {
     val compsReplace = findElements(xml, sym, "silk-component") map {
       comp =>
         val compDetails = getComponentDetails(comp.attrs("id"))
-        findElements(lookupComponent(compDetails), sym, "silk-component").head
+        val componentContent = findElements(lookupComponent(compDetails), sym, "silk-component").head
+
+        (for {
+          datasource <- compDetails.dsSource
+          datasection <- compDetails.dsSection
+          transformedComponent <- transformDynamicComponent(datasource, datasection, componentContent)
+		    } yield transformedComponent) getOrElse componentContent
     }
     compsReplace.unselect.unselect
+  }
+
+  /** Return transformed dynamic component.
+    *
+    * @param datasource the component datasource
+    * @param datasection the component datasection */
+  def transformDynamicComponent(datasource: String, datasection: String, componentContent: Elem) = {
+    val data = (new Datasource).get(datasource + "/" + datasection)
+    val dynCompTrans = new DynamicComponentTransformer(data.get.toString)
+    val dynTransContent = dynCompTrans(ScalaXML.loadString(componentContent.toString))
+    Some(dynTransContent.head.convert)
   }
 
   /** Return a [[com.bheap.silk.transformer.ComponentDetails]] given a component id.
