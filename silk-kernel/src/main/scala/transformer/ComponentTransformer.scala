@@ -67,7 +67,7 @@ object ComponentTransformer {
     compsReplace.unselect.unselect
   }
 
-  /** Return a [[ComponentDetails]] given a component id.
+  /** Return a [[com.bheap.silk.transformer.ComponentDetails]] given a component id.
     *
     * @param id the component id ie 'silk-component:some/path/name:date/timestamp' */
   // @todo make this functional, this is temporary and horrible code
@@ -102,9 +102,9 @@ object ComponentTransformer {
     ComponentDetails(cPath getOrElse "", cName, dsFilter, dsSource, dsSection)
   }
 
-  /** Return retrieved component content given [[ComponentDetails]].
+  /** Return retrieved component content given [[com.bheap.silk.transformer.ComponentDetails]].
     *
-    * @param comp ComponentDetails */
+    * @param comp [[com.bheap.silk.transformer.ComponentDetails]] */
   // @todo rudimentary draft only, ugly and makes assumptions about package, version and theme
   def lookupComponent(comp: ComponentDetails) = {
     val localComp = new File(userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html")
