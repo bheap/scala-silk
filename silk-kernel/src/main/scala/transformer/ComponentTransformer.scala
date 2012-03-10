@@ -40,14 +40,24 @@ object ComponentTransformer {
   /** Transform components.
     *
     * First search for a local component, then a core component, finally
-    * default to the missing-component. */
+    * default to the missing-component. 
+    *
+    * @param xml the content to be transformed */
   // @todo currently hardcoded to only deal with div and span, review draft.. should Silk do more ?
   def transformComponents(xml: Elem) = {
     val divCompsTransformed = seekAndReplace(xml, 'div).head.asInstanceOf[Elem]
     seekAndReplace(divCompsTransformed, 'span)
   }
 
-  /** Search and replace a Silk component with a given element name. */
+  /** Search and replace a Silk components with a given element name.
+    *
+    * Note we may or may be dealing with a dynamic component.  If we are
+    * we will leverage the DynamicComponentTransformer to inject datasource
+    * content.
+    *
+    * @param xml the content to be transformed
+    * @param sym the element type to be searched on 'span' or 'div'
+    * @return content with all instances of the referenced components replaced */
   def seekAndReplace(xml: Elem, sym: Symbol) = {
     val compsReplace = findElements(xml, sym, "silk-component") map {
       comp =>
@@ -57,6 +67,9 @@ object ComponentTransformer {
     compsReplace.unselect.unselect
   }
 
+  /** Return a [[ComponentDetails]] given a component id.
+    *
+    * @param id the component id ie 'silk-component:some/path/name:date/timestamp' */
   // @todo make this functional, this is temporary and horrible code
   def getComponentDetails(id: String) = {
     val cIdBits = id.split(":")
@@ -89,6 +102,9 @@ object ComponentTransformer {
     ComponentDetails(cPath getOrElse "", cName, dsFilter, dsSource, dsSection)
   }
 
+  /** Return retrieved component content given [[ComponentDetails]].
+    *
+    * @param comp ComponentDetails */
   // @todo rudimentary draft only, ugly and makes assumptions about package, version and theme
   def lookupComponent(comp: ComponentDetails) = {
     val localComp = new File(userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html")
@@ -107,4 +123,11 @@ object ComponentTransformer {
   }
 }
 
+/** Define the details of a component.
+  *
+  * @param path location of component
+  * @param name name of component
+  * @param dsFilter optional datasource filter
+  * @param dsSource optional datasource source ie 'bheap'
+  * @param dsSection optional datasource section ie 'news' */
 case class ComponentDetails(path: String, name: String, dsFilter: Option[String], dsSource: Option[String], dsSection: Option[String])
