@@ -49,7 +49,7 @@ object ComponentTransformer {
     seekAndReplace(divCompsTransformed, 'span)
   }
 
-  /** Search and replace a Silk components with a given element name.
+  /** Search and replace Silk components with a given element name.
     *
     * Note we may or may be dealing with a dynamic component.  If we are
     * we will leverage the DynamicComponentTransformer to inject datasource
@@ -76,7 +76,8 @@ object ComponentTransformer {
   /** Return transformed dynamic component.
     *
     * @param datasource the component datasource
-    * @param datasection the component datasection */
+    * @param datasection the component datasection 
+    * @param componentContent the dynamic component content pre-transformation */
   def transformDynamicComponent(datasource: String, datasection: String, componentContent: Elem) = {
     val data = (new Datasource).get(datasource + "/" + datasection)
     val dynCompTrans = new DynamicComponentTransformer(data.get.toString)
