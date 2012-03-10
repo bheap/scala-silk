@@ -43,7 +43,7 @@ object ComponentTransformer {
     * default to the missing-component. 
     *
     * @param xml the content to be transformed */
-  // @todo currently hardcoded to only deal with div and span, review draft.. should Silk do more ?
+  // @todo currently hardcoded to only deal with div and span, needs to do table etc for dynamic comps ?
   def transformComponents(xml: Elem) = {
     val divCompsTransformed = seekAndReplace(xml, 'div).head.asInstanceOf[Elem]
     seekAndReplace(divCompsTransformed, 'span)
