@@ -69,11 +69,12 @@ object Dependencies {
 
   val uf_version = "0.3.3"
 
-  val antiXML   = "com.codecommit"         %% "anti-xml"                % "0.3"      % "compile"
-  val config    = "com.typesafe.config"    % "config"                   % "0.2.0"    % "compile"
-  //val scalate   = "org.fusesource.scalate" % "scalate-core"             % "1.6.0-SNAPSHOT" % "compile"
-  val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % "1.1.2"    % "compile"
-  val scalatest = "org.scalatest"          % "scalatest_2.9.0"          % "1.4.1"    % "test"
+  val antiXML   = "com.codecommit"         %% "anti-xml"                % "0.3"            % "compile"
+  val config    = "com.typesafe.config"    % "config"                   % "0.2.0"          % "compile"
+  val scalate   = "org.fusesource.scalate" % "scalate-core"             % "1.6.0-SNAPSHOT" % "compile"
+  val scopt     = "com.github.scopt"       % "scopt_2.9.1"              % "1.1.2"          % "compile"
+  val slf4j     = "org.slf4j"              % "slf4j-simple"             % "1.6.2"          % "compile"
+  val scalatest = "org.scalatest"          % "scalatest_2.9.0"          % "1.4.1"          % "test"
 }
 
 object SilkBuild extends Build {
@@ -83,7 +84,8 @@ object SilkBuild extends Build {
 
   val anDeps = Seq(antiXML)
   val cfDeps = Seq(config)
-  //val scDeps = Seq(scalate)
+  val scDeps = Seq(scalate)
+  val slDeps = Seq(slf4j)
   val soDeps = Seq(scopt)
 
   //jarName in Assembly := "silk.jar"
@@ -98,7 +100,12 @@ object SilkBuild extends Build {
   lazy val kernel = Project(
     id = "silk-kernel",
     base = file("silk-kernel"),
-    dependencies = Seq(utils)
+    dependencies = Seq(utils),
+    settings = buildSettings ++ Seq(
+      libraryDependencies ++= scDeps,
+      libraryDependencies ++= slDeps,
+      resolvers := Seq(fSnapshots)
+    )
   ) settings(assemblySettings: _*)
 
   lazy val utils = Project(
