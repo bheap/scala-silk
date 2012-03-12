@@ -22,7 +22,7 @@ import com.typesafe.config._
 
 /** Leverage Typesafe Config.
   *
-  * We load the config in our on way but essentially just leverage HOCON.
+  * We load the config in our own way but essentially just leverage HOCON.
   *
   * As a side effect we also define some useful properties directly here.
   *

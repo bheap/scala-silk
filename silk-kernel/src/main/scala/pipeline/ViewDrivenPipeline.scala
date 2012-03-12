@@ -52,7 +52,7 @@ object ViewDrivenPipeline {
         val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)(0).asInstanceOf[Elem]
         val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)(0).asInstanceOf[Elem]
         val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)(0).asInstanceOf[Elem]
-        // note now we switch back to ScalaXML for script transformation and serialisatin
+        // note now we switch back to ScalaXML for script transformation and serialisation
         val transformedToSaneScript = ScriptTransformer(ScalaXML.loadString(transformedToURIAttributeRewritten.toString))
         val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToSaneScript)
         writeView(viewFile, serialisedToHtml5)
@@ -77,6 +77,7 @@ object ViewDrivenPipeline {
     imageTransformed.convert
   }
 
+  /** Write the generated artifacts to file after processing. */
   def writeView(file: File, view: String) {
     val fPath = new File(file.getParent.replace(Config.fs + "view", Config.fs + "site"))
     if (!fPath.exists) new File(file.getParent.replace(Config.fs + "view", Config.fs + "site")).mkdirs

@@ -22,7 +22,7 @@ import java.io.{File, FileWriter}
 
 /** Serialise to HTML5.
   *
-  * Done safely with XHTML.  Therefore we switch to Scala XML.
+  * Done safely with XHTML.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */

@@ -25,6 +25,8 @@ import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
 object Bundler {
+
+  /** Recursively copy items from a src to a dest. */
   def bundle(src: File, dst: File) {
     if (src.isDirectory) {
       if(!dst.exists()) dst.mkdir
@@ -44,6 +46,8 @@ object Bundler {
     }
   }
 
+  /** Copy a single item from src to dest. */
+  // @todo note this ties us to JVM
   def bundleFile(src: File, dst: File) {
     new FileOutputStream(dst) getChannel() transferFrom(
 		    new FileInputStream(src) getChannel, 0, Long.MaxValue )

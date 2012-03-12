@@ -100,6 +100,9 @@ object Silk {
     println("Silk %s : %s install complete".format(artifactName, id))
   }
 
+  /** Spin a silk site.
+    *
+    * Entails processing the configured pipeline. */
   // @todo determine pipeline from Silk config
   def spin {
     ViewDrivenPipeline.process

@@ -28,7 +28,8 @@ import com.bheap.silk.utils.{Config, XML}
 
 /** Injects components.
   *
-  * Does a lookup and retrieves component content.
+  * Does a lookup and retrieves component content.  Transforms dynamic
+  * component datasource content where applicable.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
@@ -145,7 +146,7 @@ object ComponentTransformer {
   *
   * @param path location of component
   * @param name name of component
-  * @param dsFilter optional datasource filter
+  * @param dsFilter optional datasource filter is 'latest' or 'ranked'
   * @param dsSource optional datasource source ie 'bheap'
   * @param dsSection optional datasource section ie 'news' */
 case class ComponentDetails(path: String, name: String, dsFilter: Option[String], dsSource: Option[String], dsSection: Option[String])
