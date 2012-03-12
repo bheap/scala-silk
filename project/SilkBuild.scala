@@ -125,7 +125,17 @@ object SilkBuild extends Build {
     settings = buildSettings ++ Seq(
       libraryDependencies ++= soDeps,
       resolvers := Seq(fSnapshots),
-      mainClass in (Compile, packageBin) := Some("com.bheap.silk.interface.Silk")
+      mainClass in (Compile, packageBin) := Some("com.bheap.silk.interface.Silk"),
+      sourceGenerators in Compile <+= (sourceManaged in Compile, version, name) map { (d, v, n) =>
+				val file = d / "info.scala"
+				IO.write(file, """package com.bheap.silk.interface
+				  |object Info {
+				  |  val version = "%s"
+				  |  val name = "%s"
+				  |}
+				  |""".stripMargin.format(v, n))
+				Seq(file)
+      }
     )
   ) settings(assemblySettings: _*)
 }

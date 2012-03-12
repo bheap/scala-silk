@@ -38,6 +38,8 @@ object Silk {
 
   def main(args: Array[String]) {
 
+    println("Version : " + Info.version)
+
     val tasks = "(update|sites|site-clone|site-install|components|component-clone|component-install|spin)"
 
     var config = Config()
