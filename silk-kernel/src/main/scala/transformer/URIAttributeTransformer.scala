@@ -20,8 +20,7 @@ import java.io.File
 
 import org.fusesource.scalate.scuery.Transformer
 
-import com.bheap.io.PathUtils
-
+import com.bheap.scalautils.PathUtils
 import com.bheap.silk.utils.Config
 
 /** Transforms the URI related attributes of content.
@@ -49,7 +48,7 @@ class URIAttributeTransformer(element: String, attribute: String, view: File) ex
             (new File(rootPath + currentHref)).getParentFile.toString.split(rootPath.replace("\\", "\\\\")).last
           }
           val urlPath = new File(rootPath + urlSubPath)
-          val pathDiff = PathUtils.relativize(view.getParentFile, urlPath)
+          val pathDiff = PathUtils.relativise(view.getParentFile, urlPath)
           pathDiff + fs + (new File(rootPath + currentHref)).getName
         } else {
           currentHref
