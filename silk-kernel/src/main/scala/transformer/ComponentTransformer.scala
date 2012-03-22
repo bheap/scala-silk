@@ -94,7 +94,7 @@ object ComponentTransformer {
     val cIdBits = id.split(":")
     val cPathBits = cIdBits(1)
     val cDatasourceBits: Option[String] = if (cIdBits.size > 2) Some(cIdBits(2)) else None
-    val cPath: Option[String] = if (cPathBits.contains(fs)) Some(cPathBits.split(fs).head) else None
+    val cPath: Option[String] = if (cPathBits.contains(fs)) Some(extractNestedPath(cPathBits)) else None
     val cName = if (cPathBits.contains(fs)) cPathBits.split(fs).last else cPathBits
 
     val dsFilter = if (cDatasourceBits.isDefined) {
@@ -119,6 +119,12 @@ object ComponentTransformer {
     }
     
     ComponentDetails(cPath getOrElse "", cName, dsFilter, dsSource, dsSection)
+  }
+
+  def extractNestedPath(path: String) = {
+    path.split(fs).init.reduceLeft[String] { (acc, n)  =>
+      acc + fs + n
+    }
   }
 
   /** Return retrieved component content given [[com.bheap.silk.transformer.ComponentDetails]].
