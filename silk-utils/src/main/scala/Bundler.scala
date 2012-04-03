@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.utils
+package org.silkyweb.utils
 
 import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException}
 

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.pipeline
+package org.silkyweb.pipeline
 
 import scala.xml.{XML => ScalaXML}
 import com.codecommit.antixml._
 
 import java.io.{File, FileWriter}
 
-import com.bheap.silk.generator.{PathPreservingFileSourceGenerator => Generator}
-import com.bheap.silk.serialiser.Serialiser
-import com.bheap.silk.transformer.{ComponentTransformer, ScriptTransformer, TemplateTransformer, URIAttributeTransformer}
-import com.bheap.silk.utils.{Bundler, Config}
+import org.silkyweb.generator.{PathPreservingFileSourceGenerator => Generator}
+import org.silkyweb.serialiser.Serialiser
+import org.silkyweb.transformer.{ComponentTransformer, ScriptTransformer, TemplateTransformer, URIAttributeTransformer}
+import org.silkyweb.utils.{Bundler, Config}
 
 /** Controls manipulation and representation of your site content.
   *

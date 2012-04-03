@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.transformer
+package org.silkyweb.transformer
 
 import scala.xml.{XML => ScalaXML}
 import com.codecommit.antixml._
@@ -23,8 +23,8 @@ import java.io.File
 
 import org.fusesource.scalate.scuery.Transformer
 
-import com.bheap.silk.datasource.Datasource
-import com.bheap.silk.utils.{Config, XML}
+import org.silkyweb.datasource.Datasource
+import org.silkyweb.utils.{Config, XML}
 
 /** Injects components.
   *
@@ -86,7 +86,7 @@ object ComponentTransformer {
     Some(dynTransContent.head.convert)
   }
 
-  /** Return a [[com.bheap.silk.transformer.ComponentDetails]] given a component id.
+  /** Return a [[org.silkyweb.transformer.ComponentDetails]] given a component id.
     *
     * @param id the component id ie 'silk-component:some/path/name:date/timestamp' */
   // @todo make this functional, this is temporary and horrible code
@@ -127,9 +127,9 @@ object ComponentTransformer {
     }
   }
 
-  /** Return retrieved component content given [[com.bheap.silk.transformer.ComponentDetails]].
+  /** Return retrieved component content given [[org.silkyweb.transformer.ComponentDetails]].
     *
-    * @param comp [[com.bheap.silk.transformer.ComponentDetails]] */
+    * @param comp [[org.silkyweb.transformer.ComponentDetails]] */
   // @todo rudimentary draft only, ugly and makes assumptions about package, version and theme
   def lookupComponent(comp: ComponentDetails) = {
     val localComp = new File(userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html")

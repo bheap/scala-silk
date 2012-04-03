@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.utils
+package org.silkyweb.utils
 
 import scala.util.matching.Regex
 

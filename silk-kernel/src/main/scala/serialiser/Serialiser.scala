@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.serialiser
+package org.silkyweb.serialiser
 
 import scala.xml._
 

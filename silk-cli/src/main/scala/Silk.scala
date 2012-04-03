@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.interface
+package org.silkyweb.interface
 
 import scala.xml._
 
@@ -22,8 +22,8 @@ import java.io.File
 
 import scopt._
 
-import com.bheap.silk.pipeline.ViewDrivenPipeline
-import com.bheap.silk.utils.{Bundler, Config => SilkConfig}
+import org.silkyweb.pipeline.ViewDrivenPipeline
+import org.silkyweb.utils.{Bundler, Config => SilkConfig}
 
 /** The CLI.
   *

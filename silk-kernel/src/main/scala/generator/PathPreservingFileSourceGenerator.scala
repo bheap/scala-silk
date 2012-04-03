@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.generator
+package org.silkyweb.generator
 
 import scala.util.matching.Regex
 import scala.xml._
 
 import java.io.File
 
-import com.bheap.silk.utils.Scout
+import org.silkyweb.utils.Scout
 
 /** Defines some generators.
   *
