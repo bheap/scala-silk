@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.utils
+package org.silkyweb.utils
 
 import java.io.File
 
@@ -49,7 +49,7 @@ object Config {
   val siteProtoDir = new File(siteProtoStr)
 
   // Core package
-  val corePkgStr = "com" + fs + "bheap" + fs + "silk"
+  val corePkgStr = "org" + fs + "silkyweb"
 
   // User current Dir related
   val userDirStr = System.getProperty("user.dir")

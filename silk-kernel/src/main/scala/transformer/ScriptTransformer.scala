@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.transformer
+package org.silkyweb.transformer
 
 import scala.xml._
 import scala.xml.transform._

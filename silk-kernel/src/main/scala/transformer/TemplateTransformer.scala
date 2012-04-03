@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.transformer
+package org.silkyweb.transformer
 
 import scala.xml.{XML => ScalaXML}
 import com.codecommit.antixml._
 
 import java.io.File
 
-import com.bheap.silk.utils.{Config, XML}
+import org.silkyweb.utils.{Config, XML}
 
 /** Transforms a view into a template wrapped view.
   *

@@ -2,11 +2,11 @@
 
 ## About
 
-A Scala publishing toolkit from [bheap](http://www.bheap.co.uk) ltd
+A Scala publishing toolkit from [bheap](http://www.bheap.co.uk) and the [community](http://www.silkyweb.org/community.html) ltd
 
 ## Documentation
 
-Please see the [Silk site](http://silk.heroku.com) for documentation.
+Please see the [silkyweb.org site](http://www.silkyweb.org/community.html) for documentation.
 
 ## Community
 

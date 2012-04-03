@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.bheap.silk.transformer
+package org.silkyweb.transformer
 
 import java.io.File
 
 import org.fusesource.scalate.scuery.Transformer
 
 import com.bheap.scalautils.PathUtils
-import com.bheap.silk.utils.Config
+import org.silkyweb.utils.Config
 
 /** Transforms the URI related attributes of content.
   *
