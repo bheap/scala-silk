@@ -19,15 +19,15 @@ elif [ "$1" == "components" ]; then
   find $SKC -type f -name dna.conf -exec grep 'component.id' {} \; -exec grep 'component.description' {} \; | awk -F '=' '{gsub(/"/, "  "); print $2}'
 elif [ "$1" == "update" ]; then
   mkdir -p $SK
-  curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/silk.conf" \
+  curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/silk.conf" \
           > $SK/silk.conf
 	mkdir -p $SKSP
-	curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/site-prototype.tgz" \
+	curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/site-prototype.tgz" \
 	        > site-prototype.tgz
 	tar xf site-prototype.tgz --exclude="._*" -C $SKSP
 	rm site-prototype.tgz
   mkdir -p $SKC
-  curl "http://www.bheap.co.uk/resource/downloads/silk/updates/0.1.0/component.tgz" \
+  curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/component.tgz" \
           > component.tgz
   tar xf component.tgz --exclude="._*" -C $SKC
   rm component.tgz
