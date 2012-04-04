@@ -6,7 +6,7 @@ A Scala publishing toolkit from [bheap](http://www.bheap.co.uk) and the [communi
 
 ## Documentation
 
-Please see the [silkyweb.org site](http://www.silkyweb.org/community.html) for documentation.
+Please see the [silkyweb.org site](http://www.silkyweb.org/) for documentation.
 
 ## Community
 
