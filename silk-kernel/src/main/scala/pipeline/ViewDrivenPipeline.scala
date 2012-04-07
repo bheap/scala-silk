@@ -50,9 +50,9 @@ object ViewDrivenPipeline {
     generated foreach {
       viewFile =>
         val view = XML.fromSource(Source.fromFile(viewFile))
-        val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)(0).asInstanceOf[Elem]
-        val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)(0).asInstanceOf[Elem]
-        val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)(0).asInstanceOf[Elem]
+        val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)
+        val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)
+        val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)
         val transformedToSaneScript = AntiXMLElemScriptTransformer(transformedToURIAttributeRewritten)
         val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToSaneScript)
         writeView(viewFile, serialisedToHtml5)
@@ -74,7 +74,8 @@ object ViewDrivenPipeline {
     val scriptTransformed = scriptUAT(linkTransformed)
     val imageUAT = new URIAttributeTransformer("img", "src", viewFile)
     val imageTransformed = imageUAT(scriptTransformed)
-    imageTransformed.convert
+    val converted = imageTransformed.convert
+    converted(0).asInstanceOf[Elem]
   }
 
   /** Write the generated artifacts to file after processing. */

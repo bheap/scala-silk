@@ -49,7 +49,8 @@ object ComponentTransformer {
   // @todo currently hardcoded to only deal with div and span, needs to do table etc for dynamic comps ?
   def transformComponents(xml: Elem) = {
     val divCompsTransformed = seekAndReplace(xml, 'div).head.asInstanceOf[Elem]
-    seekAndReplace(divCompsTransformed, 'span)
+    val unselected = seekAndReplace(divCompsTransformed, 'span)
+    unselected(0).asInstanceOf[Elem]
   }
 
   /** Search and replace Silk components with a given element name.

@@ -51,6 +51,7 @@ object TemplateTransformer {
     val template = XML.fromSource(Source.fromFile(new File(templateDir, "default.html")))
     val templateReplace = findElements(template, 'div, "silk-template")
     val viewReplace = findElements(xml, 'div, "silk-view")
-    templateReplace.updated(0, viewReplace.head).unselect.unselect
+    val unselected = templateReplace.updated(0, viewReplace.head).unselect.unselect
+    unselected(0).asInstanceOf[Elem]
   }
 }
