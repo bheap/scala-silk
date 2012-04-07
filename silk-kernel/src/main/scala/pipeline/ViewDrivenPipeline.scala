@@ -35,7 +35,6 @@ import org.silkyweb.utils.{Bundler, Config}
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-// @todo read the silk master config to drive pipeline
 object ViewDrivenPipeline {
 
   val userDir = new File(System.getProperty("user.dir"))
@@ -46,7 +45,6 @@ object ViewDrivenPipeline {
     *
     * Always generate -> transform -> serialise. 
     * Note Generate leverages a default data medium, in this case the default of XML. */
-  // @todo read transformation steps from Silk pipeline config
   def process {
     val generated = Generator.generateFromXHTML(viewDir)
     generated foreach {
