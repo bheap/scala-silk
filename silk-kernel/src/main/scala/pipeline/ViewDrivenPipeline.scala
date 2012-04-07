@@ -16,6 +16,7 @@
 
 package org.silkyweb.pipeline
 
+import scala.io.Source
 import scala.xml.{XML => ScalaXML}
 import com.codecommit.antixml._
 
@@ -48,7 +49,7 @@ object ViewDrivenPipeline {
     val generated = Generator.generateFromXHTML(viewDir)
     generated foreach {
       viewFile =>
-        val view = ScalaXML.loadFile(viewFile).convert
+        val view = XML.fromSource(Source.fromFile(viewFile))
         val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)(0).asInstanceOf[Elem]
         val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)(0).asInstanceOf[Elem]
         val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)(0).asInstanceOf[Elem]

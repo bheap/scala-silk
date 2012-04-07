@@ -16,12 +16,12 @@
 
 package org.silkyweb.transformer
 
-import scala.xml.{XML => ScalaXML}
+import scala.io.Source
 import com.codecommit.antixml._
 
 import java.io.File
 
-import org.silkyweb.utils.{Config, XML}
+import org.silkyweb.utils.{Config, XML => SilkXML}
 
 /** Transforms a view into a template wrapped view.
   *
@@ -32,7 +32,7 @@ import org.silkyweb.utils.{Config, XML}
 object TemplateTransformer {
 
   import Config._
-  import XML._
+  import SilkXML._
 
   // @todo mechanism will be defined from Silk config
   val templateDir = new File(userDir, "template")
@@ -48,7 +48,7 @@ object TemplateTransformer {
     */
   // @todo create a core default template
   def transformTemplateWrapped(xml: Elem) = {
-    val template = ScalaXML.loadFile(new File(templateDir, "default.html")).convert
+    val template = XML.fromSource(Source.fromFile(new File(templateDir, "default.html")))
     val templateReplace = findElements(template, 'div, "silk-template")
     val viewReplace = findElements(xml, 'div, "silk-view")
     templateReplace.updated(0, viewReplace.head).unselect.unselect

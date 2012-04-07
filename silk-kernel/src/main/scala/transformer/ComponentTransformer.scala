@@ -16,7 +16,9 @@
 
 package org.silkyweb.transformer
 
+import scala.io.Source
 import scala.xml.{XML => ScalaXML}
+
 import com.codecommit.antixml._
 
 import java.io.File
@@ -24,7 +26,7 @@ import java.io.File
 import org.fusesource.scalate.scuery.Transformer
 
 import org.silkyweb.datasource.Datasource
-import org.silkyweb.utils.{Config, XML}
+import org.silkyweb.utils.{Config, XML => SilkXML}
 
 /** Injects components.
   *
@@ -36,7 +38,7 @@ import org.silkyweb.utils.{Config, XML}
 object ComponentTransformer {
 
   import Config._
-  import XML._
+  import SilkXML._
 
   /** Transform components.
     *
@@ -136,14 +138,14 @@ object ComponentTransformer {
     val coreCompStr = compStr + fs + corePkgStr + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
     val coreComp = new File(coreCompStr)
     if (localComp.exists) {
-      ScalaXML.loadFile(localComp.toString).convert
+      XML.fromSource(Source.fromFile(localComp))
     } else if (coreComp.exists) {
-      ScalaXML.loadFile(coreCompStr).convert
+      XML.fromSource(Source.fromFile(coreCompStr))
     } else {
       val compBaseName = "component-missing"
       val theme = "none" //dnaConfig.getString("site-prototype.theme")
       val compName = if (theme == "none") compBaseName else compBaseName + "-" + theme
-      ScalaXML.loadFile(compStr + fs + corePkgStr + fs + compName + fs + "0.1.0" + fs + compName + ".html").convert
+      XML.fromSource(Source.fromFile(compStr + fs + corePkgStr + fs + compName + fs + "0.1.0" + fs + compName + ".html"))
     }
   }
 }
