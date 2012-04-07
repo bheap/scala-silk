@@ -2,7 +2,9 @@
 
 ## About
 
-A Scala publishing toolkit from [bheap](http://www.bheap.co.uk) and the [community](http://www.silkyweb.org/community.html) ltd
+A Scala publishing toolkit from [bheap ltd](http://www.bheap.co.uk) and the [community](http://www.silkyweb.org/community.html).
+
+Silk allows you to build static websites out of re-usable building blocks without the use of server side languages, just use HTML, CSS and Javascript.  Sites built with Silk are clean from semantic pollution, no tag soup.  Dynamic webapps are in the pipeline too, (but not yet).
 
 ## Status
 
@@ -12,8 +14,12 @@ Despite this, it is already possible to build some decent static sites with the 
 
 ## Documentation
 
-Please see the [silkyweb.org site](http://www.silkyweb.org/) for documentation.
+[Getting started](http://www.silkyweb.org/getting-started.html).
+
+Please see the [silkyweb.org site](http://www.silkyweb.org/) for more documentation.
 
 ## Community
+
+[The team](http://www.silkyweb.org/team.html).
 
 Join in over on our <a href="http://groups.google.com/group/silk-user">mailing list</a>.
