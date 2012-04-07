@@ -24,7 +24,7 @@ import java.io.{File, FileWriter}
 
 import org.silkyweb.generator.{PathPreservingFileSourceGenerator => Generator}
 import org.silkyweb.serialiser.Serialiser
-import org.silkyweb.transformer.{ComponentTransformer, ScriptTransformer, TemplateTransformer, URIAttributeTransformer}
+import org.silkyweb.transformer.{ComponentTransformer, AntiXMLElemScriptTransformer, TemplateTransformer, URIAttributeTransformer}
 import org.silkyweb.utils.{Bundler, Config}
 
 /** Controls manipulation and representation of your site content.
@@ -53,8 +53,7 @@ object ViewDrivenPipeline {
         val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)(0).asInstanceOf[Elem]
         val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)(0).asInstanceOf[Elem]
         val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)(0).asInstanceOf[Elem]
-        // note now we switch back to ScalaXML for script transformation and serialisation
-        val transformedToSaneScript = ScriptTransformer(ScalaXML.loadString(transformedToURIAttributeRewritten.toString))
+        val transformedToSaneScript = AntiXMLElemScriptTransformer(transformedToURIAttributeRewritten)
         val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToSaneScript)
         writeView(viewFile, serialisedToHtml5)
         Bundler.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))

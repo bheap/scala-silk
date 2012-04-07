@@ -19,6 +19,8 @@ package org.silkyweb.transformer
 import scala.xml._
 import scala.xml.transform._
 
+import com.codecommit.antixml.{Elem => AXElem}
+
 /** Transforms content in script tags ready for browser consumption.
   *
   * The replace operation element of this code was ported from some prototype code by 
@@ -44,3 +46,11 @@ object ParentElementRewriteRule extends RewriteRule {
 }
 
 object ScriptTransformer extends RuleTransformer(ParentElementRewriteRule)
+
+/** We are working with Anti-XML so we need to convert for this transformation. */
+object AntiXMLElemScriptTransformer {
+	def apply(e: AXElem): Node = {
+    val scalaNode = XML.loadString(e.toString)
+    ScriptTransformer(scalaNode)(0)
+  }
+}
