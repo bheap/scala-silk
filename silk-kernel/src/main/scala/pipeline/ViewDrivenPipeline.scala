@@ -22,6 +22,8 @@ import com.codecommit.antixml._
 
 import java.io.{File, FileWriter}
 
+import com.bheap.scalautils.FileUtils._
+
 import org.silkyweb.generator.{PathPreservingFileSourceGenerator => Generator}
 import org.silkyweb.serialiser.Serialiser
 import org.silkyweb.transformer.{ComponentTransformer, AntiXMLElemScriptTransformer, TemplateTransformer, URIAttributeTransformer}
@@ -82,9 +84,6 @@ object ViewDrivenPipeline {
   def writeView(file: File, view: String) {
     val fPath = new File(file.getParent.replace(Config.fs + "view", Config.fs + "site"))
     if (!fPath.exists) new File(file.getParent.replace(Config.fs + "view", Config.fs + "site")).mkdirs
-    val out = new FileWriter(new File(fPath, file.getName))
-    out.write(view)
-    out.flush
-    out.close
+    writeFileWithFlush((new File(fPath, file.getName)).toString, view)
   }
 }
