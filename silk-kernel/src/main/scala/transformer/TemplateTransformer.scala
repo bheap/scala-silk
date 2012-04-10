@@ -48,7 +48,7 @@ object TemplateTransformer {
     * specific external template specified (head furniture), if not
     * fall back to the local default template, or the core default template.
     */
-  // @todo create a core default template
+  // @todo rudimentary draft only, makes assumptions about package, version and theme
   def transformTemplateWrapped(xml: Elem) = {
     val result: Either[Throwable,Elem] = 
       catching (classOf[FileNotFoundException]) either XML.fromSource(Source.fromFile(new File(templateDir, "default.html")))
