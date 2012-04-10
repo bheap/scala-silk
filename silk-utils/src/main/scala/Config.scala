@@ -42,11 +42,14 @@ object Config {
   val silkHomeStr = userHomeDirStr + fs + ".silk"
   val silkHomeDir = new File(silkHomeStr)
 
+  val silkRepoStr = silkHomeStr + fs + "repositories"
+
   // Core directory structures
-  val compStr = silkHomeStr + fs + "repositories" + fs + "component"
+  val compStr = silkRepoStr + fs + "component"
   val compDir = new File(compStr)
-  val siteProtoStr = silkHomeStr + fs + "repositories" + fs + "site-prototype"
+  val siteProtoStr = silkRepoStr + fs + "site-prototype"
   val siteProtoDir = new File(siteProtoStr)
+  val templateStr = silkRepoStr + fs + "template"
 
   // Core package
   val corePkgStr = "org" + fs + "silkyweb"

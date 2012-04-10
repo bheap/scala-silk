@@ -17,9 +17,11 @@
 package org.silkyweb.transformer
 
 import scala.io.Source
+import scala.util.control.Exception._
+
 import com.codecommit.antixml._
 
-import java.io.File
+import java.io.{File, FileNotFoundException}
 
 import org.silkyweb.utils.{Config, XML => SilkXML}
 
@@ -48,7 +50,18 @@ object TemplateTransformer {
     */
   // @todo create a core default template
   def transformTemplateWrapped(xml: Elem) = {
-    val template = XML.fromSource(Source.fromFile(new File(templateDir, "default.html")))
+    val result: Either[Throwable,Elem] = 
+      catching (classOf[FileNotFoundException]) either XML.fromSource(Source.fromFile(new File(templateDir, "default.html")))
+    val template = result match {
+      case Left(error) => {
+        println("[Error] No template found with the name you specified, using Silk core template-missing")
+        val templateBaseName = "template-missing"
+        val theme = "none" //dnaConfig.getString("site-prototype.theme")
+        val templateName = if (theme == "none") templateBaseName else templateBaseName + "-" + theme
+        XML.fromSource(Source.fromFile(templateStr + fs + corePkgStr + fs + templateName + fs + "0.1.0" + fs + templateName + ".html"))
+      }
+      case Right(data) => data
+    }
     val templateReplace = findElements(template, 'div, "silk-template")
     val viewReplace = findElements(xml, 'div, "silk-view")
     val unselected = templateReplace.updated(0, viewReplace.head).unselect.unselect
