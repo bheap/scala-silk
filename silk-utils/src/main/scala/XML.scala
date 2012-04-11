@@ -25,8 +25,8 @@ import com.codecommit.antixml._
 object XML {
 
   /** Searches an XML block for elements with a given name and a given id. */
-  def findElements(xml: Elem, sym: Symbol, sig: String) = {
-    xml \\ sym select Selector {case item: Elem if verifyAttribute(item.attrs, sig) => item }
+  def findElements(xml: Elem, elem: Symbol, sig: String) = {
+    xml \\ elem select Selector {case item: Elem if verifyAttribute(item.attrs, sig) => item }
   }
 
   /** A safe check for an attribute value. */
