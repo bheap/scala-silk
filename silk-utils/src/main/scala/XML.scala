@@ -30,9 +30,9 @@ object XML {
   }
 
   /** A safe check for an attribute value. */
-  def verifyAttribute(att: Attributes, sig: String) = {
-    if (att.contains("id")) {
-	    att("id").contains(sig)
+  def verifyAttribute(attrs: Attributes, sig: String) = {
+    if (attrs.contains("id")) {
+	    attrs("id").contains(sig)
     } else false
   }
 }
