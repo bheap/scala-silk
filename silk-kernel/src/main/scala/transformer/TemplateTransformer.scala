@@ -41,30 +41,47 @@ object TemplateTransformer {
 
   /** Wrap each view in the relevant template.
     *
-    * This effectively finalises a high level model for each view. 
-    *
-    * Template rules follow inheritance and convention.  Check in order;
-    * is a local template defined in the page (head furniture), is a
-    * specific external template specified (head furniture), if not
-    * fall back to the local default template, or the core default template.
-    */
+    * This effectively finalises a high level model for each view. */
   // @todo rudimentary draft only, makes assumptions about package, version and theme
   def transformTemplateWrapped(xml: Elem) = {
-    val result: Either[Throwable,Elem] = 
-      catching (classOf[FileNotFoundException]) either XML.fromSource(Source.fromFile(new File(templateDir, "default.html")))
-    val template = result match {
-      case Left(error) => {
-        println("[Error] No template found with the name you specified, using Silk core template-missing")
-        val templateBaseName = "template-missing"
-        val theme = "none" //dnaConfig.getString("site-prototype.theme")
-        val templateName = if (theme == "none") templateBaseName else templateBaseName + "-" + theme
-        XML.fromSource(Source.fromFile(templateStr + fs + corePkgStr + fs + templateName + fs + "0.1.0" + fs + templateName + ".html"))
-      }
-      case Right(data) => data
-    }
-    val templateReplace = findElements(template, 'div, "silk-template")
-    val viewReplace = findElements(xml, 'div, "silk-view")
+    val template = lookupSpecificTemplate(xml) orElse loadTemplate(new File(templateDir, "default.html")) getOrElse lookupTemplateMissing
+    val templateReplace = findElements(template, 'div, "id", "silk-template")
+    val viewReplace = findElements(xml, 'div, "id", "silk-view")
     val unselected = templateReplace.updated(0, viewReplace.head).unselect.unselect
     unselected(0).asInstanceOf[Elem]
+  }
+
+  /** Retrieves a specified template.
+    *
+    * First we try locally, then Silk core. */
+  def lookupSpecificTemplate(xml: Elem): Option[Elem] = {
+    val specificTemplateDef = findElements(xml, 'meta, "name", "template")
+    val specificTemplate = 
+      if (specificTemplateDef nonEmpty) {
+        val tName = specificTemplateDef(0).attrs("content")
+        val coreTemplateFile = new File(templateStr + fs + corePkgStr + fs + tName + fs + "0.1.0" + fs + tName + ".html")
+        loadTemplate(new File(templateDir, tName)) orElse {
+          println("[Error] Template not found locally, searching in Silk core")
+          loadTemplate(coreTemplateFile)
+        }
+      } else None
+    specificTemplate
+  }
+
+  def lookupTemplateMissing = {
+    println("[Error] No template found with the name you specified, using Silk core template-missing")
+    val templateBaseName = "template-missing"
+    val theme = "none" //dnaConfig.getString("site-prototype.theme")
+    val templateName = if (theme == "none") templateBaseName else templateBaseName + "-" + theme
+    XML.fromSource(Source.fromFile(templateStr + fs + corePkgStr + fs + templateName + fs + "0.1.0" + fs + templateName + ".html"))
+  } 
+
+  def loadTemplate(file: File): Option[Elem] = {
+    val result: Either[Throwable, Elem] = 
+      catching (classOf[FileNotFoundException]) either XML.fromSource(Source.fromFile(file))
+    result match {
+      case Left(error) => None
+      case Right(data) => Some(data)
+    }
   }
 }
