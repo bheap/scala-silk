@@ -44,7 +44,7 @@ object TemplateTransformer {
     * This effectively finalises a high level model for each view. */
   // @todo rudimentary draft only, makes assumptions about package, version and theme
   def transformTemplateWrapped(xml: Elem) = {
-    val template = lookupSpecificTemplate(xml) orElse loadTemplate(new File(templateDir, "default.html")) getOrElse lookupTemplateMissing
+    val template = lookupTemplate(xml) getOrElse lookupTemplateMissing
     val templateReplace = findElements(template, 'div, "id", "silk-template")
     val viewReplace = findElements(xml, 'div, "id", "silk-view")
     val unselected = templateReplace.updated(0, viewReplace.head).unselect.unselect
@@ -54,17 +54,19 @@ object TemplateTransformer {
   /** Retrieves a specified template.
     *
     * First we try locally, then Silk core. */
-  def lookupSpecificTemplate(xml: Elem): Option[Elem] = {
+  def lookupTemplate(xml: Elem): Option[Elem] = {
     val specificTemplateDef = findElements(xml, 'meta, "name", "template")
     val specificTemplate = 
       if (specificTemplateDef nonEmpty) {
         val tName = specificTemplateDef(0).attrs("content")
         val coreTemplateFile = new File(templateStr + fs + corePkgStr + fs + tName + fs + "0.1.0" + fs + tName + ".html")
-        loadTemplate(new File(templateDir, tName)) orElse {
+        loadTemplate(new File(templateDir, tName + ".html")) orElse {
           println("[Error] Template not found locally, searching in Silk core")
           loadTemplate(coreTemplateFile)
         }
-      } else None
+      } else {
+        loadTemplate(new File(templateDir, "default.html"))
+      }
     specificTemplate
   }
 
