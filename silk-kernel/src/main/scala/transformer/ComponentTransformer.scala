@@ -48,8 +48,8 @@ object ComponentTransformer {
     * @param xml the content to be transformed */
   // @todo currently hardcoded to only deal with div and span, needs to do table etc for dynamic comps ?
   def transformComponents(xml: Elem) = {
-    val divCompsTransformed = seekAndReplace(xml, 'div).head.asInstanceOf[Elem]
-    val unselected = seekAndReplace(divCompsTransformed, 'span)
+    val divCompsTransformed = seekAndReplace(xml, 'div, "id").head.asInstanceOf[Elem]
+    val unselected = seekAndReplace(divCompsTransformed, 'span, "id")
     unselected(0).asInstanceOf[Elem]
   }
 
@@ -60,13 +60,14 @@ object ComponentTransformer {
     * content.
     *
     * @param xml the content to be transformed
-    * @param sym the element type to be searched on 'span' or 'div'
+    * @param elem the element type to be searched on 'span' or 'div'
+    * @param attr the attribute to search against a given value
     * @return content with all instances of the referenced components replaced */
-  def seekAndReplace(xml: Elem, sym: Symbol) = {
-    val compsReplace = findElements(xml, sym, "silk-component") map {
+  def seekAndReplace(xml: Elem, elem: Symbol, attr: String) = {
+    val compsReplace = findElements(xml, elem, attr, "silk-component") map {
       comp =>
         val compDetails = getComponentDetails(comp.attrs("id"))
-        val componentContent = findElements(lookupComponent(compDetails), sym, "silk-component").head
+        val componentContent = findElements(lookupComponent(compDetails), elem, attr, "silk-component").head
 
         (for {
           datasource <- compDetails.dsSource

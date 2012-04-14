@@ -24,15 +24,15 @@ import com.codecommit.antixml._
   * @since 1.0 */
 object XML {
 
-  /** Searches an XML block for elements with a given name and a given id. */
-  def findElements(xml: Elem, sym: Symbol, sig: String) = {
-    xml \\ sym select Selector {case item: Elem if verifyAttribute(item.attrs, sig) => item }
+  /** Searches an XML block for elements with a given name and attribute, where attribute value contains a signature. */
+  def findElements(xml: Elem, elem: Symbol, attr: String, sig: String) = {
+    xml \\ elem select Selector {case item: Elem if verifyAttribute(item.attrs, attr, sig) => item }
   }
 
   /** A safe check for an attribute value. */
-  def verifyAttribute(att: Attributes, sig: String) = {
-    if (att.contains("id")) {
-	    att("id").contains(sig)
+  def verifyAttribute(attrs: Attributes, attr: String, sig: String) = {
+    if (attrs.contains(attr)) {
+	    attrs(attr).contains(sig)
     } else false
   }
 }

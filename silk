@@ -3,6 +3,7 @@
 SK=$HOME/.silk
 SKSP=$SK/repositories/site-prototype
 SKC=$SK/repositories/component
+SKT=$SK/repositories/template
 
 echo "
     _ _ _   
@@ -31,6 +32,11 @@ elif [ "$1" == "update" ]; then
           > component.tgz
   tar xf component.tgz --exclude="._*" -C $SKC
   rm component.tgz
+  mkdir -p $SKT
+  curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/template.tgz" \
+          > template.tgz
+  tar xf template.tgz --exclude="._*" -C $SKT
+  rm template.tgz
   echo "Silk update complete"
 elif [ "$1" == "spin" ]; then
   rm -rf ${PWD}/site
