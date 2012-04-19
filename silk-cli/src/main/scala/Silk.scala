@@ -55,7 +55,7 @@ object Silk {
         case "site-install" => artifactInstall("site-prototype", siteProtoDir)
         case "component-clone" => artifactClone(config.prototype, "component", compDir)
         case "component-install" => artifactInstall("component", compDir)
-        case "spin" => spin
+        case "spin" => spin(config.prototype)
         case _ => println("Sorry, not a valid action, please try " + tasks)
       }
     } else {
@@ -106,8 +106,9 @@ object Silk {
     *
     * Entails processing the configured pipeline. */
   // @todo determine pipeline from Silk config
-  def spin {
-    ViewDrivenPipeline.process
+  def spin(prototype: Option[String]) {
+	  val userDir = new File(prototype.getOrElse(System.getProperty("user.dir")))
+    ViewDrivenPipeline.process(userDir)
     println("Silk spin complete")
   }
 }

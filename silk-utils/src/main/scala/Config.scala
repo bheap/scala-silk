@@ -55,14 +55,14 @@ object Config {
   val corePkgStr = "org" + fs + "silkyweb"
 
   // User current Dir related
-  val userDirStr = System.getProperty("user.dir")
-  val userDir = new File(userDirStr)
+//  val userDirStr = System.getProperty("user.dir")
+//  val userDir = new File(userDirStr)
 
   // Master config file
   val masterSilkConfig = new File(silkHomeDir, "silk.conf")
 
   // Local config files
-  val localSilkConfigDir = new File(userDir, "config")
+//  val localSilkConfigDir = new File(userDir, "config")
   val localSilkConfig = new File(localSilkConfigDir, "silk.conf")
   val localDnaConfig = new File(localSilkConfigDir, "dna.conf")
 

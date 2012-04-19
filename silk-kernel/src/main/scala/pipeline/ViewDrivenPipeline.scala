@@ -37,15 +37,14 @@ import org.silkyweb.utils.{Bundler, Config}
   * @since 1.0 */
 object ViewDrivenPipeline {
 
-  val userDir = new File(System.getProperty("user.dir"))
-  val viewDir = new File(userDir, "view")
-  val siteDir = new File(userDir, "site")
-
   /** Execute our pipeline.
     *
     * Always generate -> transform -> serialise. 
     * Note Generate leverages a default data medium, in this case the default of XML. */
-  def process {
+  def process(userDir: File) {
+	  val viewDir = new File(userDir, "view")
+	  val siteDir = new File(userDir, "site")  
+	
     val generated = Generator.generateFromXHTML(viewDir)
     generated foreach {
       viewFile =>
