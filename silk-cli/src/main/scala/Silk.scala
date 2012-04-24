@@ -75,15 +75,13 @@ object Silk {
       val projectId = prototype.getOrElse("nooo")
       var projects = getProjectsById(artifactBase, artifactName, projectId)
       if (projects.size > 0) {
-        if (projects.size > 1) {
-          val packages = projects.map(_.pkg).distinct
-          if (packages.size > 1) {
-            val selectedPackage = userSelected(packages, projectId, "package")
-            projects = projects.filter(_.pkg == selectedPackage)
-          }
-          val selectedVersion = autoSelectedVersion(projects.map(_.silkVersion).distinct, projectId)
-          projects = projects.filter(_.silkVersion == selectedVersion)
+        val packages = projects.map(_.pkg).distinct
+        if (packages.size > 1) {
+          val selectedPackage = userSelected(packages, projectId, "package")
+          projects = projects.filter(_.pkg == selectedPackage)
         }
+        val selectedVersion = autoSelectedVersion(projects.map(_.silkVersion).distinct, projectId)
+        projects = projects.filter(_.silkVersion == selectedVersion)
         if (artifactName.equals("site-prototype")) {
           if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
           Bundler.bundleFile(masterSilkConfig, localSilkConfig)
@@ -129,9 +127,9 @@ object Silk {
     var version: String = versions.sortBy(s => s).last
     val runningSilkVersion = Info.version.split("-")(0) // Strip SNAPSHOT, ALPHA, BETA etc
     if (version < runningSilkVersion) {
-      userCanAbortClone("WARNING: 'my-site' was constructed with silk version %s ".format(version))
+      userCanAbortClone("WARNING: '%s' was built with an older version (%s), so proposal needs to be updated too.".format(projectId, version))
     } else if (version > runningSilkVersion) {
-      userCanAbortClone("WARNING: This artifact was built with a new version (%s) of silk than yours. Please get the latest version from http://www.silkyweb.org.".format(version))
+      userCanAbortClone("WARNING: '%s' was built with a newer version (%s), so proposal needs to be updated too. Please get the latest version from http://www.silkyweb.org.".format(projectId, version))
       if (versions.size > 1)
         version = userSelected(versions, projectId, "version")
     }
