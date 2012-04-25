@@ -67,7 +67,8 @@ object ComponentTransformer {
     val compsReplace = findElements(xml, elem, attr, "silk-component") map {
       comp =>
         val compDetails = getComponentDetails(comp.attrs("id"))
-        val componentContent = findElements(lookupComponent(compDetails), elem, attr, "silk-component").head
+        val componentSelection = (lookupComponent(compDetails) \\ "body" \ *).filter(_.isInstanceOf[Elem])
+        val componentContent = componentSelection(0).asInstanceOf[Elem]
 
         (for {
           datasource <- compDetails.dsSource
