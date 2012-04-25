@@ -29,7 +29,8 @@ object BuildSettings {
     organization := buildOrganization,
     version      := buildVersion,
     scalaVersion := buildScalaVersion,
-    shellPrompt  := ShellPrompt.buildShellPrompt
+    shellPrompt  := ShellPrompt.buildShellPrompt,
+    scalacOptions ++= Seq("-deprecation", "-unchecked")
   )
 }
 
