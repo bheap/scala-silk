@@ -99,6 +99,7 @@ object Silk {
     * @param projectId String display the projectId to user
     * @param selectionType String display the selectionType to user (package, version)
     * @return String from the list of choices */
+  // @todo refactor this into something more functional
   def userSelected(choices: List[String], projectId: String, selectionType: String): String = {
     println("The following %ss exist for artifact '%s'".format(selectionType, projectId))
     for(i <- 0 to choices.size -1) {
@@ -118,7 +119,7 @@ object Silk {
     choices(i - 1)
   }
 
-  /** Determines silk version. Warns if component or user's silk version are out of date. 
+  /** Determines silk version. Warns if artifact or user's silk version are out of date. 
     *
     * @param versions List[String] list of versions
     * @param projectId String display the projectId to user
@@ -136,7 +137,7 @@ object Silk {
     version
   }
 
-  /** Warns and allows user abort the clone.
+  /** Warns and allows user to abort the clone.
     *
     * @param warningMsg String the warning */
   def userCanAbortClone(warningMsg: String) {
