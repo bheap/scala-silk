@@ -127,9 +127,9 @@ object Silk {
     var version: String = versions.sortBy(s => s).last
     val runningSilkVersion = Info.version.split("-")(0) // Strip SNAPSHOT, ALPHA, BETA etc
     if (version < runningSilkVersion) {
-      userCanAbortClone("WARNING: '%s' was built with an older version (%s), so proposal needs to be updated too.".format(projectId, version))
+      userCanAbortClone("WARNING: '%s' was built with an older version (%s), some compatibility changes may be required to spin.".format(projectId, version))
     } else if (version > runningSilkVersion) {
-      userCanAbortClone("WARNING: '%s' was built with a newer version (%s), so proposal needs to be updated too. Please get the latest version from http://www.silkyweb.org.".format(projectId, version))
+      userCanAbortClone("WARNING: '%s' was built with a newer version (%s), some compatibility changes may be required to spin. Please get the latest version from http://www.silkyweb.org.".format(projectId, version))
       if (versions.size > 1)
         version = userSelected(versions, projectId, "version")
     }
