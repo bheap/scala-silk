@@ -45,9 +45,10 @@ object TemplateTransformer {
   // @todo rudimentary draft only, makes assumptions about package, version and theme
   def transformTemplateWrapped(xml: Elem) = {
     val template = lookupTemplate(xml) getOrElse lookupTemplateMissing
-    val templateReplace = findElements(template, 'div, "id", "silk-template")
-    val viewReplace = findElements(xml, 'div, "id", "silk-view")
-    val unselected = templateReplace.updated(0, viewReplace.head).unselect.unselect
+    val templateReplace = findElements(template, 'div, "id", "silk-view")
+    val viewSelection = (xml \\ "body" \ *).filter(_.isInstanceOf[Elem])
+    val viewReplace = viewSelection(0).asInstanceOf[Elem]
+    val unselected = templateReplace.updated(0, viewReplace).unselect.unselect
     unselected(0).asInstanceOf[Elem]
   }
 
