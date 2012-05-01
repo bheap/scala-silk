@@ -18,7 +18,10 @@ package org.silkyweb.interface
 
 import scala.xml._
 
-import java.io.File
+import java.io._
+import java.net._
+import java.nio._
+import java.nio.channels._
 
 import scopt._
 
@@ -70,6 +73,7 @@ object Silk {
         case "clone-component" => artifactClone(config.prototype, "component", compDir)
         case "install-component" => artifactInstall("component", compDir)
         case "spin" => spin
+        case "update" => update
         case _ => println("Sorry, not a valid action, please try " + tasks)
       }
     } else {
@@ -186,6 +190,20 @@ object Silk {
   def spin {
     ViewDrivenPipeline.process
     println("Silk spin complete")
+  }
+
+  /** A platform independent update. */
+  def update {
+    // First update silk.conf
+    if (masterSilkConfig.exists) masterSilkConfig.delete
+    val sConf = new URL("http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/silk.conf")
+		val rbc = Channels.newChannel(sConf.openStream)
+		val fos = new FileOutputStream(new File(silkHomeDir, "silk.conf"))
+		fos.getChannel().transferFrom(rbc, 0, 1 << 24)
+
+    // Update site prototypes
+
+    println("Silk update complete.")
   }
 }
 
