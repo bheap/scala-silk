@@ -12,10 +12,7 @@ echo "
 /__/_|_|_\_\\
 "
 
-if [ "$1" == "components" ]; then
-  echo "Installed components are:"
-  find $SKC -type f -name dna.conf -exec grep 'component.id' {} \; -exec grep 'component.description' {} \; | awk -F '=' '{gsub(/"/, "  "); print $2}'
-elif [ "$1" == "update" ]; then
+if [ "$1" == "update" ]; then
   mkdir -p $SK
   curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/silk.conf" \
           > $SK/silk.conf

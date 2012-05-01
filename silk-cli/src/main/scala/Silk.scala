@@ -58,6 +58,13 @@ object Silk {
               println(item.id + " : " + item.pkg + " : " + item.silkVersion)
               println("  " + item.desc)
           }
+        	case "components" =>
+	          println("Installed components are:\n")
+	          Scout.getArtifacts(compDir, "component") foreach {
+	            item => 
+	              println(item.id + " : " + item.pkg + " : " + item.silkVersion)
+	              println("  " + item.desc)
+	          }
         case "clone-site" => artifactClone(config.prototype, "site-prototype", siteProtoDir)
         case "install-site" => artifactInstall("site-prototype", siteProtoDir)
         case "clone-component" => artifactClone(config.prototype, "component", compDir)
