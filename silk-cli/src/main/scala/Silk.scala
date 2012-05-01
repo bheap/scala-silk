@@ -26,7 +26,7 @@ import java.nio.channels._
 import scopt._
 
 import org.silkyweb.pipeline.ViewDrivenPipeline
-import org.silkyweb.utils.{Bundler, Config => SilkConfig, Scout}
+import org.silkyweb.utils.{Archive, Bundler, Config => SilkConfig, Scout, Path}
 
 /** The CLI.
   *
@@ -193,17 +193,34 @@ object Silk {
   }
 
   /** A platform independent update. */
+  // @todo create the directories required
   def update {
     // First update silk.conf
     if (masterSilkConfig.exists) masterSilkConfig.delete
-    val sConf = new URL("http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/silk.conf")
-		val rbc = Channels.newChannel(sConf.openStream)
-		val fos = new FileOutputStream(new File(silkHomeDir, "silk.conf"))
-		fos.getChannel().transferFrom(rbc, 0, 1 << 24)
+    downloadToLocation(new URL(updateUrlBase + "silk.conf"), new File(silkHomeDir, "silk.conf"))
 
     // Update site prototypes
+    val spDir = new File(siteProtoStr + fs + corePkgStr)
+    if (spDir.exists) Path.deleteAll(spDir)
+    downloadToLocation(new URL(updateUrlBase + "site-prototype.zip"), new File(silkRepoDir, "site-prototype.zip"))
+    val siteArchive = new Archive(silkRepoStr + fs + "site-prototype.zip")
+    siteArchive.extract
+
+    // Update components
+    val cpDir = new File(compStr + fs + corePkgStr)
+    if (cpDir.exists) Path.deleteAll(cpDir)
+    downloadToLocation(new URL(updateUrlBase + "component.zip"), new File(silkRepoDir, "component.zip"))
+    val compArchive = new Archive(silkRepoStr + fs + "component.zip")
+    compArchive.extract
 
     println("Silk update complete.")
+  }
+
+  /** Downloads a given URL to a given location. */
+  def downloadToLocation(url: URL, location: File) {
+    val channel = Channels.newChannel(url.openStream)
+    val fos = new FileOutputStream(location)
+    fos.getChannel().transferFrom(channel, 0, 1 << 24)
   }
 }
 

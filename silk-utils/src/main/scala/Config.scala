@@ -43,6 +43,7 @@ object Config {
   val silkHomeDir = new File(silkHomeStr)
 
   val silkRepoStr = silkHomeStr + fs + "repositories"
+  val silkRepoDir = new File(silkRepoStr)
 
   // Core directory structures
   val compStr = silkRepoStr + fs + "component"
@@ -65,6 +66,10 @@ object Config {
   val localSilkConfigDir = new File(userDir, "config")
   val localSilkConfig = new File(localSilkConfigDir, "silk.conf")
   val localDnaConfig = new File(localSilkConfigDir, "dna.conf")
+
+  // Update URL related
+  // @todo calculate version based on project version, dropping anyhting beyond patch version
+  val updateUrlBase = "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/"
 
   // There may be a local Silk conf which can override master Silk conf
   val silkConfig = if (localSilkConfig.exists) parse(localSilkConfig) else parse(masterSilkConfig)
