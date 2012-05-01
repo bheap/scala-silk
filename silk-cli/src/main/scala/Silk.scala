@@ -40,7 +40,7 @@ object Silk {
 
     println("Version : " + Info.version)
 
-    val tasks = "(update|sites|site-clone|site-install|components|component-clone|component-install|spin)"
+    val tasks = "(update|sites|clone-site|install-site|components|clone-component|install-component|spin)"
 
     var config = Config()
 
@@ -51,10 +51,10 @@ object Silk {
 
     if (parser.parse(args)) {
       config.task.get match {
-        case "site-clone" => artifactClone(config.prototype, "site-prototype", siteProtoDir)
-        case "site-install" => artifactInstall("site-prototype", siteProtoDir)
-        case "component-clone" => artifactClone(config.prototype, "component", compDir)
-        case "component-install" => artifactInstall("component", compDir)
+        case "clone-site" => artifactClone(config.prototype, "site-prototype", siteProtoDir)
+        case "install-site" => artifactInstall("site-prototype", siteProtoDir)
+        case "clone-component" => artifactClone(config.prototype, "component", compDir)
+        case "install-component" => artifactInstall("component", compDir)
         case "spin" => spin
         case _ => println("Sorry, not a valid action, please try " + tasks)
       }
