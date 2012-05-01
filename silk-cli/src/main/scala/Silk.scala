@@ -51,6 +51,13 @@ object Silk {
 
     if (parser.parse(args)) {
       config.task.get match {
+        case "sites" =>
+          println("Installed site-prototypes are:\n")
+          Scout.getArtifacts(siteProtoDir, "site-prototype") foreach {
+            item => 
+              println(item.id + " : " + item.pkg + " : " + item.silkVersion)
+              println("  " + item.desc)
+          }
         case "clone-site" => artifactClone(config.prototype, "site-prototype", siteProtoDir)
         case "install-site" => artifactInstall("site-prototype", siteProtoDir)
         case "clone-component" => artifactClone(config.prototype, "component", compDir)
