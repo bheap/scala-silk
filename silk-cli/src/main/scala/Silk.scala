@@ -73,20 +73,20 @@ object Silk {
   def artifactClone(prototype: Option[String], artifactName: String, artifactBase: File) {
     if (silkHomeDir.exists) {
       val projectId = prototype.getOrElse("nooo")
-      var projects = getProjectsById(artifactBase, artifactName, projectId)
-      if (projects.size > 0) {
-        val packages = projects.map(_.pkg).distinct
+      var artifacts = Scout.getArtifactsById(artifactBase, artifactName, projectId)
+      if (artifacts.size > 0) {
+        val packages = artifacts.map(_.pkg).distinct
         if (packages.size > 1) {
           val selectedPackage = userSelected(packages, projectId, "package")
-          projects = projects.filter(_.pkg == selectedPackage)
+          artifacts = artifacts.filter(_.pkg == selectedPackage)
         }
-        val selectedVersion = autoSelectedVersion(projects.map(_.silkVersion).distinct, projectId)
-        projects = projects.filter(_.silkVersion == selectedVersion)
+        val selectedVersion = autoSelectedVersion(artifacts.map(_.silkVersion).distinct, projectId)
+        artifacts = artifacts.filter(_.silkVersion == selectedVersion)
         if (artifactName.equals("site-prototype")) {
           if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
           Bundler.bundleFile(masterSilkConfig, localSilkConfig)
         }
-        Bundler.bundle(projects.head.baseDir, userDir)
+        Bundler.bundle(artifacts.head.baseDir, userDir)
         println("Silk %s : %s clone complete".format(artifactName, prototype.get))
       } else println("Sorry, no artifact found with that id")
     } else println("Please run silk update, your system is not setup properly")
