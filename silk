@@ -12,27 +12,6 @@ echo "
 /__/_|_|_\_\\
 "
 
-#if [ "$1" == "update" ]; then
-#  mkdir -p $SK
-#  curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/silk.conf" \
-#          > $SK/silk.conf
-#	mkdir -p $SKSP
-#	curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/site-prototype.tgz" \
-#	        > site-prototype.tgz
-#	tar xf site-prototype.tgz --exclude="._*" -C $SKSP
-#	rm site-prototype.tgz
-#  mkdir -p $SKC
-#  curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/component.tgz" \
-#          > component.tgz
-#  tar xf component.tgz --exclude="._*" -C $SKC
-#  rm component.tgz
-#  mkdir -p $SKT
-#  curl "http://www.silkyweb.org/resource/downloads/silk/updates/0.1.0/template.tgz" \
-#          > template.tgz
-#  tar xf template.tgz --exclude="._*" -C $SKT
-#  rm template.tgz
-#  echo "Silk update complete"
-#elif [ "$1" == "spin" ]; then
 if [ "$1" == "spin" ]; then
   rm -rf ${PWD}/site
   mkdir ${PWD}/site
