@@ -46,7 +46,7 @@ object Scout {
   def getArtifactsById(base: File, artifactName: String, id: String): List[Artifact] = {
     // Get all dna.config files in local silk repo.
     val all = getRecursiveFilesInDirectoryOfType(base, "dna.conf".r)
-    // Filter list to get id matching ones only .
+    // Filter list to get id matching ones only.
     val filtered = all.filter(f => Config.parse(f).getString(artifactName + ".id") == id)
     filtered.map(f => {
       val p = Config.parse(f)
