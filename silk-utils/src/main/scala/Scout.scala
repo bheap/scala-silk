@@ -42,7 +42,6 @@ object Scout {
     *
     * @param configFile File the config file 
     * @return Config the configurations */
-  // @todo improve efficiency by mapping and then filtering, will reduce number of Config.parse instances
   def getArtifactsById(base: File, artifactName: String, id: String): List[Artifact] = {
     // Get all dna.config files in local silk repo.
     val all = getRecursiveFilesInDirectoryOfType(base, "dna.conf".r)
