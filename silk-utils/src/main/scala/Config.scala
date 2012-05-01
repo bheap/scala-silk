@@ -77,25 +77,4 @@ object Config {
     * @param configFile File the config file 
     * @return Config the configurations */  
   def parse(configFile: File) = ConfigFactory.parseFile(configFile)
-
-  /** Gets a list of projects matching the given ID.
-    *
-    * @param configFile File the config file 
-    * @return Config the configurations */  
-  def getProjectsById(base: File, artifactName: String, id: String): List[Project] = {
-    // Get all dna.config files in local silk repo.
-    val all = Scout.getRecursiveFilesInDirectoryOfType(base, "dna.conf".r)
-    // Filter list to get id matching ones only .
-    val filtered = all.filter(f => parse(f).getString(artifactName + ".id") == id)
-    filtered.map(f => {
-      val p = parse(f)
-      Project(f.getParentFile.getParentFile, p.getString(artifactName + ".package"), 
-          p.getString(artifactName  + ".silk-version"))
-    })
-  }
 }
-
-/** An object that stores the following project details: location, package and Silk version.
-  *
-  * @author <a href="mailto:nick.featch@gmail.com">schnick</a> */
-case class Project(baseDir: File, pkg: String, silkVersion: String)

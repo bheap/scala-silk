@@ -25,6 +25,8 @@ import java.io.File
   * Used to detect structure of site to spin.
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
+  * @author <a href="mailto:nick.featch@gmail.com">schnick</a>
+  *
   * @since 1.0 */
 // @todo rename this to something useful
 // @todo probably roll in the directory path depth detection currently entangled in URIAttributeRewriter
@@ -35,4 +37,32 @@ object Scout {
 	  val good = these.filter(item => regex.findFirstIn(item.getName).isDefined)
 	  good ++ these.filter(_.isDirectory).flatMap(getRecursiveFilesInDirectoryOfType(_,regex)).toList
 	}
+
+  /** Gets a list of artifacts of a given type. */
+  def getArtifacts(base: File, artifactName: String): List[Artifact] = {
+    // Get all dna.config files in local silk repo.
+    val all = getRecursiveFilesInDirectoryOfType(base, "dna.conf".r)
+    all.map(f => {
+      val p = Config.parse(f)
+      Artifact(f.getParentFile.getParentFile, p.getString(artifactName + ".package"), 
+          p.getString(artifactName + ".id"), p.getString(artifactName  + ".silk-version"), p.getString(artifactName  + ".description"))
+    })
+  }
+
+
+  /** Gets a list of artifacts of a given type matching the given ID. */
+  def getArtifactsById(base: File, artifactName: String, id: String): List[Artifact] = {
+    // Get all dna.config files in local silk repo.
+    val all = getRecursiveFilesInDirectoryOfType(base, "dna.conf".r)
+    // Filter list to get id matching ones only.
+    val filtered = all.filter(f => Config.parse(f).getString(artifactName + ".id") == id)
+    filtered.map(f => {
+      val p = Config.parse(f)
+      Artifact(f.getParentFile.getParentFile, p.getString(artifactName + ".package"), 
+          p.getString(artifactName + ".id"), p.getString(artifactName  + ".silk-version"), p.getString(artifactName  + ".description"))
+    })
+  }
 }
+
+/** An object that stores the following project details: location, package, id , Silk version and decsription. */
+case class Artifact(baseDir: File, pkg: String, id: String, silkVersion: String, desc: String)
