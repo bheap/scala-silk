@@ -203,15 +203,13 @@ object Silk {
     val spDir = new File(siteProtoStr + fs + corePkgStr)
     if (spDir.exists) Path.deleteAll(spDir)
     downloadToLocation(new URL(updateUrlBase + "site-prototype.zip"), new File(silkRepoDir, "site-prototype.zip"))
-    val siteArchive = new Archive(silkRepoStr + fs + "site-prototype.zip")
-    siteArchive.extract
+    Archive.extract(silkRepoStr + fs + "site-prototype.zip")
 
     // Update components
     val cpDir = new File(compStr + fs + corePkgStr)
     if (cpDir.exists) Path.deleteAll(cpDir)
     downloadToLocation(new URL(updateUrlBase + "component.zip"), new File(silkRepoDir, "component.zip"))
-    val compArchive = new Archive(silkRepoStr + fs + "component.zip")
-    compArchive.extract
+    Archive.extract(silkRepoStr + fs + "component.zip")
 
     println("Silk update complete.")
   }

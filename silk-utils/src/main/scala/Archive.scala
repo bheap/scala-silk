@@ -23,32 +23,28 @@ import java.util.jar._
   *
   * @author <a href="mailto:ross@bheap.co.uk">rossputin</a>
   * @since 1.0 */
-class Archive(jarFile: JarFile) {
+object Archive {
 
-  def this(filename: String) = this(new JarFile(filename))
-
-  lazy val jarFileDir = new File(jarFile.getName).getParentFile
-  lazy val jarFileName = new File(jarFile.getName).getName
-  lazy val extractDir = {
-    val jarBasename = jarFileName.substring(0, jarFileName.lastIndexOf("."))
-    val firstEntry = jarFile.entries.nextElement
-    val entryName = firstEntry.getName
-    val isBasenameInEntryPath = entryName.startsWith(jarBasename)
-
-    val todir = 
-      if (isBasenameInEntryPath) jarFileDir
-      else new File(jarFileDir, jarBasename)
-    todir
+  def extract(file: String) {
+    val extractLoc = calculateExtractionLocation(file)
+    jarEntries(file) foreach (entry => extractEntry(file, entry, extractLoc))
   }
 
-  def copyStream(istream: InputStream, ostream: OutputStream) {
-    var bytes =  new Array[Byte](1024)
-    var len = -1
-    while ({ len = istream.read(bytes, 0, 1024); len != -1 })
-      ostream.write(bytes, 0, len)
+  def calculateExtractionLocation(file: String) = {
+    val jarFile = new JarFile(file)
+    lazy val jarFileDir = new File(jarFile.getName).getParentFile
+	  lazy val jarFileName = new File(jarFile.getName).getName
+	  val jarBasename = jarFileName.substring(0, jarFileName.lastIndexOf("."))
+	  val firstEntry = jarFile.entries.nextElement
+	  val entryName = firstEntry.getName
+	  val isBasenameInEntryPath = entryName.startsWith(jarBasename)
+
+	  if (isBasenameInEntryPath) jarFileDir
+	  else new File(jarFileDir, jarBasename)
   }
 
-  def jarEntries: Iterator[JarEntry] = {
+  def jarEntries(file: String): Iterator[JarEntry] = {
+    val jarFile = new JarFile(file)
     val enu = jarFile.entries
     new Iterator[JarEntry] {
       def hasNext = enu.hasMoreElements
@@ -56,7 +52,8 @@ class Archive(jarFile: JarFile) {
     }
   }
 
-  def extractEntry(jarEntry: JarEntry, todir: File) {
+  def extractEntry(file: String, jarEntry: JarEntry, todir: File) {
+    val jarFile = new JarFile(file)
     val entryPath = jarEntry.getName
     if (jarEntry.isDirectory) {
       new File(todir, entryPath).mkdirs
@@ -69,7 +66,10 @@ class Archive(jarFile: JarFile) {
     }
   }
 
-  def extract {
-    jarEntries foreach (entry => extractEntry(entry, extractDir))
+  def copyStream(istream: InputStream, ostream: OutputStream) {
+    var bytes =  new Array[Byte](1024)
+    var len = -1
+    while ({ len = istream.read(bytes, 0, 1024); len != -1 })
+      ostream.write(bytes, 0, len)
   }
 }
