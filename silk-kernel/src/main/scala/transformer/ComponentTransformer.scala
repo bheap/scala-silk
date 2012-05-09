@@ -23,6 +23,8 @@ import com.codecommit.antixml._
 
 import java.io.File
 
+import javax.xml.stream.XMLStreamException
+
 import org.fusesource.scalate.scuery.Transformer
 
 import org.silkyweb.datasource.Datasource
@@ -137,18 +139,33 @@ object ComponentTransformer {
     * @param comp [[org.silkyweb.transformer.ComponentDetails]] */
   // @todo rudimentary draft only, ugly and makes assumptions about package, version and theme
   def lookupComponent(comp: ComponentDetails) = {
-    val localComp = new File(userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html")
+    val localCompStr = userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html"
+    val localComp = new File(localCompStr)
     val coreCompStr = compStr + fs + corePkgStr + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
     val coreComp = new File(coreCompStr)
     if (localComp.exists) {
-      XML.fromSource(Source.fromFile(localComp))
+      loadComponentSource(localCompStr).get
     } else if (coreComp.exists) {
-      XML.fromSource(Source.fromFile(coreCompStr))
+      loadComponentSource(coreCompStr).get
     } else {
       val compBaseName = "component-missing"
       val theme = "none" //dnaConfig.getString("site-prototype.theme")
       val compName = if (theme == "none") compBaseName else compBaseName + "-" + theme
-      XML.fromSource(Source.fromFile(compStr + fs + corePkgStr + fs + compName + fs + "0.1.0" + fs + compName + ".html"))
+      loadComponentSource(compStr + fs + corePkgStr + fs + compName + fs + "0.1.0" + fs + compName + ".html").get
+    }
+  }
+
+  def loadComponentSource(file: String): Option[Elem] = {
+    try {
+      Some(XML.fromSource(Source.fromFile(file)))
+    } catch {
+      case xse: XMLStreamException => 
+        println("Sorry... something has gone wrong with a component : " + file)
+        println("It is possible the component file is not valid (x)html")
+        println("Please have a look at the message below and try to fix it.")
+        println(xse.getMessage.split("Message: ")(1))
+        System.exit(1)
+        None
     }
   }
 }
