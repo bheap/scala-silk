@@ -18,12 +18,15 @@ package org.silkyweb.interface
 
 import scala.xml._
 
-import java.io.File
+import java.io._
+import java.net._
+import java.nio._
+import java.nio.channels._
 
 import scopt._
 
 import org.silkyweb.pipeline.ViewDrivenPipeline
-import org.silkyweb.utils.{Bundler, Config => SilkConfig, Scout}
+import org.silkyweb.utils.{Archive, Bundler, Config => SilkConfig, Scout, Path}
 
 /** The CLI.
   *
@@ -70,6 +73,7 @@ object Silk {
         case "clone-component" => artifactClone(config.prototype, "component", compDir)
         case "install-component" => artifactInstall("component", compDir)
         case "spin" => spin
+        case "update" => update
         case _ => println("Sorry, not a valid action, please try " + tasks)
       }
     } else {
@@ -186,6 +190,35 @@ object Silk {
   def spin {
     ViewDrivenPipeline.process
     println("Silk spin complete")
+  }
+
+  /** A platform independent update. */
+  // @todo create the directories required
+  def update {
+    // First update silk.conf
+    if (masterSilkConfig.exists) masterSilkConfig.delete
+    downloadToLocation(new URL(updateUrlBase + "silk.conf"), new File(silkHomeDir, "silk.conf"))
+
+    // Update site prototypes
+    val spDir = new File(siteProtoStr + fs + corePkgStr)
+    if (spDir.exists) Path.deleteAll(spDir)
+    downloadToLocation(new URL(updateUrlBase + "site-prototype.zip"), new File(silkRepoDir, "site-prototype.zip"))
+    Archive.extract(silkRepoStr + fs + "site-prototype.zip")
+
+    // Update components
+    val cpDir = new File(compStr + fs + corePkgStr)
+    if (cpDir.exists) Path.deleteAll(cpDir)
+    downloadToLocation(new URL(updateUrlBase + "component.zip"), new File(silkRepoDir, "component.zip"))
+    Archive.extract(silkRepoStr + fs + "component.zip")
+
+    println("Silk update complete.")
+  }
+
+  /** Downloads a given URL to a given location. */
+  def downloadToLocation(url: URL, location: File) {
+    val channel = Channels.newChannel(url.openStream)
+    val fos = new FileOutputStream(location)
+    fos.getChannel().transferFrom(channel, 0, 1 << 24)
   }
 }
 
