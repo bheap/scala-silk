@@ -18,9 +18,12 @@ package org.silkyweb.pipeline
 
 import scala.io.Source
 import scala.xml.{XML => ScalaXML}
+
 import com.codecommit.antixml._
 
 import java.io.{File, FileWriter}
+
+import javax.xml.stream.XMLStreamException
 
 import com.bheap.scalautils.FileUtils._
 
@@ -49,15 +52,24 @@ object ViewDrivenPipeline {
     val generated = Generator.generateFromXHTML(viewDir)
     generated foreach {
       viewFile =>
-        val view = XML.fromSource(Source.fromFile(viewFile))
-        val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)
-        val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)
-        val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)
-        val transformedToSaneScript = AntiXMLElemScriptTransformer(transformedToURIAttributeRewritten)
-        val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToSaneScript)
-        writeView(viewFile, serialisedToHtml5)
-        Bundler.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
-		    Bundler.bundle(new File(userDir, "meta"), siteDir)
+        try {
+          val view = XML.fromSource(Source.fromFile(viewFile))
+          val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)
+          val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)
+          val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)
+          val transformedToSaneScript = AntiXMLElemScriptTransformer(transformedToURIAttributeRewritten)
+          val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToSaneScript)
+          writeView(viewFile, serialisedToHtml5)
+          Bundler.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
+          Bundler.bundle(new File(userDir, "meta"), siteDir)
+        } catch {
+          case xse: XMLStreamException => 
+            println("Sorry... something has gone wrong with one of your view files : " + viewFile)
+            println("It is possible your view file is not valid (x)html")
+            println("Please have a look at the message below and try to fix it.")
+            println(xse.getMessage.split("Message: ")(1))
+            System.exit(1)
+		    }
     }
   }
 
