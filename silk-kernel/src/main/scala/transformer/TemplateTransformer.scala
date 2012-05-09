@@ -23,6 +23,8 @@ import com.codecommit.antixml._
 
 import java.io.{File, FileNotFoundException}
 
+import javax.xml.stream.XMLStreamException
+
 import org.silkyweb.utils.{Config, XML => SilkXML}
 
 /** Transforms a view into a template wrapped view.
@@ -80,11 +82,21 @@ object TemplateTransformer {
   } 
 
   def loadTemplate(file: File): Option[Elem] = {
-    val result: Either[Throwable, Elem] = 
-      catching (classOf[FileNotFoundException]) either XML.fromSource(Source.fromFile(file))
-    result match {
-      case Left(error) => None
-      case Right(data) => Some(data)
+    try {
+      val result: Either[Throwable, Elem] = 
+        catching (classOf[FileNotFoundException]) either XML.fromSource(Source.fromFile(file))
+      result match {
+        case Left(error) => None
+        case Right(data) => Some(data)
+      }
+    } catch {
+      case xse: XMLStreamException => 
+        println("Sorry... something has gone wrong with a template : " + file)
+        println("It is possible the template file is not valid (x)html")
+        println("Please have a look at the message below and try to fix it.")
+        println(xse.getMessage.split("Message: ")(1))
+        System.exit(1)
+        None
     }
   }
 }
