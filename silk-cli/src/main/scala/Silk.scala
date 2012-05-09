@@ -77,7 +77,7 @@ object Silk {
         case _ => println("Sorry, not a valid action, please try " + tasks)
       }
     } else {
-      println("that was bad okaaaayyyyy ?")
+      println("Sorry, something went wrong, please try your command again...")
     }
   }
 
