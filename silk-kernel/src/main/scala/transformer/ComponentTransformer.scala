@@ -45,9 +45,13 @@ object ComponentTransformer {
   /** Transform components.
     *
     * First search for a local component, then a core component, finally
-    * default to the missing-component. 
+    * default to the missing-component.
+    *
+    * Note while we only specify div and span here, this coveres every possibility,
+    * as later we grab the full contents inside a body tag of any given component. 
     *
     * @param xml the content to be transformed */
+  // @todo when we want dynamic components we will need to move beyond div and span
   def transformComponents(xml: Elem) = {
     val divCompsTransformed = seekAndReplace(xml, 'div, "id").head.asInstanceOf[Elem]
     val unselected = seekAndReplace(divCompsTransformed, 'span, "id")
@@ -56,7 +60,7 @@ object ComponentTransformer {
 
   /** Search and replace Silk components with a given element name.
     *
-    * Note we may or may be dealing with a dynamic component.  If we are
+    * Note we may or may not be dealing with a dynamic component.  If we are
     * we will leverage the DynamicComponentTransformer to inject datasource
     * content.
     *
