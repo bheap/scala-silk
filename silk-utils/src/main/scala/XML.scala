@@ -16,7 +16,14 @@
 
 package org.silkyweb.utils
 
-import com.codecommit.antixml._
+import scala.io.Source
+import scala.util.control.Exception._
+
+import com.codecommit.antixml.{Attributes, Elem, Selector, XML => AXML}
+
+import java.io.{File, FileNotFoundException}
+
+import javax.xml.stream.XMLStreamException
 
 /** Some handy utilities for querying and manipulating antixml.
   *
@@ -34,5 +41,44 @@ object XML {
     if (attrs.contains(attr)) {
 	    attrs(attr).contains(sig)
     } else false
+  }
+
+  def lookupChainedSource(files: List[String]): Either[Throwable, Elem] = {
+    val lookupFile = files collectFirst validSource
+    val validSourceState = for { sourceFile <- lookupFile } yield loadResource(new File(sourceFile)) 
+    validSourceState getOrElse Left(new Exception("Sorry, something went wrong with your installation of Silk"))
+  }
+
+  def isValidSource(file: String): Boolean = {
+    loadResource(new File(file)) match {
+      case Left(error) =>
+        error match {
+          case x: FileNotFoundException => false
+          case _ => true
+        }
+      case Right(data) => true
+    }
+  }
+
+  val validSource: PartialFunction[String, String] = {
+    case x if (isValidSource(x)) => x
+  }
+
+  def loadResource(file: File): Either[Throwable, Elem] = {
+    type FNFE = FileNotFoundException
+	  type XSE = XMLStreamException
+
+    val result: Either[Throwable, Elem] = 
+      catching(classOf[FNFE], classOf[XSE], classOf[Exception]) either AXML.fromSource(Source.fromFile(file))
+
+    result match {
+      case Left(error) =>
+        error match {
+          case x: XSE => Left(new MalformedSourceException(x.getMessage, file.toString))
+          case x: FNFE => Left(x)
+          case x: Exception => Left(x)
+        }
+      case Right(data) => Right(data)
+    }
   }
 }

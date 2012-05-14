@@ -23,14 +23,12 @@ import com.codecommit.antixml._
 
 import java.io.{File, FileWriter}
 
-import javax.xml.stream.XMLStreamException
-
 import com.bheap.scalautils.FileUtils._
 
 import org.silkyweb.generator.{PathPreservingFileSourceGenerator => Generator}
 import org.silkyweb.serialiser.Serialiser
 import org.silkyweb.transformer.{ComponentTransformer, AntiXMLElemScriptTransformer, TemplateTransformer, URIAttributeTransformer}
-import org.silkyweb.utils.{Bundler, Config}
+import org.silkyweb.utils.{Bundler, Config, MalformedSourceException, XML => SXML}
 
 /** Controls manipulation and representation of your site content.
   *
@@ -52,24 +50,30 @@ object ViewDrivenPipeline {
     val generated = Generator.generateFromXHTML(viewDir)
     generated foreach {
       viewFile =>
-        try {
-          val view = XML.fromSource(Source.fromFile(viewFile))
-          val transformedToTemplateWrapped = TemplateTransformer.transformTemplateWrapped(view)
-          val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)
-          val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)
-          val transformedToSaneScript = AntiXMLElemScriptTransformer(transformedToURIAttributeRewritten)
-          val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToSaneScript)
-          writeView(viewFile, serialisedToHtml5)
-          Bundler.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
-          Bundler.bundle(new File(userDir, "meta"), siteDir)
-        } catch {
-          case xse: XMLStreamException => 
-            println("Sorry... something has gone wrong with one of your view files : " + viewFile)
-            println("It is possible your view file is not valid (x)html")
-            println("Please have a look at the message below and try to fix it.")
-            println(xse.getMessage.split("Message: ")(1))
+        val view = unpackSourceState(SXML.loadResource(viewFile))//XML.fromSource(Source.fromFile(viewFile))
+        val transformedToTemplateWrapped = unpackSourceState(TemplateTransformer.transformTemplateWrapped(view)) //TemplateTransformer.transformTemplateWrapped(view).get
+        val transformedToComponentInjected = ComponentTransformer.transformComponents(transformedToTemplateWrapped)
+        val transformedToURIAttributeRewritten = rewriteAttributes(viewFile, transformedToComponentInjected)
+        val transformedToSaneScript = AntiXMLElemScriptTransformer(transformedToURIAttributeRewritten)
+        val serialisedToHtml5 = Serialiser.serialiseToHtml5(transformedToSaneScript)
+        writeView(viewFile, serialisedToHtml5)
+        Bundler.bundle(new File(userDir, "resource"), new File(siteDir, "resource"))
+        Bundler.bundle(new File(userDir, "meta"), siteDir)
+    }
+  }
+
+  def unpackSourceState(wrappedState: Either[Throwable, Elem]): Elem = {
+    wrappedState match {
+      case Right(data) => data
+      case Left(error) =>
+        error match {
+          case x: MalformedSourceException =>
+            println("Sorry, something has gone wrong with one of your source files : " + x.sourcefile)
+            println("The error is listed below.")
+            println(x.message)
             System.exit(1)
-		    }
+            <end />.convert
+        }
     }
   }
 

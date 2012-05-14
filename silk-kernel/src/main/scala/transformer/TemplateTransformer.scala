@@ -25,6 +25,7 @@ import java.io.{File, FileNotFoundException}
 
 import javax.xml.stream.XMLStreamException
 
+import org.silkyweb.utils.MalformedSourceException
 import org.silkyweb.utils.{Config, XML => SilkXML}
 
 /** Transforms a view into a template wrapped view.
@@ -45,58 +46,49 @@ object TemplateTransformer {
     *
     * This effectively finalises a high level model for each view. */
   // @todo rudimentary draft only, makes assumptions about package, version and theme
-  def transformTemplateWrapped(xml: Elem) = {
-    val template = lookupTemplate(xml) getOrElse lookupTemplateMissing
-    val templateReplace = findElements(template, 'div, "id", "silk-view")
-    val viewSelection = (xml \\ "body" \ *).filter(_.isInstanceOf[Elem])
-    val viewReplace = viewSelection(0).asInstanceOf[Elem]
-    val unselected = templateReplace.updated(0, viewReplace).unselect.unselect
-    unselected(0).asInstanceOf[Elem]
+  def transformTemplateWrapped(xml: Elem): Either[Throwable, Elem] = {//Option[Elem] = {
+    val template = lookupTemplate(xml)
+    template match {
+      case Right(data) =>
+        val templateReplace = findElements(data, 'div, "id", "silk-view")
+        val viewSelection = (xml \\ "body" \ *).filter(_.isInstanceOf[Elem])
+
+        val viewReplace = viewSelection(0).asInstanceOf[Elem]
+        val unselected = templateReplace.updated(0, viewReplace).unselect.unselect
+        Right(unselected(0).asInstanceOf[Elem])
+      case Left(error) =>
+        Left(error)
+    }
   }
 
-  /** Retrieves a specified template.
-    *
-    * First we try locally, then Silk core. */
-  def lookupTemplate(xml: Elem): Option[Elem] = {
-    val specificTemplateDef = findElements(xml, 'meta, "name", "template")
-    val specificTemplate = 
-      if (specificTemplateDef nonEmpty) {
-        val tName = specificTemplateDef(0).attrs("content")
-        val coreTemplateFile = new File(templateStr + fs + corePkgStr + fs + tName + fs + "0.1.0" + fs + tName + ".html")
-        loadTemplate(new File(templateDir, tName + ".html")) orElse {
-          println("[Error] Template not found locally, searching in Silk core")
-          loadTemplate(coreTemplateFile)
-        }
-      } else {
-        loadTemplate(new File(templateDir, "default.html"))
-      }
-    specificTemplate
+  def lookupTemplate(xml: Elem): Either[Throwable, Elem] = {
+    val specificTemplDef = findElements(xml, 'meta, "name", "template")
+    val actualTempl = for (templEl <- specificTemplDef headOption) yield getSpecificTempl(templEl.attrs("content"))
+    actualTempl getOrElse getDefaultTempl
   }
 
-  def lookupTemplateMissing = {
-    println("[Error] No template found with the name you specified, using Silk core template-missing")
+  def getSpecificTempl(templateName: String): Either[Throwable, Elem] = {
+    val lookupFiles = List(
+	    templateDir + fs + templateName + ".html",
+	    templateStr + fs + corePkgStr + fs + templateName + fs + "0.1.0" + fs + templateName + ".html",
+      prepareTemplateMissingPath
+	  )
+    lookupChainedSource(lookupFiles)
+  }
+
+  def getDefaultTempl: Either[Throwable, Elem] = {
+    val lookupFiles = List(
+      templateDir + fs + "default.html",
+      prepareTemplateMissingPath
+    )
+    lookupChainedSource(lookupFiles)
+  }
+
+  // @todo rudimentary draft only, makes assumptions about package, version and theme
+  def prepareTemplateMissingPath = {
     val templateBaseName = "template-missing"
     val theme = "none" //dnaConfig.getString("site-prototype.theme")
     val templateName = if (theme == "none") templateBaseName else templateBaseName + "-" + theme
-    XML.fromSource(Source.fromFile(templateStr + fs + corePkgStr + fs + templateName + fs + "0.1.0" + fs + templateName + ".html"))
-  } 
-
-  def loadTemplate(file: File): Option[Elem] = {
-    try {
-      val result: Either[Throwable, Elem] = 
-        catching (classOf[FileNotFoundException]) either XML.fromSource(Source.fromFile(file))
-      result match {
-        case Left(error) => None
-        case Right(data) => Some(data)
-      }
-    } catch {
-      case xse: XMLStreamException => 
-        println("Sorry... something has gone wrong with a template : " + file)
-        println("It is possible the template file is not valid (x)html")
-        println("Please have a look at the message below and try to fix it.")
-        println(xse.getMessage.split("Message: ")(1))
-        System.exit(1)
-        None
-    }
+    templateStr + fs + corePkgStr + fs + templateName + fs + "0.1.0" + fs + templateName + ".html"
   }
 }
