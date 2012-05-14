@@ -80,10 +80,13 @@ object XML {
         }
       case Right(data) =>
         val body = data \\ "body"
+        val templateEls = findElements(data, 'div, "id", "silk-view")
         if (data.name != "html") {
           Left(new MalformedSourceException("Structure of source file is bad, needs 'html' as root.", file.toString))
         } else if (body.size < 1) {
           Left(new MalformedSourceException("Structure of source file is bad, needs 'body' inside root 'html'.", file.toString))
+        } else if ((body.head.children.filter(_.isInstanceOf[Elem]).size > 1) && (templateEls.size < 1)) {
+          Left(new MalformedSourceException("Structure of source file is bad, 'body' should contain only one element e.g. 'div'.", file.toString))
         } else {
           Right(data)
         }

@@ -164,6 +164,7 @@ object ComponentTransformer {
       if (xml.name != "html") throw new XMLStreamException("Message: Structure of source file is bad, needs 'html' as root.")
       val body = xml \\ "body"
       if (body.size < 1) throw new XMLStreamException("Message: Structure of source file is bad, needs 'body' inside root 'html'.")
+      if (body.head.children.filter(_.isInstanceOf[Elem]).size > 1) throw new XMLStreamException("Message: Structure of source file is bad, 'body' should contain only one element e.g. 'div'.")
       Some(XML.fromSource(Source.fromFile(file)))
     } catch {
       case xse: XMLStreamException => 
