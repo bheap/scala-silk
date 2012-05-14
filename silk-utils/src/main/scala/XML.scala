@@ -78,7 +78,15 @@ object XML {
           case x: FNFE => Left(x)
           case x: Exception => Left(x)
         }
-      case Right(data) => Right(data)
+      case Right(data) =>
+        val body = data \\ "body"
+        if (data.name != "html") {
+          Left(new MalformedSourceException("Structure of source file is bad, needs 'html' as root.", file.toString))
+        } else if (body.size < 1) {
+          Left(new MalformedSourceException("Structure of source file is bad, needs 'body' inside root 'html'.", file.toString))
+        } else {
+          Right(data)
+        }
     }
   }
 }

@@ -160,6 +160,10 @@ object ComponentTransformer {
 
   def loadComponentSource(file: String): Option[Elem] = {
     try {
+      val xml = XML.fromSource(Source.fromFile(file))
+      if (xml.name != "html") throw new XMLStreamException("Message: Structure of source file is bad, needs 'html' as root.")
+      val body = xml \\ "body"
+      if (body.size < 1) throw new XMLStreamException("Message: Structure of source file is bad, needs 'body' inside root 'html'.")
       Some(XML.fromSource(Source.fromFile(file)))
     } catch {
       case xse: XMLStreamException => 
