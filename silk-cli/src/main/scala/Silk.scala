@@ -50,6 +50,7 @@ object Silk {
     val parser = new OptionParser("silk") {
       opt("t", "task", "task is a string property " + tasks, {t: String => config.task = Some(t)})
       argOpt("<prototype>", "a site or component prototype", {ps: String => config.prototype = Some(ps)})
+      argOpt("<directory>", "a directory for cloning to occur in", {d: String => config.directory = Some(d)})
     }
 
     if (parser.parse(args)) {
@@ -68,9 +69,9 @@ object Silk {
 	              println(item.id + " : " + item.pkg + " : " + item.silkVersion)
 	              println("  " + item.desc)
 	          }
-        case "clone-site" => artifactClone(config.prototype, "site-prototype", siteProtoDir)
+        case "clone-site" => artifactClone(config.prototype, config.directory, "site-prototype", siteProtoDir)
         case "install-site" => artifactInstall("site-prototype", siteProtoDir)
-        case "clone-component" => artifactClone(config.prototype, "component", compDir)
+        case "clone-component" => artifactClone(config.prototype, config.directory, "component", compDir)
         case "install-component" => artifactInstall("component", compDir)
         case "spin" => spin
         case "update" => update
@@ -88,9 +89,10 @@ object Silk {
     * @param prototype Option[String] an id for a site-prototype or component
     * @param artifactName String either 'site-prototype' or 'component'
     * @param artifactBase File a root directory */
-  def artifactClone(prototype: Option[String], artifactName: String, artifactBase: File) {
+  def artifactClone(prototype: Option[String], directory: Option[String], artifactName: String, artifactBase: File) {
     if (silkHomeDir.exists) {
-      val projectId = prototype.getOrElse("nooo")
+      val projectId = prototype getOrElse "nooo"
+      val dir = directory getOrElse projectId
       var artifacts = Scout.getArtifactsById(artifactBase, artifactName, projectId)
       if (artifacts.size > 0) {
         val packages = artifacts.map(_.pkg).distinct
@@ -101,10 +103,11 @@ object Silk {
         val selectedVersion = autoSelectedVersion(artifacts.map(_.silkVersion).distinct, projectId)
         artifacts = artifacts.filter(_.silkVersion == selectedVersion)
         if (artifactName.equals("site-prototype")) {
-          if (!localSilkConfigDir.exists) localSilkConfigDir.mkdir
-          Bundler.bundleFile(masterSilkConfig, localSilkConfig)
+          val fname = new File(userDir + fs + dir + fs + "config")
+          if (!fname.exists) fname.mkdirs
+          Bundler.bundleFile(masterSilkConfig, new File(fname, "silk.conf"))
         }
-        Bundler.bundle(artifacts.head.baseDir, userDir)
+        Bundler.bundle(artifacts.head.baseDir, new File(userDir, dir))
         println("Silk %s : %s clone complete".format(artifactName, prototype.get))
       } else println("Sorry, no artifact found with that id")
     } else println("Please run silk update, your system is not setup properly")
@@ -228,4 +231,4 @@ object Silk {
   }
 }
 
-case class Config(var task: Option[String] = None, var prototype: Option[String] = None)
+case class Config(var task: Option[String] = None, var prototype: Option[String] = None, var directory: Option[String] = None)
