@@ -188,8 +188,14 @@ object Silk {
     * Entails processing the configured pipeline. */
   // @todo determine pipeline from Silk config
   def spin {
-    ViewDrivenPipeline.process
-    println("Silk spin complete")
+    try {
+      ViewDrivenPipeline.process
+      println("Silk spin complete")
+    } catch {
+      case nex: NullPointerException =>
+        println("Sorry, something has gone wrong...")
+        println("Are you running 'silk spin' inside a valid Silk project ?")
+    }
   }
 
   /** A platform independent update. */
