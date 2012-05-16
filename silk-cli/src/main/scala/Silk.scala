@@ -174,16 +174,59 @@ object Silk {
     * @param artifactName String either 'site-prototype' or 'component'
     * @param artifactBase File a root directory */
   def artifactInstall(artifactName: String, artifactBase: File) {
-    val pkg = dnaConfig.getString(artifactName + ".package").replace(".", fs)
+    val pkg = dnaConfig.getString(artifactName + ".package")
     val id = dnaConfig.getString(artifactName + ".id")
-    val silkVersion = dnaConfig.getString(artifactName + ".silk-version")
-    println("package is : " + pkg)
-    println("silk version is : " + silkVersion)
-    val artifactFile = new File(artifactBase + fs + pkg + fs + id + fs + silkVersion)
+    val desc = dnaConfig.getString(artifactName + ".description")
+    val silkVersion = dnaConfig.getString(artifactName + ".silk-version") 
+    val artifactFile = new File(artifactBase + fs + pkg.replace(".", fs) + fs + id + fs + silkVersion)
+
+    val runningSilkVersion = Info.version.split("-")(0) // Strip SNAPSHOT, ALPHA, BETA etc
+    if (silkVersion != runningSilkVersion) {
+      updateDnaConfigSetting(artifactName + ".silk-version", runningSilkVersion, true)
+      artifactInstall(artifactName, artifactBase)
+      sys.exit(0)
+    }
+
+    println("\nYou entered the following details;")
+    println("  Package: %s".format(pkg))
+    println("  ID: %s".format(id))
+    println("  Description: %s\n".format(desc))    
+    
+    if (artifactFile.exists) {
+     print("[WARNING] This will overwrite a local Silk site. ")
+    }
+
+    print("Do you wish to clone with these details(y/n): ")
+    if (!readBoolean) {
+      println("\nPlease amend the following details. Leave blank to remain the same.")
+      changeSetting("Package",  artifactName + ".package", pkg, false)
+      changeSetting("ID", artifactName + ".id", id, false)
+      changeSetting("Description", artifactName + ".description", desc, true)
+      artifactInstall(artifactName, artifactBase)
+      sys.exit(0)
+    }
+
     if (artifactFile.exists) artifactFile.delete
     artifactFile.mkdirs
     Bundler.bundle(userDir, artifactFile)
     println("Silk %s : %s install complete".format(artifactName, id))
+  }
+
+  /** Allows the user to change a setting.
+    *
+    * @param name String the name to display to the user
+    * @param key String the setting key
+    * @param value String value before change
+    * @param addQuotes Boolean if value should be wrapped with quotes */  
+  def changeSetting(name: String, key: String, value: String, addQuotes: Boolean) {
+    var newValue: String = null
+    print("%s [%s]: ".format(name, value)) 
+    while (newValue == null) {
+      newValue = try { readLine } catch { case _ => null }
+    }
+    if (newValue != value && !newValue.isEmpty) {
+      updateDnaConfigSetting(key, newValue, addQuotes)
+    }
   }
 
   /** Spin a silk site.

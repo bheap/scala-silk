@@ -16,7 +16,8 @@
 
 package org.silkyweb.utils
 
-import java.io.File
+import java.io.{File, FileInputStream, FileOutputStream}
+import java.util.Properties
 
 import com.typesafe.config._
 
@@ -75,11 +76,29 @@ object Config {
   val silkConfig = if (localSilkConfig.exists) parse(localSilkConfig) else parse(masterSilkConfig)
 
   // There is always a dna.conf
-  val dnaConfig = parse(localDnaConfig)
+  var dnaConfig = parse(localDnaConfig)
 
   /** Helper method to parse the given config file.
     *
     * @param configFile File the config file 
     * @return Config the configurations */  
   def parse(configFile: File) = ConfigFactory.parseFile(configFile)
+
+  /** Update an artifacts local DNA config setting.
+    *
+    * @param setting String name of the setting to change 
+    * @param newValue String the new value 
+    * @param addQuotes Boolean if value should be wrapped with quotes */  
+  def updateDnaConfigSetting(setting: String, newValue: String, addQuotes: Boolean) {
+    val prop = new Properties
+    val in = new FileInputStream(localDnaConfig)
+    prop.load(in)
+    prop.setProperty(setting, if (addQuotes) "\"%s\"".format(newValue) else newValue)
+    val out = new FileOutputStream(localDnaConfig)
+    prop.store(out, null)
+    in.close
+    out.close
+    //Reload Dna Config
+    dnaConfig = parse(localDnaConfig) 
+  }
 }
