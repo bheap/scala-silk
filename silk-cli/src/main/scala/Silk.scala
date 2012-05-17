@@ -248,7 +248,7 @@ object Silk {
   // @todo create the directories required
   def update {
     // First update silk.conf
-    if (masterSilkConfig.exists) masterSilkConfig.delete
+    if (masterSilkConfig.exists) masterSilkConfig.delete else silkRepoDir.mkdirs
     downloadToLocation(new URL(updateUrlBase + "silk.conf"), new File(silkHomeDir, "silk.conf"))
 
     // Update site prototypes
