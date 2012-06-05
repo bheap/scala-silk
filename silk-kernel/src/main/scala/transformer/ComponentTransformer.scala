@@ -44,8 +44,8 @@ object ComponentTransformer {
 
   /** Transform components.
     *
-    * First search for a local component, then a core component, finally
-    * default to the missing-component.
+    * First search for a local component, then a specified pkg under core, then an
+    * org.silkyweb core component, finally default to the missing-component.
     *
     * Note while we only specify div and span here, this coveres every possibility,
     * as later we grab the full contents inside a body tag of any given component. 
@@ -140,14 +140,18 @@ object ComponentTransformer {
   /** Return retrieved component content given [[org.silkyweb.transformer.ComponentDetails]].
     *
     * @param comp [[org.silkyweb.transformer.ComponentDetails]] */
-  // @todo rudimentary draft only, ugly and makes assumptions about package, version and theme
+  // @todo rudimentary draft only, ugly and makes assumptions about version and theme
   def lookupComponent(comp: ComponentDetails) = {
     val localCompStr = userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html"
     val localComp = new File(localCompStr)
+    val corePkgCompStr = compStr + fs + comp.path + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
+    val corePkgComp = new File(corePkgCompStr)
     val coreCompStr = compStr + fs + corePkgStr + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
     val coreComp = new File(coreCompStr)
     if (localComp.exists) {
       loadComponentSource(localCompStr).get
+    } else if (corePkgComp.exists) {
+      loadComponentSource(corePkgCompStr).get
     } else if (coreComp.exists) {
       loadComponentSource(coreCompStr).get
     } else {
