@@ -15,8 +15,8 @@ echo "
 if [ "$1" == "spin" ]; then
   rm -rf ${PWD}/site
   mkdir ${PWD}/site
-  java -jar $HOME/bin/silk.jar -t $1 $2 $3
+  java -jar $HOME/bin/silk.jar $1 $2 $3
 else
-  java -jar $HOME/bin/silk.jar -t $1 $2 $3
+  java -jar $HOME/bin/silk.jar $1 $2 $3
 fi
 

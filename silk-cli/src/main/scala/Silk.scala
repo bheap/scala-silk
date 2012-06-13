@@ -48,7 +48,7 @@ object Silk {
     var config = Config()
 
     val parser = new OptionParser("silk") {
-      opt("t", "task", "task is a string property " + tasks, {t: String => config.task = Some(t)})
+      arg("<task>", "task is a string property " + tasks, {t: String => config.task = Some(t)})
       argOpt("<prototype>", "a site or component prototype", {ps: String => config.prototype = Some(ps)})
       argOpt("<directory>", "a directory for cloning to occur in", {d: String => config.directory = Some(d)})
     }
