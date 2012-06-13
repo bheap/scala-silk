@@ -155,6 +155,7 @@ object ComponentTransformer {
     } else if (coreComp.exists) {
       loadComponentSource(coreCompStr).get
     } else {
+      println("WARNING: using 'component-missing' from core, could not find : " + localCompStr)
       val compBaseName = "component-missing"
       val theme = "none" //dnaConfig.getString("site-prototype.theme")
       val compName = if (theme == "none") compBaseName else compBaseName + "-" + theme
