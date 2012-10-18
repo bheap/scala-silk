@@ -16,6 +16,8 @@ if [ "$1" == "spin" ]; then
   rm -rf ${PWD}/site
   mkdir ${PWD}/site
   java -jar $HOME/bin/silk.jar $1 $2 $3
+  cat ${PWD}/site/resource/js/rappor/* > ${PWD}/site/resource/js/rappor-widget-bootstrap.js
+  cat ${PWD}/site/resource/css/rappor/* > ${PWD}/site/resource/css/rappor-widget-bootstrap.css
 else
   java -jar $HOME/bin/silk.jar $1 $2 $3
 fi

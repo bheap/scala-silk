@@ -28,7 +28,7 @@ import javax.xml.stream.XMLStreamException
 import org.fusesource.scalate.scuery.Transformer
 
 import org.silkyweb.datasource.Datasource
-import org.silkyweb.utils.{Config, XML => SilkXML}
+import org.silkyweb.utils.{Bundler, Config, XML => SilkXML}
 
 /** Injects components.
   *
@@ -41,6 +41,8 @@ object ComponentTransformer {
 
   import Config._
   import SilkXML._
+
+  val siteDir = new File(userDir, "site")
 
   /** Transform components.
     *
@@ -139,6 +141,8 @@ object ComponentTransformer {
 
   /** Return retrieved component content given [[org.silkyweb.transformer.ComponentDetails]].
     *
+    * Additionally bundle some widget resources across from repo if applicable, and track bootstrap dependencies.
+    *
     * @param comp [[org.silkyweb.transformer.ComponentDetails]] */
   // @todo rudimentary draft only, ugly and makes assumptions about version and theme
   def lookupComponent(comp: ComponentDetails) = {
@@ -148,9 +152,17 @@ object ComponentTransformer {
     val corePkgComp = new File(corePkgCompStr)
     val coreCompStr = compStr + fs + corePkgStr + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
     val coreComp = new File(coreCompStr)
+    // If either core component or default 'Silk' component and widget bundle widget resources and
+    // track widget bootstrap dependency
     if (localComp.exists) {
       loadComponentSource(localCompStr).get
     } else if (corePkgComp.exists) {
+      val widgetBootstrapPath = compStr + fs + comp.path + fs + comp.name + fs + "0.1.0"
+      val widgetBootstrapFile = new File(widgetBootstrapPath + fs + "resource")
+      if (widgetBootstrapFile.exists) {
+        println("INFO: Widget located : " + widgetBootstrapFile)
+        Bundler.bundle(new File(new File(widgetBootstrapPath), "resource"), new File(siteDir, "resource"))
+      }
       loadComponentSource(corePkgCompStr).get
     } else if (coreComp.exists) {
       loadComponentSource(coreCompStr).get
