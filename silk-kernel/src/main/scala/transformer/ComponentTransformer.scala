@@ -27,6 +27,8 @@ import javax.xml.stream.XMLStreamException
 
 import org.fusesource.scalate.scuery.Transformer
 
+import com.typesafe.config._
+
 import org.silkyweb.datasource.Datasource
 import org.silkyweb.utils.{Bundler, Config, XML => SilkXML}
 
@@ -162,6 +164,15 @@ object ComponentTransformer {
       if (widgetBootstrapFile.exists) {
         println("INFO: Widget located : " + widgetBootstrapFile)
         Bundler.bundle(new File(new File(widgetBootstrapPath), "resource"), new File(siteDir, "resource"))
+        try {
+          val widgetConfig = ConfigFactory.parseFile(new File(widgetBootstrapPath + fs + "config" + fs + "dna.conf"))
+          val dependency = widgetConfig.getString("component.dependency")
+          println("INFO: dependency found for widget : " + dependency)
+          val depPath = compStr + fs + dependency.replace('.', fsChar) + fs + "0.1.0"
+          Bundler.bundle(new File(new File(depPath), "resource"), new File(siteDir, "resource"))
+        } catch {
+          case ex: Exception => println("INFO: No dependencies found for widget")
+        }
       }
       loadComponentSource(corePkgCompStr).get
     } else if (coreComp.exists) {
