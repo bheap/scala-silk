@@ -26,12 +26,17 @@ import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException
   * @since 1.0 */
 object Bundler {
 
+  private val allowedHiddenFiles = Array(".gitignore")
+
   /** Recursively copy items from a src to a dest. */
   def bundle(src: File, dst: File) {
     if (src.isDirectory) {
       if(!dst.exists()) dst.mkdir
 
-      val files = src.list
+      val files = src.list filterNot {
+        file => file.startsWith(".") && !allowedHiddenFiles.contains(file)
+      }
+
       files foreach {
         file =>
           val srcFile = new File(src, file)
