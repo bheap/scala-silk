@@ -55,20 +55,8 @@ object Silk {
 
     if (parser.parse(args)) {
       config.task.get match {
-        case "sites" =>
-          println("Installed site-prototypes are:\n")
-          Scout.getArtifacts(siteProtoDir, "site-prototype") foreach {
-            item => 
-              println(item.id + " : " + item.pkg + " : " + item.silkVersion)
-              println("  " + item.desc)
-          }
-        	case "components" =>
-	          println("Installed components are:\n")
-	          Scout.getArtifacts(compDir, "component") foreach {
-	            item => 
-	              println(item.id + " : " + item.pkg + " : " + item.silkVersion)
-	              println("  " + item.desc)
-	          }
+        case "sites" => artifactDisplay(config.prototype, "site-prototype", siteProtoDir)
+        case "components" => artifactDisplay(config.prototype, "component", compDir)
         case "clone-site" => artifactClone(config.prototype, config.directory, "site-prototype", siteProtoDir)
         case "install-site" => artifactInstall("site-prototype", siteProtoDir)
         case "clone-component" => artifactClone(config.prototype, config.directory, "component", compDir)
@@ -80,6 +68,24 @@ object Silk {
     } else {
       println("Sorry, something went wrong, please try your command again...")
     }
+  }
+
+  /** Displays a list of artifacts for the given filter.
+    *
+    * @param filter Option[String] a path directory
+    * @param artifactName String either 'site-prototype' or 'component'
+    * @param artifactBase File a root directory */
+  def artifactDisplay(filter: Option[String], artifactName: String, artifactBase: File) {
+    val path = if (filter.isDefined) filter.get.replace(".", SilkConfig.fs) else "" 
+    val base = new File(artifactBase.getPath, path)
+    if (base.exists) {
+      println("Installed " + artifactName + "s in " + base.getPath + " are:\n")
+      Scout.getArtifacts(base, artifactName).foreach {
+        item =>
+          println(item.id + " : " + item.pkg + " : " + item.silkVersion)
+          println("  " + item.desc)
+      }
+    } else println("Sorry, directory: %s does not exist.".format(base))
   }
 
   /** Clone an artifact.
