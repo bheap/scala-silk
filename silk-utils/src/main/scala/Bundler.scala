@@ -27,21 +27,18 @@ import java.io.{File, FileInputStream, FileOutputStream, FileWriter, IOException
 object Bundler {
 
   private val allowedHiddenFiles = Array(".gitignore")
+  private val ignoredSilkDirs = Array("site")
 
   /** Recursively copy items from a src to a dest. */
-  def bundle(src: File, dst: File) {
+  def bundle(src: File, dst: File, firstPass: Boolean = true) {
     if (src.isDirectory) {
       if(!dst.exists()) dst.mkdir
 
-      val files = src.list filterNot {
-        file => file.startsWith(".") && !allowedHiddenFiles.contains(file)
-      }
-
-      files foreach {
-        file =>
-          val srcFile = new File(src, file)
-          val dstFile = new File(dst, file)
-          bundle(srcFile, dstFile)
+      src.list filterNot {
+        file => (file.startsWith(".") && !allowedHiddenFiles.contains(file)) || 
+                (firstPass && ignoredSilkDirs.contains(file))
+      } foreach { 
+        file => bundle(new File(src, file), new File(dst, file), false) 
       }
     } else {
       dst.createNewFile
