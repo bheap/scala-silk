@@ -23,7 +23,7 @@ object BuildSettings {
 	
   val buildOrganization = "org.silkyweb.silk"
   val buildVersion      = "0.1.0-SNAPSHOT"
-  val buildScalaVersion = "2.9.1"
+  val buildScalaVersion = "2.9.2"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
     organization := buildOrganization,
@@ -70,14 +70,14 @@ object Dependencies {
 
   val uf_version = "0.3.3"
 
-  val antiXML    = "com.codecommit"         %% "anti-xml"                % "0.3"            % "compile"
-  val config     = "com.typesafe.config"    % "config"                   % "0.2.0"          % "compile"
+  val antiXML    = "com.codecommit"         % "anti-xml_2.9.1"           % "0.3"            % "compile"
+  val config     = "com.typesafe"           % "config"                   % "1.0.0"          % "compile"
   val scalate    = "org.fusesource.scalate" % "scalate-core"             % "1.6.0-SNAPSHOT" % "compile"
-  val scopt      = "com.github.scopt"       % "scopt_2.9.1"              % "1.1.2"          % "compile"
+  val scopt      = "com.github.scopt"       %% "scopt"                   % "2.1.0"          % "compile"
   val slf4j      = "org.slf4j"              % "slf4j-simple"             % "1.6.2"          % "compile"
   val scalaUtils = "com.bheap"              %% "scala-utils"             % "0.1.0-SNAPSHOT" % "compile"
 
-  val scalatest  = "org.scalatest"          % "scalatest_2.9.0"          % "1.4.1"          % "test"
+  val scalatest  = "org.scalatest"          %% "scalatest"               % "1.8"            % "test"
 }
 
 object SilkBuild extends Build {
