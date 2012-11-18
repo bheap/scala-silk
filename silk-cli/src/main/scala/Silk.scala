@@ -202,7 +202,7 @@ object Silk {
      print("[WARNING] This will overwrite a local Silk site. ")
     }
 
-    print("Do you wish to clone with these details(y/n): ")
+    print("Do you wish to install with these details(y/n): ")
     if (!readBoolean) {
       println("\nPlease amend the following details. Leave blank to remain the same.")
       changeSetting("Package",  artifactName + ".package", pkg, false)
