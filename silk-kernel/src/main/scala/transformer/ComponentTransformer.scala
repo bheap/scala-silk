@@ -141,15 +141,20 @@ object ComponentTransformer {
     *
     * @param comp [[org.silkyweb.transformer.ComponentDetails]] */
   // @todo rudimentary draft only, ugly and makes assumptions about version and theme
+  // @todo remove core and default 'silk' components leverage bower totally ?
   def lookupComponent(comp: ComponentDetails) = {
     val localCompStr = userDirStr + fs + "component" + fs + comp.path + fs + comp.name + ".html"
     val localComp = new File(localCompStr)
+    val bowerCompStr = userDirStr + fs + "components" + fs + comp.path + fs + comp.name + ".html"
+    val bowerComp = new File(bowerCompStr)
     val corePkgCompStr = compStr + fs + comp.path + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
     val corePkgComp = new File(corePkgCompStr)
     val coreCompStr = compStr + fs + corePkgStr + fs + comp.name + fs + "0.1.0" + fs + comp.name + ".html"
     val coreComp = new File(coreCompStr)
     if (localComp.exists) {
       loadComponentSource(localCompStr).get
+    } else if (bowerComp.exists) {
+      loadComponentSource(bowerCompStr).get
     } else if (corePkgComp.exists) {
       loadComponentSource(corePkgCompStr).get
     } else if (coreComp.exists) {
