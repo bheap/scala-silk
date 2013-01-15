@@ -51,6 +51,7 @@ object Silk {
       arg("<task>", "task is a string property " + tasks, {t: String => config.task = Some(t)})
       argOpt("<prototype>", "a site or component prototype", {ps: String => config.prototype = Some(ps)})
       argOpt("<directory>", "a directory for cloning to occur in", {d: String => config.directory = Some(d)})
+      booleanOpt("<prompt>", "a flag indicating if user should be prompted", {p: Boolean => config.prompt = Some(p)})
     }
 
     if (parser.parse(args)) {
@@ -58,9 +59,9 @@ object Silk {
         case "sites" => artifactDisplay(config.prototype, "site-prototype", siteProtoDir)
         case "components" => artifactDisplay(config.prototype, "component", compDir)
         case "clone-site" => artifactClone(config.prototype, config.directory, "site-prototype", siteProtoDir)
-        case "install-site" => artifactInstall("site-prototype", siteProtoDir)
+        case "install-site" => artifactInstall("site-prototype", siteProtoDir, config.prompt)
         case "clone-component" => artifactClone(config.prototype, config.directory, "component", compDir)
-        case "install-component" => artifactInstall("component", compDir)
+        case "install-component" => artifactInstall("component", compDir, config.prompt)
         case "spin" => spin
         case "update" => update
         case _ => println("Sorry, not a valid action, please try " + tasks)
@@ -179,7 +180,7 @@ object Silk {
     *
     * @param artifactName String either 'site-prototype' or 'component'
     * @param artifactBase File a root directory */
-  def artifactInstall(artifactName: String, artifactBase: File) {
+  def artifactInstall(artifactName: String, artifactBase: File, prompt: Option[Boolean]) {
     val pkg = dnaConfig.getString(artifactName + ".package")
     val id = dnaConfig.getString(artifactName + ".id")
     val desc = dnaConfig.getString(artifactName + ".description")
@@ -189,7 +190,7 @@ object Silk {
     val runningSilkVersion = Info.version.split("-")(0) // Strip SNAPSHOT, ALPHA, BETA etc
     if (silkVersion != runningSilkVersion) {
       updateDnaConfigSetting(artifactName + ".silk-version", runningSilkVersion, true)
-      artifactInstall(artifactName, artifactBase)
+      artifactInstall(artifactName, artifactBase, prompt)
       sys.exit(0)
     }
 
@@ -202,14 +203,16 @@ object Silk {
      print("[WARNING] This will overwrite a local Silk site. ")
     }
 
-    print("Do you wish to install with these details(y/n): ")
-    if (!readBoolean) {
-      println("\nPlease amend the following details. Leave blank to remain the same.")
-      changeSetting("Package",  artifactName + ".package", pkg, false)
-      changeSetting("ID", artifactName + ".id", id, false)
-      changeSetting("Description", artifactName + ".description", desc, true)
-      artifactInstall(artifactName, artifactBase)
-      sys.exit(0)
+    if (prompt.isDefined && prompt.get) {
+      print("Do you wish to install with these details(y/n): ")
+      if (!readBoolean) {
+        println("\nPlease amend the following details. Leave blank to remain the same.")
+        changeSetting("Package",  artifactName + ".package", pkg, false)
+        changeSetting("ID", artifactName + ".id", id, false)
+        changeSetting("Description", artifactName + ".description", desc, true)
+        artifactInstall(artifactName, artifactBase, prompt)
+        sys.exit(0)
+      }
     }
 
     if (artifactFile.exists) artifactFile.delete
@@ -280,4 +283,4 @@ object Silk {
   }
 }
 
-case class Config(var task: Option[String] = None, var prototype: Option[String] = None, var directory: Option[String] = None)
+case class Config(var task: Option[String] = None, var prototype: Option[String] = None, var directory: Option[String] = None, var prompt: Option[Boolean] = Some(true))
